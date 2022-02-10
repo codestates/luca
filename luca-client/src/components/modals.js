@@ -52,14 +52,14 @@ const ModalView = styled.div`
   border-radius: 1em;
   text-align: center;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-  > div.title {
+  > div.modal-title {
     flex: 1 0 auto;
     margin-bottom: 1em;
     font-size: 2em;
     font-weight: bold;
   }
 
-  > div.body {
+  > div.modal-body {
     flex: 4 0 auto;
 
     > div.query {
@@ -100,7 +100,7 @@ const ModalView = styled.div`
     }
   }
 
-  > div.footer {
+  > div.modal-footer {
     flex: 1 0 auto;
     margin-top: 1em;
 
@@ -126,8 +126,8 @@ export function LoginModal({ modalHandler }) {
   return (
     <ModalBackdrop onClick={() => modalHandler(false)}>
       <ModalView onClick={(e) => e.stopPropagation()}>
-        <div className="title">로그인</div>
-        <div className="body">
+        <div className="modal-title">로그인</div>
+        <div className="modal-body">
           <div className="query">
             <div className="index">이메일</div>
             <input />
@@ -141,7 +141,7 @@ export function LoginModal({ modalHandler }) {
             <a href="">회원가입</a>
           </span>
         </div>
-        <div className="footer">
+        <div className="modal-footer">
           <div className="buttons">
             <button>소셜 로그인</button>
             <button className="confirm">로그인</button>
@@ -156,8 +156,8 @@ export function CreateProjectModal({ modalHandler }) {
   return (
     <ModalBackdrop onClick={() => modalHandler(false)}>
       <ModalView onClick={(e) => e.stopPropagation()}>
-        <div className="title">새 프로젝트</div>
-        <div className="body">
+        <div className="modal-title">새 프로젝트</div>
+        <div className="modal-body">
           <div className="query">
             <button className="options">개인</button>
             <button className="options">팀</button>
@@ -175,7 +175,7 @@ export function CreateProjectModal({ modalHandler }) {
             <input />
           </div>
         </div>
-        <div className="footer">
+        <div className="modal-footer">
           <div className="buttons">
             <button onClick={() => modalHandler(false)}>취소</button>
             <button className="confirm">시작</button>
@@ -190,9 +190,9 @@ export function DeleteProjectModal({ modalHandler }) {
   return (
     <ModalBackdrop onClick={() => modalHandler(false)}>
       <ModalView onClick={(e) => e.stopPropagation()}>
-        <div className="title">프로젝트 #12 를 삭제하시겠습니까?</div>
+        <div className="modal-title">프로젝트 #12 를 삭제하시겠습니까?</div>
         <div>삭제한 프로젝트는 복구할 수 없습니다</div>
-        <div className="footer">
+        <div className="modal-footer">
           <div className="buttons">
             <button onClick={() => modalHandler(false)}>취소</button>
             <button className="confirm">삭제</button>
