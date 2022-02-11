@@ -1,5 +1,6 @@
 #!/bin/bash
 cd /home/ubuntu/luca/luca-server
+nvm install node
 npm install
 npm install pm2@latest -g
 sudo apt-get update
