@@ -6,11 +6,17 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start" : "nodemon server.js --exec babel-node"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.17.2",
+    "@babel/node": "^7.16.8",
+    "@babel/preset-env": "^7.16.11",
+    "nodemon": "^2.0.15"
   }
 }
