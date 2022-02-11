@@ -92,4 +92,4 @@ export function Mainpage () {
     )
 }
 
-export default Mainpage;
+export default Main;
