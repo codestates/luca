@@ -44,7 +44,7 @@ function App() {
       <Backdrop>
         <Container>
           <Routes>
-            <Route path="/" element={isLogin ? <Main /> : <About />} />
+            <Route path="/" element={!isLogin ? <Main /> : <About />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/mypage" element={<Mypage />} />
             <Route path="/changepassword" element={<ChangePassword />} />
