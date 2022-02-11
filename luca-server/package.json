@@ -3,10 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start" : "nodemon index.js --exec babel-node"
+    "start" : "nodemon index.js"
   },
   "author": "",
   "license": "ISC",
@@ -14,9 +13,6 @@
     "express": "^4.17.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.17.2",
-    "@babel/node": "^7.16.8",
-    "@babel/preset-env": "^7.16.11",
     "nodemon": "^2.0.15"
   }
 }
