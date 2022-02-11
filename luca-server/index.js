@@ -8,7 +8,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // test용
 app.get('/', (req, res) => {
-  res.send('Helloword1');
+  res.send('Helloword12223');
 });
 
 app.listen(port, () => {
