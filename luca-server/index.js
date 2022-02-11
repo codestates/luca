@@ -1,4 +1,4 @@
-const express = require("express");
+import express from "express";
 
 const app = express();
 const port = 80;
@@ -8,7 +8,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // test용
 app.get('/', (req, res) => {
-  res.send('Helloword');
+  res.send('Helloword1');
 });
 
 app.listen(port, () => {
