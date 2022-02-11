@@ -1,8 +1,4 @@
 const express = require("express");
-const cookieParser = require('cookie-parser');
-const morgan = require('morgan');
-const cors = require('cors');
-
 const app = express();
 const port = 80;
 
@@ -10,17 +6,9 @@ const port = 80;
 // const indexRouter = require('./routes');
 
 // Middle-ware
-app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
-app.use(
-  cors({
-    origin: true,
-    method: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT'],
-    credentials: true,
-  }),
-);
+
 
 // router
 // app.use('/', indexRouter);
