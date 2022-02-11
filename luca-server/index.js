@@ -1,6 +1,4 @@
-import express from "express";
-import "express-async-errors";
-import morgan from "morgan";
+const express = require("express");
 
 const app = express();
 const port = 80;
