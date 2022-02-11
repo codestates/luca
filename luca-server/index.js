@@ -1,14 +1,14 @@
-import express from "express";
+const express = require("express");
 
 const app = express();
-const port = 4000;
+const port = 80;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // test용
-app.get('/', (req, res) => {
-  res.send('Hi');
+app.get("/", (req, res) => {
+  res.send('Hi1212');
 });
 
 app.listen(port, () => {
