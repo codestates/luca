@@ -59,7 +59,7 @@ const Maincomponent = styled.div`
 `
 
 
-export function Mainpage () {
+export function Main () {
     return (
         <div>
             <div>

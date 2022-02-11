@@ -82,7 +82,6 @@ function Projectcard () {
                     </type>
                     <modifybox>
                     <i class="fa-regular fa-pen-to-square"></i>
-                    klj
                     </modifybox>
                 </projectfunc>
             </projectcardhead>
