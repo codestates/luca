@@ -7,7 +7,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // test용
-app.get("/", (req, res) => {
+app.get('/', (req, res) => {
   res.send('Hi121332');
 });
 
