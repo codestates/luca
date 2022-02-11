@@ -5,7 +5,6 @@ const port = 80;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(morgan("tiny"));
 
 // test용
 app.get('/', (req, res) => {
