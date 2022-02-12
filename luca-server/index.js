@@ -1,7 +1,7 @@
 //require('dotenv').config();
 const express = require("express");
 const cookieParser = require('cookie-parser');
-// const session = require('express-session');
+const session = require('express-session');
 // const morgan = require('morgan');
 const cors = require('cors');
 
@@ -23,19 +23,19 @@ app.use(
     credentials: true,
   }),
 );
-// app.use(session({
-//   secret: 'ras',
-//   resave: true,
-//   secure: false,
-//   saveUninitialized: false,
-// }));
+app.use(session({
+  secret: 'ras',
+  resave: true,
+  secure: false,
+  saveUninitialized: false,
+}));
 
 // router
 // app.use('/', indexRouter);
 
 // test용
 app.get('/', (req, res) => {
-  res.send('Hi12345');
+  res.send('Hi6');
 });
 
 app.listen(port, () => {
