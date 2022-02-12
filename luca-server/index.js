@@ -1,11 +1,9 @@
 const express = require("express");
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
-const app = express();
 
-const config = require('./config/index.js');
-const { SERVER_PORT } = config;
-const port = SERVER_PORT || 80;
+const app = express();
+const port = 80;
 
 // Routes
 const indexRouter = require('./routes');
