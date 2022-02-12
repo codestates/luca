@@ -1,11 +1,11 @@
 const express = require("express");
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
-// const dotenv = require('dotenv');
-// dotenv.config();
-
 const app = express();
-const port = 80;
+
+const config = require('./config/index.js');
+const { SERVER_PORT } = config;
+const port = SERVER_PORT || 80;
 
 // Routes
 const indexRouter = require('./routes');

@@ -1,22 +1,22 @@
-const dotenv = require('dotenv');
-dotenv.config();
+const config = require('./index.js');
+const { DATABASE_USER, DATABASE_PASSWORD, DATABASE_HOST, DATABASE_PORT } = config;
 
 const config = {
   development: {
-    username: process.env.DATABASE_USER,
-    password: process.env.DATABASE_PASSWORD,
+    username: DATABASE_USER,
+    password: DATABASE_PASSWORD,
     database: 'luca_database',
-    host: process.env.DATABASE_HOST,
+    host: DATABASE_HOST,
     dialect: 'mysql',
-    port: process.env.DATABASE_PORT,
+    port: DATABASE_PORT,
   },
   production: {
-    user: process.env.DATABASE_USER,
-    password: process.env.DATABASE_PASSWORD,
+    user: DATABASE_USER,
+    password: DATABASE_PASSWORD,
     database: 'luca_database',
-    host: process.env.DATABASE_HOST,
+    host: DATABASE_HOST,
     dialect: 'mysql',
-    port: process.env.DATABASE_PORT,
+    port: DATABASE_PORT,
   },
 };
 module.exports = config;
