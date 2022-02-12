@@ -12,7 +12,7 @@ const port = 80;
 // const indexRouter = require('./routes');
 
 // Middle-ware
-app.use(morgan('dev'));
+// app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -35,7 +35,7 @@ app.use(cookieParser());
 
 // test용
 app.get('/', (req, res) => {
-  res.send('Hi1234');
+  res.send('Hi12345');
 });
 
 app.listen(port, () => {
