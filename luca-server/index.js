@@ -35,7 +35,7 @@ app.use(session({
 
 // test용
 app.get('/', (req, res) => {
-  res.send('Hi6');
+  res.send('Hi7');
 });
 
 app.listen(port, () => {
