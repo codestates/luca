@@ -6,8 +6,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 
 const app = express();
-const envPort = process.env.PORT;
-const port = 80;
+const port = process.env.PORT;
 
 // Routes
 const indexRouter = require('./routes');
@@ -36,7 +35,7 @@ app.use('/', indexRouter);
 
 // test용
 app.get('/', (req, res) => {
-  res.send('1234' + envPort);
+  res.send('1234');
 });
 
 app.listen(port, () => {
