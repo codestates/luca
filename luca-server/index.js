@@ -2,10 +2,7 @@ const express = require("express");
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const app = express();
-
-const config = require('./config/config');
-const { SERVER_PORT } = config;
-const port = SERVER_PORT;
+const port = 80;
 
 // Routes
 const indexRouter = require('./routes');
