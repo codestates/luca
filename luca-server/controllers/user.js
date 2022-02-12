@@ -1,9 +1,8 @@
-const { hashedpassword } = require("./token");
+// const { hashedpassword } = require("./token");
 
 module.exports = {
     guest: (req, res) => {
-        const result = hashedpassword('password')
-        res.send(result);
+        res.send('ok');
     },
     logout: (req, res) => {
         res.send('ok');
