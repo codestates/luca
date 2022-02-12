@@ -2,7 +2,7 @@ const { hashedpassword } = require("./token");
 
 module.exports = {
     guest: (req, res) => {
-        const result = hashedpassword(password)
+        const result = hashedpassword('password')
         res.send(result);
     },
     logout: (req, res) => {
