@@ -3,6 +3,8 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const app = express();
 const port = 80;
+const bcrypt = require('bcrypt');
+
 
 // Routes
 const indexRouter = require('./routes');
