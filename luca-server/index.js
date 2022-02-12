@@ -2,7 +2,7 @@
 const express = require("express");
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
-// const morgan = require('morgan');
+const morgan = require('morgan');
 const cors = require('cors');
 
 const app = express();
@@ -12,7 +12,7 @@ const port = 80;
 // const indexRouter = require('./routes');
 
 // Middle-ware
-// app.use(morgan('dev'));
+app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -35,7 +35,7 @@ app.use(session({
 
 // test용
 app.get('/', (req, res) => {
-  res.send('Hi7');
+  res.send('Hi8');
 });
 
 app.listen(port, () => {
