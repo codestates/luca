@@ -1,7 +1,7 @@
 const config = require('./index.js');
 const { DATABASE_USER, DATABASE_PASSWORD, DATABASE_HOST, DATABASE_PORT } = config;
 
-const config = {
+module.exports = {
   development: {
     username: DATABASE_USER,
     password: DATABASE_PASSWORD,
@@ -19,6 +19,5 @@ const config = {
     port: DATABASE_PORT,
   },
 };
-module.exports = config;
 
 
