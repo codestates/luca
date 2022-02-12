@@ -1,6 +1,10 @@
+const bcrypt = require('bcrypt');
+
 module.exports = {
     guest: (req, res) => {
-        res.send('ok');
+        const salt = bcrypt.genSaltSync();
+        const password = bcrypt.hashSync('password', salt);
+        res.send(password);
     },
     logout: (req, res) => {
         res.send('ok');
