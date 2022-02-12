@@ -9,14 +9,14 @@ const cors = require('cors');
 const app = express();
 const port = process.env.PORT;
 
-// Routes
+// Routes 
 const indexRouter = require('./routes');
 
 // Middle-ware
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// app.use(cookieParser());
+app.use(cookieParser());
 app.use(
   cors({
     origin: true,
