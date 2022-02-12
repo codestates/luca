@@ -1,10 +1,9 @@
-const bcrypt = require('bcrypt');
+const { hashedpassword } = require("./token");
 
 module.exports = {
     guest: (req, res) => {
-        const salt = bcrypt.genSaltSync();
-        const password = bcrypt.hashSync('password', salt);
-        res.send(password);
+        const result = hashedpassword(password)
+        res.send(result);
     },
     logout: (req, res) => {
         res.send('ok');
