@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const morgan = require('morgan');
 const cors = require('cors');
+const bcrypt = require("bcrypt");
 
 const app = express();
 const port = process.env.PORT;
