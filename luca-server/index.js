@@ -1,6 +1,6 @@
 //require('dotenv').config();
 const express = require("express");
-// const cookieParser = require('cookie-parser');
+const cookieParser = require('cookie-parser');
 // const session = require('express-session');
 // const morgan = require('morgan');
 const cors = require('cors');
@@ -15,7 +15,7 @@ const port = 80;
 // app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// app.use(cookieParser());
+app.use(cookieParser());
 app.use(
   cors({
     origin: true,
