@@ -31,7 +31,7 @@ app.use(session({
 }));
 
 // router
-// app.use('/', indexRouter);
+app.use('/', indexRouter);
 
 // test용
 app.get('/', (req, res) => {
