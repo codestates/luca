@@ -36,7 +36,7 @@ app.use('/', indexRouter);
 
 // test용
 app.get('/', (req, res) => {
-  res.send(envPort);
+  res.send('1234' + envPort);
 });
 
 app.listen(port, () => {
