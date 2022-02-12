@@ -1,6 +1,7 @@
-require("dotenv").config();
+const dotenv = require('dotenv');
+dotenv.config();
 
-module.exports = {
+const config = {
   development: {
     username: process.env.DATABASE_USER,
     password: process.env.DATABASE_PASSWORD,
@@ -18,3 +19,4 @@ module.exports = {
     port: process.env.DATABASE_PORT,
   },
 };
+module.exports = config;
