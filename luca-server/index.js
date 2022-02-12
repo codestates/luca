@@ -3,7 +3,7 @@ const express = require("express");
 // const cookieParser = require('cookie-parser');
 // const session = require('express-session');
 // const morgan = require('morgan');
-// const cors = require('cors');
+const cors = require('cors');
 
 const app = express();
 const port = 80;
@@ -16,13 +16,13 @@ const port = 80;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // app.use(cookieParser());
-// app.use(
-//   cors({
-//     origin: true,
-//     method: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT'],
-//     credentials: true,
-//   }),
-// );
+app.use(
+  cors({
+    origin: true,
+    method: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT'],
+    credentials: true,
+  }),
+);
 // app.use(session({
 //   secret: 'ras',
 //   resave: true,
