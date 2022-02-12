@@ -10,7 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
