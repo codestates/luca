@@ -11,7 +11,7 @@ module.exports = {
         return bcrypt.compareSync(inputPWD, hash); //true 또는 false를 리턴
     },
     generateAccessToken: (data) => {
-        return sign({ data: data }, process.env.ACCESS_SECRET, {
+        return sign({ data: data }, 'process.env.ACCESS_SECRET', {
             expiresIn: 60 * 60 * 1000,
         });
     },
@@ -31,7 +31,7 @@ module.exports = {
             return null;
         }
         try {
-            return verify(accessToken, process.env.ACCESS_SECRET);
+            return verify(accessToken, 'process.env.ACCESS_SECRET');
         } catch (err) {
             //return null if invalid token
             return null;
