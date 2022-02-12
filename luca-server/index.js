@@ -4,7 +4,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const morgan = require('morgan');
 const cors = require('cors');
-const bcrypt = require("bcrypt");
+// const bcrypt = require("bcrypt");
 
 const app = express();
 const port = process.env.PORT;
@@ -16,7 +16,7 @@ const indexRouter = require('./routes');
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
+// app.use(cookieParser());
 app.use(
   cors({
     origin: true,
@@ -36,7 +36,7 @@ app.use('/', indexRouter);
 
 // test용
 app.get('/', (req, res) => {
-  res.send('1234');
+  res.send('2345');
 });
 
 app.listen(port, () => {
