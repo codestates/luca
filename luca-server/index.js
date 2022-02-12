@@ -9,7 +9,7 @@ const app = express();
 const port = 80;
 
 // Routes
-// const indexRouter = require('./routes');
+const indexRouter = require('./routes');
 
 // Middle-ware
 app.use(morgan('dev'));
@@ -35,7 +35,7 @@ app.use(session({
 
 // test용
 app.get('/', (req, res) => {
-  res.send('Hi8');
+  res.send('Hi10');
 });
 
 app.listen(port, () => {
