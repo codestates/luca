@@ -1,11 +1,12 @@
-const express = require("express");
-const cookieParser = require('cookie-parser');
-const cors = require('cors');
+import express from "express";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+
 const app = express();
 const port = 80;
 
 // Routes
-const indexRouter = require('./routes');
+import indexRouter from "./routes";
 
 // Middle-ware
 app.use(express.json());
