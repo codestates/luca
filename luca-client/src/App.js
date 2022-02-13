@@ -11,6 +11,7 @@ import styled from "styled-components";
 import { useState } from "react";
 
 const Navigator = styled.div`
+  //position: fixed;
   width: 100vw;
   height: 10vh;
   background-color: cyan;
@@ -48,9 +49,11 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/mypage" element={<Mypage />} />
             <Route path="/changepassword" element={<ChangePassword />} />
-            <Route path="/project" element={<Project />} />
           </Routes>
         </Container>
+        <Routes>
+          <Route path="/project" element={<Project />} />
+        </Routes>
       </Backdrop>
     </div>
   );
