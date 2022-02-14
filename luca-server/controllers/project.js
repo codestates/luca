@@ -84,7 +84,7 @@ module.exports = {
         try {
             const userInfo = await users.findOne({
                 where: {
-                    email: verifyInfo.email
+                    email: email
                 }
             });
             if (!userInfo) {
