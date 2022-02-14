@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     parent: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     storage: {
       type: DataTypes.STRING,
