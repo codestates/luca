@@ -1,10 +1,12 @@
+require('dotenv').config();
 const express = require("express");
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
-const app = express();
-const port = 80;
 
-// Routes
+const app = express();
+const port = process.env.PORT;
+
+// Routes 
 const indexRouter = require('./routes');
 
 // Middle-ware
