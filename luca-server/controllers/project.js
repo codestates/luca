@@ -32,7 +32,7 @@ module.exports = {
             res.status(401).send({ message: 'Invalid token' });
         }
     },
-    post: (req, res) => {
+    post: async (req, res) => {
         const projectInfo = req.body;
         try {
             const result = await projects.create({
@@ -41,8 +41,8 @@ module.exports = {
                 desc: itemInfo.desc,
                 isTeam: itemInfo.isTeam
             });
-            projectInfo.memberUserId.map(function (el){
-                const result = await users_projects.create({
+            await projectInfo.memberUserId.map(function (el){
+                const result =  users_projects.create({
                     userId: el,
                     projectId: result.id
                 });
@@ -53,7 +53,7 @@ module.exports = {
             res.status(500).json({ message: "Internal server error" });
         }
     },
-    patch: (req, res) => {
+    patch: async (req, res) => {
         const {projectId, title, desc} = req.body;
         try {
             await projects.update({
@@ -68,7 +68,7 @@ module.exports = {
             res.status(500).json({ message: "Internal server error" });
         }
     },
-    delete: (req, res) => {
+    delete: async (req, res) => {
         const id = req.params.id
         try {
             await projects.destroy({
