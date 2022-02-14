@@ -15,13 +15,13 @@ module.exports = {
         maxAge: 24 * 6 * 60 * 10000,
         sameSite: "None",
         httpOnly: true,
-        secure: true,
+        // secure: true,
       })
       .status(statusCode)
       .json(data);
   },
   isAuthorized: (req) => {
-    if (jwt in req.cookies) {
+    if ('jwt' in req.cookies) {
       const userInfo = verify(req.cookies.jwt, process.env.ACCESS_SECRET);
       delete userInfo.iat;
       delete userInfo.exp;
