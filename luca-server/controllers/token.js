@@ -21,7 +21,13 @@ module.exports = {
       .json(data);
   },
   isAuthorized: (req) => {
-    const userInfo = verify(req.cookies.jwt, process.env.ACCESS_SECRET);
-    return userInfo;
+    if(jwt in req.cookies) {
+      const userInfo = verify(req.cookies.jwt, process.env.ACCESS_SECRET);
+      delete userInfo.iat;
+      delete userInfo.exp;
+      return userInfo;
+    } else {
+      return undefined;
+    }
   },
 };
