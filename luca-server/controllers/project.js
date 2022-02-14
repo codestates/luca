@@ -3,10 +3,10 @@ module.exports = {
     get: async (req, res) => {
         try {
             const verifyInfo = isAuthorized(req);
-            if(verifyInfo === 'not found'){
+            if (verifyInfo === 'not found') {
                 return res.status(401).send({ message: 'Token not found ' });
-            } else if(verifyInfo === 'expired') {
-                return res.status(401).send({ message: 'Expired token' });                
+            } else if (verifyInfo === 'expired') {
+                return res.status(401).send({ message: 'Expired token' });
             } else {
                 const result = await projects.findAll({
                     where: {
@@ -35,22 +35,20 @@ module.exports = {
             res.status(500).json({ message: "Internal server error" });
         }
     },
-
     patch: async (req, res) => {
         const { projectId, title, desc } = req.body;
         try {
             await projects.update({
-                    title: title,
-                    desc: desc
-                }, {
-                    where: { id: projectId },
-                })
+                title: title,
+                desc: desc
+            }, {
+                where: { id: projectId },
+            })
             res.status(200).json({ message: "ok" });
         } catch (error) {
             res.status(500).json({ message: "Internal server error" });
         }
     },
-
     delete: async (req, res) => {
         const id = req.params.id
         try {
@@ -77,7 +75,7 @@ module.exports = {
             if (!userInfo) {
                 res.status(200).json({ message: 'Not found user' });
             } else {
-                const result = { 
+                const result = {
                     id: userInfo.dataValues.id,
                     email: userInfo.dataValues.email
                 };

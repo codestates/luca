@@ -6,10 +6,10 @@ module.exports = {
     get: async (req, res) => {
         try {
             const verifyInfo = isAuthorized(req);
-            if(verifyInfo === 'not found'){
+            if (verifyInfo === 'not found') {
                 return res.status(401).send({ message: 'Token not found ' });
-            } else if(verifyInfo === 'expired') {
-                return res.status(401).send({ message: 'Expired token' });                
+            } else if (verifyInfo === 'expired') {
+                return res.status(401).send({ message: 'Expired token' });
             } else {
                 const userInfo = await users.findOne({
                     where: {
@@ -28,10 +28,10 @@ module.exports = {
     delete: async (req, res) => {
         try {
             const verifyInfo = isAuthorized(req);
-            if(verifyInfo === 'not found'){
+            if (verifyInfo === 'not found') {
                 return res.status(401).send({ message: 'Token not found ' });
-            } else if(verifyInfo === 'expired') {
-                return res.status(401).send({ message: 'Expired token' });                
+            } else if (verifyInfo === 'expired') {
+                return res.status(401).send({ message: 'Expired token' });
             } else {
                 const userInfo = await users.findOne({
                     where: {
@@ -69,14 +69,14 @@ module.exports = {
         const name = req.body.name;
         try {
             const verifyInfo = isAuthorized(req);
-            if(verifyInfo === 'not found'){
+            if (verifyInfo === 'not found') {
                 return res.status(401).send({ message: 'Token not found ' });
-            } else if(verifyInfo === 'expired') {
-                return res.status(401).send({ message: 'Expired token' });                
+            } else if (verifyInfo === 'expired') {
+                return res.status(401).send({ message: 'Expired token' });
             } else {
                 await users.update({ name: name }, {
-                        where: { id: verifyInfo.id }
-                    });
+                    where: { id: verifyInfo.id }
+                });
                 res.status(200).json({ message: 'ok' });
             }
         } catch (err) {
@@ -85,21 +85,21 @@ module.exports = {
     },
 
     patchPassword: async (req, res) => {
-        const { curPassword, newPassword} = req.body;
+        const { curPassword, newPassword } = req.body;
         try {
             const verifyInfo = isAuthorized(req);
-            if(verifyInfo === 'not found'){
+            if (verifyInfo === 'not found') {
                 return res.status(401).send({ message: 'Token not found ' });
-            } else if(verifyInfo === 'expired') {
-                return res.status(401).send({ message: 'Expired token' });                
+            } else if (verifyInfo === 'expired') {
+                return res.status(401).send({ message: 'Expired token' });
             } else {
                 const userInfo = await users.findOne({
                     where: { id: verifyInfo.id }
                 });
 
                 const check = await bcrypt.compare(curPassword, userInfo.dataValues.password);
-                
-                if(!check) {
+
+                if (!check) {
                     res.status(400).json({ message: 'Wrong password' });
                 } else {
                     await users.update({ password: bcrypt.hashSync(newPassword, 10) }, {
