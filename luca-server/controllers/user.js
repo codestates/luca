@@ -165,16 +165,17 @@ module.exports = {
                         email: email,
                     },
                 });
+                console.log(userInfo);
+
                 // 로그인 실패
                 if (!userInfo) {
                     return res.status(404).json({ message: "Wrong information" });
                 } else {
                     let passwordCheck = await bcrypt.compare(password, userInfo.password);
                     // 로그인이 성공하면 토큰이 생성되고 쿠기로 전송된다.
+                    delete userInfo.dataValues.password;
                     if (passwordCheck) {
-                        const accessToken = generateAccessToken({
-                            dataValues: { userInfo },
-                        });
+                        const accessToken = generateAccessToken(userInfo)
                         sendAccessToken(res, accessToken, 200, {
                             data: userInfo,
                             message: "login success",

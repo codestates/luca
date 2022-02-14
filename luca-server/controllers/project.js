@@ -7,7 +7,7 @@ module.exports = {
             }
         }
 
-        if('jwt'in req.cookies){
+        if ('jwt' in req.cookies) {
             try {
                 const verifyInfo = isAuthorized(req);
                 console.log(verifyInfo)
@@ -23,9 +23,9 @@ module.exports = {
                     }
                 });
                 console.log(result.dataValues)
-                res.status(200).json({ data: result, message: 'ok'});
+                res.status(200).json({ data: result, message: 'ok' });
 
-            } catch(err) {
+            } catch (err) {
                 res.status(500).json({ message: "Internal server error" });
             }
         } else {
@@ -41,8 +41,8 @@ module.exports = {
                 desc: itemInfo.desc,
                 isTeam: itemInfo.isTeam
             });
-            await projectInfo.memberUserId.map(function (el){
-                const result =  users_projects.create({
+            await projectInfo.memberUserId.map(function (el) {
+                const result = users_projects.create({
                     userId: el,
                     projectId: result.id
                 });
@@ -54,15 +54,15 @@ module.exports = {
         }
     },
     patch: async (req, res) => {
-        const {projectId, title, desc} = req.body;
+        const { projectId, title, desc } = req.body;
         try {
             await projects.update({
                 title: title,
                 desc: desc
             },
-            {
-                where: { id: projectId },
-            })
+                {
+                    where: { id: projectId },
+                })
             res.status(200).json({ message: "ok" });
         } catch (error) {
             res.status(500).json({ message: "Internal server error" });
@@ -84,17 +84,17 @@ module.exports = {
         try {
             const userInfo = await users.findOne({
                 where: {
-                    email: verifyInfo.email
+                    email: email
                 }
             });
-            if(!userInfo){
-                res.status(402).json({ message: 'Not found user'});
+            if (!userInfo) {
+                res.status(402).json({ message: 'Not found user' });
             } else {
-                const result = { 
-                    id: userInfo.id, 
+                const result = {
+                    id: userInfo.id,
                     email: userInfo.email
                 }
-                res.status(200).json({ data: result, message: 'ok'});
+                res.status(200).json({ data: result, message: 'ok' });
             }
         } catch (error) {
             res.status(500).json({ message: "Internal server error" });
