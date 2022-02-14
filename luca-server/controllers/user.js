@@ -189,14 +189,4 @@ module.exports = {
             }
         }
     },
-
-    kakao: (req, res) => {
-        res.send('ok');
-    },
-    google: (req, res) => {
-        res.send('ok');
-    },
-    naver: (req, res) => {
-        res.send('ok');
-    },
 };
