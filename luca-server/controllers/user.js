@@ -1,5 +1,4 @@
-const { hashedpassword } = require("./token");
-
+const { generateAccessToken, sendAccessToken } = require("./token");
 module.exports = {
     guest: (req, res) => {
         const result = hashedpassword('password')
@@ -15,7 +14,14 @@ module.exports = {
         res.send('ok');
     },
     login: (req, res) => {
-        res.send('ok');
+        const email = 'test@gmail.com';
+        const password = '1234'
+        const accessToken = generateAccessToken({
+            dataValues: { email, password }
+        });
+        sendAccessToken(res, accessToken, 200, {
+            message: "Login success",
+        });
     },
     kakao: (req, res) => {
         res.send('ok');
