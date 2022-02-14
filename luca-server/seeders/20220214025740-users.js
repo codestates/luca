@@ -21,6 +21,24 @@ module.exports = {
         isGuest: false,
         createdAt: new Date(),
         updatedAt: new Date()
+      },
+      {
+        id: 3,
+        name: 'lee',
+        email: 'lee@gmail.com',
+        password: bcrypt.hashSync('lee', 10),
+        isGuest: false,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 4,
+        name: 'jang',
+        email: 'jang@gmail.com',
+        password: bcrypt.hashSync('jang', 10),
+        isGuest: false,
+        createdAt: new Date(),
+        updatedAt: new Date()
       }
     ]);
   },

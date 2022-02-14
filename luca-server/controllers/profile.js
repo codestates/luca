@@ -4,41 +4,41 @@ const bcrypt = require('bcrypt');
 
 module.exports = {
     get: async (req, res) => {
-        if ('jwt' in req.cookies) {
-            try {
-                const verifyInfo = isAuthorized(req);
-                console.log(verifyInfo)
+        try {
+            const verifyInfo = isAuthorized(req);
+            if(verifyInfo === 'not found'){
+                return res.status(401).send({ message: 'Token not found ' });
+            } else if(verifyInfo === 'expired') {
+                return res.status(401).send({ message: 'Expired token' });                
+            } else {
                 const userInfo = await users.findOne({
                     where: {
                         email: verifyInfo.email
                     }
                 });
-                console.log(userInfo.dataValues)
                 delete userInfo.dataValues.password;
-                res.status(200).json({ data: userInfo, message: 'ok' });
 
-            } catch (err) {
-                res.status(500).json({ message: "Internal server error" });
+                res.status(200).json({ data: userInfo, message: 'ok' });
             }
-        } else {
-            return res.status(401).send({ message: 'Invalid token' });
+        } catch (err) {
+            res.status(500).json({ message: "Internal server error" });
         }
     },
 
     delete: async (req, res) => {
-        req.cookies = {
-            jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAZ21haWwuY29tIiwicGFzc3dvcmQiOiIxMjM0IiwiaWF0IjoxNjQ0NjQ4NTE4LCJleHAiOjE2NDU5NDQ1MTh9.OHlql0c6WzxJqYY6C-uVLmt14ByMWzDwgv-ICGNtBA0'
-        }
-        if ('jwt' in req.cookies) {
-            try {
-                const verifyInfo = isAuthorized(req);
-                verifyInfo.id = 3;
-
+        try {
+            const verifyInfo = isAuthorized(req);
+            if(verifyInfo === 'not found'){
+                return res.status(401).send({ message: 'Token not found ' });
+            } else if(verifyInfo === 'expired') {
+                return res.status(401).send({ message: 'Expired token' });                
+            } else {
                 const userInfo = await users.findOne({
                     where: {
-                        userId: verifyInfo.userInfo.id
+                        email: verifyInfo.email
                     }
-                })
+                });
+
                 if (userInfo) {
                     await users.destroy({
                         where: { id: userInfo.id },
@@ -46,87 +46,70 @@ module.exports = {
                     await cards.destroy({
                         where: { userId: userInfo.id },
                     })
-                    await projects.destroy({
+                    await users_projects.destroy({
                         where: { userId: userInfo.id },
                     })
-                    await users_projects.destroy({
+                    await projects.destroy({
                         where: { admin: userInfo.id },
-                    })
+                    });
 
-                    res
-                        .clearCookie('jwt', {
-                            httpOnly: true,
-                            secure: true,
-                            sameSite: 'None',
-                        })
-                        .status(200).json({ mssage: 'ok' });
+                    res.clearCookie('jwt', {
+                        httpOnly: true,
+                        secure: true,
+                        sameSite: 'None',
+                    }).status(200).json({ mssage: 'ok' });
                 }
-            } catch {
-                res.status(500).json({ message: "Internal server error" });
             }
-        } else {
-            return res.status(401).send({ message: 'Invalid token' });
+        } catch (err) {
+            res.status(500).json({ message: "Internal server error" });
         }
     },
 
     patchName: async (req, res) => {
-        req.cookies = {
-            jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAZ21haWwuY29tIiwicGFzc3dvcmQiOiIxMjM0IiwiaWF0IjoxNjQ0NjQ4NTE4LCJleHAiOjE2NDU5NDQ1MTh9.OHlql0c6WzxJqYY6C-uVLmt14ByMWzDwgv-ICGNtBA0'
-        }
-        if ('jwt' in req.cookies) {
-            const name = req.body.name;
-            try {
-                const verifyInfo = isAuthorized(req);
-                //
-                console.log(verifyInfo)
-                verifyInfo.id = 3;
-                //
-                const userInfo = await users.update(
-                    { name: name },
-                    {
+        const name = req.body.name;
+        try {
+            const verifyInfo = isAuthorized(req);
+            if(verifyInfo === 'not found'){
+                return res.status(401).send({ message: 'Token not found ' });
+            } else if(verifyInfo === 'expired') {
+                return res.status(401).send({ message: 'Expired token' });                
+            } else {
+                await users.update({ name: name }, {
                         where: { id: verifyInfo.id }
                     });
-                console.log(userInfo)
-                //delete userInfo.dataValues.password;
                 res.status(200).json({ message: 'ok' });
-
-            } catch (err) {
-                res.status(500).json({ message: "Internal server error" });
             }
-        } else {
-            return res.status(401).send({ message: 'Invalid token' });
+        } catch (err) {
+            res.status(500).json({ message: "Internal server error" });
         }
     },
 
     patchPassword: async (req, res) => {
-        req.cookies = {
-            jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAZ21haWwuY29tIiwicGFzc3dvcmQiOiIxMjM0IiwiaWF0IjoxNjQ0NjQ4NTE4LCJleHAiOjE2NDU5NDQ1MTh9.OHlql0c6WzxJqYY6C-uVLmt14ByMWzDwgv-ICGNtBA0'
-        }
-        if ('jwt' in req.cookies) {
-            const curPassword = res.body.curPassword;
-            const newPassword = res.body.newPassword;
-            try {
-                const verifyInfo = isAuthorized(req);
-                //
-                console.log(verifyInfo)
-                verifyInfo.id = 3;
-                //
-                // db조회 및 bcrypt 확인 작업 추가
-                //
-                const userInfo = await users.update(
-                    { password: bcrypt.hashSync(newPassword, 10) },
-                    {
+        const { curPassword, newPassword} = req.body;
+        try {
+            const verifyInfo = isAuthorized(req);
+            if(verifyInfo === 'not found'){
+                return res.status(401).send({ message: 'Token not found ' });
+            } else if(verifyInfo === 'expired') {
+                return res.status(401).send({ message: 'Expired token' });                
+            } else {
+                const userInfo = await users.findOne({
+                    where: { id: verifyInfo.id }
+                });
+
+                const check = await bcrypt.compare(curPassword, userInfo.dataValues.password);
+                
+                if(!check) {
+                    res.status(400).json({ message: 'Wrong password' });
+                } else {
+                    await users.update({ password: bcrypt.hashSync(newPassword, 10) }, {
                         where: { id: verifyInfo.id }
                     });
-                console.log(userInfo)
-                //delete userInfo.dataValues.password;
-                res.status(200).json({ message: 'ok' });
-
-            } catch (err) {
-                res.status(500).json({ message: "Internal server error" });
+                    res.status(200).json({ message: 'ok' });
+                }
             }
-        } else {
-            return res.status(401).send({ message: 'Invalid token' });
+        } catch (err) {
+            res.status(500).json({ message: "Internal server error" });
         }
-    },
+    }
 };
