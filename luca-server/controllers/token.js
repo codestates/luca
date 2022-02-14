@@ -21,7 +21,7 @@ module.exports = {
       .json(data);
   },
   isAuthorized: (req) => {
-    if(jwt in req.cookies) {
+    if('jwt' in req.cookies) {
       const userInfo = verify(req.cookies.jwt, process.env.ACCESS_SECRET);
       delete userInfo.iat;
       delete userInfo.exp;

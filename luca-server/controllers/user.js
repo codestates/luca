@@ -13,14 +13,7 @@ module.exports = {
         res.send('ok');
     },
     login: (req, res) => {
-        const email = 'test@gmail.com';
-        const password = '1234'
-        const accessToken = generateAccessToken({
-            dataValues: { email, password }
-        });
-        sendAccessToken(res, accessToken, 200, {
-            message: "Login success",
-        });
+        res.send('ok');
     },
     kakao: (req, res) => {
         res.send('ok');
