@@ -22,12 +22,16 @@ module.exports = {
   },
   isAuthorized: (req) => {
     if ('jwt' in req.cookies) {
-      const userInfo = verify(req.cookies.jwt, process.env.ACCESS_SECRET);
-      delete userInfo.iat;
-      delete userInfo.exp;
-      return userInfo;
+      try {
+        const userInfo = verify(req.cookies.jwt, process.env.ACCESS_SECRET);
+        delete userInfo.iat;
+        delete userInfo.exp;
+        return userInfo;
+      } catch(err) {
+        return 'expired'
+      }
     } else {
-      return undefined;
+      return 'not found';
     }
   },
 };
