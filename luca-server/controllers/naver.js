@@ -44,6 +44,7 @@ module.exports = {
                         name: nickname,
                         password: bcrypt.hashSync('password', 10),
                         isGuest: false,
+                        isSocial: 'Naver'
                     },
                 });
 

@@ -46,6 +46,7 @@ module.exports = {
                         name: email.split('@')[0],
                         password: bcrypt.hashSync('password', 10),
                         isGuest: false,
+                        isSocial: 'Google'
                     },
                 });
 
