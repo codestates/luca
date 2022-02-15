@@ -1,7 +1,7 @@
-import styled from "styled-components"
+import styled from "styled-components";
+import { Navigator, Backdrop, Container } from "../components/commons";
 
 export default function ChangePassword() {
-
   const ChangePW = styled.div`
     /* border: solid; */
     height: 60vh;
@@ -49,41 +49,36 @@ export default function ChangePassword() {
         }
       }
     }
-  `
+  `;
 
   return (
-    <ChangePW>
-      <h2>
-        비밀번호 변경
-      </h2>
-      <registrybox>
-        <current>
-          <div>
-            현재 비밀변호
-          </div>
-          <input type="text" placeholder="현재 비밀번호를 입력하세요."/>
-        </current>
-        <new>
-          <div>
-            새 비밀번호
-          </div>
-          <input type="text" placeholder="새 비밀번호를 입력하세요."/>
-        </new>
-        <confirm>
-          <div>
-            비밀번호 확인
-          </div>
-          <input type="text" placeholder="비밀번호를 확인하세요."/>
-        </confirm>
-        <buttons>
-          <div>
-            취소
-          </div>
-          <div>
-            저장
-          </div>
-        </buttons>
-      </registrybox>
-    </ChangePW>
-  )
+    <div>
+      <Navigator />
+      <Backdrop>
+        <Container>
+          <ChangePW>
+            <h2>비밀번호 변경</h2>
+            <registrybox>
+              <current>
+                <div>현재 비밀변호</div>
+                <input type="text" placeholder="현재 비밀번호를 입력하세요." />
+              </current>
+              <new>
+                <div>새 비밀번호</div>
+                <input type="text" placeholder="새 비밀번호를 입력하세요." />
+              </new>
+              <confirm>
+                <div>비밀번호 확인</div>
+                <input type="text" placeholder="비밀번호를 확인하세요." />
+              </confirm>
+              <buttons>
+                <div>취소</div>
+                <div>저장</div>
+              </buttons>
+            </registrybox>
+          </ChangePW>
+        </Container>
+      </Backdrop>
+    </div>
+  );
 }
