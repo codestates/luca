@@ -73,7 +73,7 @@ module.exports = {
             .then(([userInfo, created]) => {
                 if (created) {
                     // 회원가입에 성공하면 토큰이 발행되므로 별로의 로그인 과정이 생략된다.
-                    const accessToken = generateAccessToken({ dataValues: { userInfo } });
+                    const accessToken = generateAccessToken(userInfo);
                     sendAccessToken(res, accessToken, 201, {
                         data: userInfo,
                         message: "Singup success",

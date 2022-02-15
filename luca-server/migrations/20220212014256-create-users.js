@@ -20,6 +20,9 @@ module.exports = {
       isGuest: {
         type: Sequelize.BOOLEAN
       },
+      isSocial: {
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
