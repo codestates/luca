@@ -1,16 +1,11 @@
 require('dotenv').config();
-const axios = require('axios');
-const bcrypt = require("bcrypt");
 
-axios.defaults.withCredentials = true;
 const { users } = require('../models');
 const { generateAccessToken, sendAccessToken } = require('./token');
+const bcrypt = require("bcrypt");
+const axios = require('axios');
 
-// function getRandomBadge(min, max) {
-//     min = Math.ceil(min);
-//     max = Math.floor(max);
-//     return Math.floor(Math.random() * (max - min + 1)) + min; //최댓값도 포함, 최솟값도 포함
-// }
+axios.defaults.withCredentials = true;
 
 module.exports = {
     //로그인 및 회원가입
@@ -43,51 +38,24 @@ module.exports = {
                 const [newUserInfo, created] = await users.findOrCreate({
                     where: {
                         email: email,
-                        username: nickname,
+                        name: nickname,
                     },
                     defaults: {
-                        name: email.split('@')[0],
+                        name: nickname,
                         password: bcrypt.hashSync('password', 10),
                         isGuest: false,
+                        isSocial: 'Naver'
                     },
                 });
-                delete newUserInfo.dataValues.password;
-                // if (created) {
-                //     const randombadge = getRandomBadge(1, 20);
-                //     const obtainBadge = await UserBadgeModel.create({
-                //         user_id: newUserInfo.id,
-                //         badge_id: randombadge,
-                //         is_selected: true,
-                //     });
-                //     const updateBadge = await UserModel.update(
-                //         {
-                //             badge_id: randombadge,
-                //         },
-                //         { where: { email: email } }
-                //     );
-                // }
 
-                const userInfoInToken = await users.findOne({
-                    attributes: [
-                        'id',
-                        'name',
-                        'email',
-                        'isGuest',
-                    ],
-                    where: {
-                        email: email,
-                    },
+                delete newUserInfo.dataValues.password;
+
+                const userInfo = await users.findOne({
+                    where: { email: email }
                 });
-                const { id, name, isGuest } =
-                    userInfoInToken;
-                const accessToken = generateAccessToken(
-                    JSON.stringify({
-                        id,
-                        name,
-                        email,
-                        isGuest,
-                    })
-                );
+
+                const accessToken = generateAccessToken(userInfo);
+
                 sendAccessToken(res, accessToken, 200, {
                     data: newUserInfo,
                     message: "login success",
