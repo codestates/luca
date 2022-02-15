@@ -143,16 +143,14 @@ export default Canvas;
 */
 
 import { useRef, useEffect, useState } from "react";
-import { descendants, Linkages } from "./d3coodinator/getDescendants";
+import { root, descendants, links } from "./d3coodinator/getDescendants";
 import styled from "styled-components";
 import { link } from "d3";
 
 const Frame = styled.div`
-  position: relative;
   width: 100%;
-  height: auto;
-  background-color: white;
-  margin: 0.5rem;
+  height: 100%;
+  background-color: lightsalmon;
   border: solid red 3px;
   text-align: center;
   overflow: hidden;
@@ -180,8 +178,9 @@ const ExBox = styled.div`
   background-color: cyan;
 `;
 
-console.log("descendants :", descendants);
-//console.log("links :", links);
+console.log("root :", root);
+console.log("descendants :", descendants[0]);
+console.log("links :", links);
 
 function Canvas() {
   const [viewRatio, setViewRatio] = useState(1);
@@ -192,16 +191,21 @@ function Canvas() {
   const mapConRef = useRef();
 
   useEffect(() => {
-    console.log(mapConRef.current.style);
+    //console.log(mapConRef.current.offsetWidth);
   }, []);
 
   const wheelHandler = (e) => {
-    setViewRatio((viewRatio) =>
-      viewRatio >= 0.2 ? viewRatio + 0.001 * e.deltaY : 0.2
-    );
+    if (viewRatio >= 0.2) {
+      setViewRatio(viewRatio + 0.001 * e.deltaY);
+    } else {
+      setViewRatio(0.2);
+    }
+    //console.log("viewRatio: ", viewRatio);
+    //console.log("mapConRef: ", mapConRef.current.offsetWidth);
   };
 
-  let posX, posY;
+  let posX,
+    posY = 100;
 
   const panScreenStart = (e) => {
     const img = new Image();
@@ -241,22 +245,22 @@ function Canvas() {
 
   return (
     <Frame>
-      {/* {descendants.map((node) => (
-        <ExBox key={node.data.name} coord={[node.x, node.y]}>
-          {node.data.name}
-        </ExBox>
-      ))} */}
-      <MapContainer
+      {/* <MapContainer
         ref={mapConRef}
         viewRatio={viewRatio}
+        onDoubleClick={(e) => alert([e.clientX, e.clientY])}
         onWheel={wheelHandler}
         onDragStart={panScreenStart}
         onDrag={panScreen}
         onDragEnd={panScreenEnd}
         draggable
       >
-        hello
-      </MapContainer>
+        {descendants.map((node) => (
+          <ExBox key={node.data.name} coord={[node.x, node.y]}>
+            {node.data.name}
+          </ExBox>
+        ))}
+      </MapContainer> */}
     </Frame>
   );
 }
