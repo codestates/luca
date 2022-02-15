@@ -1,53 +1,152 @@
 import * as d3 from 'd3';
 import styled from 'styled-components';
 import { useState, useRef, useEffect } from 'react';
+import { root, descendants, links } from "./d3coodinator/getDescendants";
 
 export default function Canvas() {
 
-  const Background = styled.div `
-    background-color: silver;
+  const Frame = styled.div `
     width: 100%;
-    height: 100vh;
+    height: 100%;
+    background-color: lightsalmon;
+    /* border: solid red 3px; */
+    text-align: center;
+    overflow: hidden;
   `
-  const Canvas = styled.div`
-    border: solid;
-    border-color: red;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  const MapContainer = styled.div`
+    position: relative;
+    background-color: yellow;
+    top: 0;
+    left: 0;
+    width: ${(props) => 200 / props.viewRatio}%;
+    height: ${(props) => 200 / props.viewRatio}%;
+    transform: scale(${(props) => props.viewRatio});
+    transform-origin: left top; // todo: 커서위치 props로 줄 것
+    text-align: left;
     > svg {
-      /* width: 100%;
-      height: 100%; */
+      /* viewBox: 0 0 200 200;
+      width: ${(props) => 200 / props.viewRatio}%;
+      height: ${(props) => 200 / props.viewRatio}%; */
     }
-  `
+  `;
+
+  const drag = simulation => {
+  
+    function dragstarted(event, d) {
+      if (!event.active) simulation.alphaTarget(0.3).restart();
+      d.fx = d.x;
+      d.fy = d.y;
+    }
+
+    function dragged(event, d) {
+      d.fx = event.x;
+      d.fy = event.y;
+    }
+
+    function dragended(event, d) {
+      if (!event.active) simulation.alphaTarget(0);
+      d.fx = null;
+      d.fy = null;
+    }
+
+    return d3.drag()
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended);
+  }
+
 
   const canvasRef = useRef();
   const svgRef = useRef();
-  const [data, setData] = useState(
-    {
-      content: "Zog",
-      children:[
-        {
-        content: "Bean",
-        children:[
-          {content: "Elfo"},
-          {content: "Lucy"}
-        ]
-        },
-        {
-          content: "Degma"
-        }
-      ]
+  // const [data, setData] = useState(
+  //   {
+  //     content: "Zog",
+  //     children:[
+  //       {
+  //       content: "Bean",
+  //       children:[
+  //         {content: "Elfo"},
+  //         {content: "Lucy"}
+  //       ]
+  //       },
+  //       {
+  //         content: "Degma"
+  //       }
+  //     ]
+  //   }
+  // )
+
+  const [viewRatio, setViewRatio] = useState(1);
+  const [screen, setScreen] = useState({
+    top: 0,
+    left: 0,
+  });
+  const mapConRef = useRef();
+  
+  useEffect(() => {
+    //console.log(mapConRef.current.offsetWidth);
+  }, []);
+
+  const wheelHandler = (e) => {
+    if (viewRatio >= 0.2) {
+      setViewRatio(viewRatio + 0.001 * e.deltaY);
+    } else {
+      setViewRatio(0.2);
     }
-  )
-  const root = d3.hierarchy(data);
+    //console.log("viewRatio: ", viewRatio);
+    //console.log("mapConRef: ", mapConRef.current.offsetWidth);
+  };
+
+  let posX,
+    posY = 100;
+
+  const panScreenStart = (e) => {
+    const img = new Image();
+    e.dataTransfer.setDragImage(img, 0, 0);
+    posX = e.clientX;
+    posY = e.clientY;
+  };
+
+  const panScreen = (e) => {
+    const limitX = e.target.offsetLeft + (e.clientX - posX) <= 0;
+    const limitY = e.target.offsetTop + (e.clientY - posY) <= 0;
+
+    e.target.style.left = limitX
+      ? `${e.target.offsetLeft + (e.clientX - posX)}px`
+      : "0px";
+    e.target.style.top = limitY
+      ? `${e.target.offsetTop + (e.clientY - posY)}px`
+      : "0px";
+
+    posX = limitX ? e.clientX : 0;
+    posY = limitY ? e.clientY : 0;
+  };
+
+  const panScreenEnd = (e) => {
+    const limitX = e.target.offsetLeft + (e.clientX - posX) <= 0;
+    const limitY = e.target.offsetTop + (e.clientY - posY) <= 0;
+
+    e.target.style.left = limitX
+      ? `${e.target.offsetLeft + (e.clientX - posX)}px`
+      : "0px";
+    e.target.style.top = limitY
+      ? `${e.target.offsetTop + (e.clientY - posY)}px`
+      : "0px";
+
+    setScreen({ top: e.target.style.top, left: e.target.style.left });
+  };
+  
+
+  // const root = d3.hierarchy(data);
 
   useEffect(()=>{
-    const svg = d3.select(svgRef.current);
+    // const svg = d3.select(svgRef.current);
+    // const fild = d3.select(canvasRef.current);
     // const root = d3.hierarchy(data);
     const links = root.links();
     const nodes = root.descendants();
+    // const svg = fild.create('svg')
+    //   .attr("viewBox", [-100 / 2, -100 / 2, 100, 100]);
 
     const simulation = d3.forceSimulation(nodes)
       .force("link", d3.forceLink(links).id(d => d.id).distance(0).strength(1))
@@ -55,8 +154,10 @@ export default function Canvas() {
       .force("x", d3.forceX())
       .force("y", d3.forceY());
 
-    // const svg = d3.create("svg")
-    // .attr("viewBox", [-300 / 2, -400 / 2, 400, 400]);
+    const svg = d3
+      .selectAll("page")
+      .append("svg")
+        .attr("viewBox", [-100, -50, 200, 100]);
 
     const link = svg.append("g")
     .attr("stroke", "#999")
@@ -68,17 +169,30 @@ export default function Canvas() {
     const node = svg.append("g")
       .attr("fill", "#fff")
       .attr("stroke", "#000")
-      .attr("stroke-width", 1.5)
+      .attr("stroke-width", 1)
     .selectAll("circle")
     .data(nodes)
     .join("circle")
       .attr("fill", d => d.children ? null : "#000")
       .attr("stroke", d => d.children ? null : "#fff")
-      .attr("r", 5)
-      .call(d3.drag(simulation));
+      .attr("r", 2)
+      .call(drag(simulation));
 
-      node.append("title")
-      .text(d => d.data.content);
+    // node.append("title")
+    //   // .text(d => d.data.content);
+    //   .text('testData');
+
+    const content = svg.append("g")
+      .selectAll("title")
+      .attr("dy", ".31em")
+      .data(nodes)
+      .join("title")
+        .text(d => d.data.name)
+        .attr("r", 2)
+    // node.append("text")
+    //   .attr("text", d => d.data.name);
+
+    console.log(nodes);
 
   simulation.on("tick", () => {
     link
@@ -90,21 +204,31 @@ export default function Canvas() {
     node
         .attr("cx", d => d.x)
         .attr("cy", d => d.y);
+
+    content
+        .attr("cx", d => d.x+10)
+        .attr("cy", d => d.y);
   });
 
-  }, [data])
+  }, [root])
   
 
 return (
-  <Background>
-    <Canvas ref={canvasRef}>
-      <svg ref={svgRef} viewBox="-60 60 -60 60">
-        {
-          console.log(root)
-        }
-      </svg>
-    </Canvas>
-  </Background>
+  <Frame>
+    <MapContainer 
+    // viewRatio={viewRatio}
+    // onDoubleClick={(e) => alert([e.clientX, e.clientY])}
+    // onWheel={wheelHandler}
+    // onDragStart={panScreenStart}
+    // onDrag={panScreen}
+    // onDragEnd={panScreenEnd}
+    // draggable
+    ref={canvasRef}>
+      {/* <svg ref={svgRef} >
+      </svg> */}
+      <page></page>
+    </MapContainer>
+  </Frame>
   )
 }
 
@@ -112,7 +236,7 @@ return (
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// import { useRef, useEffect, useState } from "react";
+// import { useRef, useEffect, useState, } from "react";
 // import { root, descendants, links } from "./d3coodinator/getDescendants";
 // import styled from "styled-components";
 // import { link } from "d3";
@@ -159,7 +283,7 @@ return (
 //     left: 0,
 //   });
 //   const mapConRef = useRef();
-
+  
 //   useEffect(() => {
 //     //console.log(mapConRef.current.offsetWidth);
 //   }, []);
@@ -213,9 +337,10 @@ return (
 //     setScreen({ top: e.target.style.top, left: e.target.style.left });
 //   };
 
+
 //   return (
 //     <Frame>
-//       {/* <MapContainer
+//       <MapContainer
 //         ref={mapConRef}
 //         viewRatio={viewRatio}
 //         onDoubleClick={(e) => alert([e.clientX, e.clientY])}
@@ -230,7 +355,7 @@ return (
 //             {node.data.name}
 //           </ExBox>
 //         ))}
-//       </MapContainer> */}
+//       </MapContainer>
 //     </Frame>
 //   );
 // }
