@@ -1,10 +1,13 @@
-import Canvas from '../components/canvas';
+import { Navigator } from "../components/commons";
+import Canvas from "../components/canvas";
+import Cardboard from "../components/cardboard";
 
 export default function Project() {
-
-return (
-  <div>
-    <Canvas />
-  </div>
-  )
+  return (
+    <div>
+      <Navigator />
+      <Canvas />
+      <Cardboard />
+    </div>
+  );
 }

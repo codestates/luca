@@ -107,3 +107,132 @@ return (
   </Background>
   )
 }
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// import { useRef, useEffect, useState } from "react";
+// import { root, descendants, links } from "./d3coodinator/getDescendants";
+// import styled from "styled-components";
+// import { link } from "d3";
+
+// const Frame = styled.div`
+//   width: 100%;
+//   height: 100%;
+//   background-color: lightsalmon;
+//   border: solid red 3px;
+//   text-align: center;
+//   overflow: hidden;
+// `;
+
+// const MapContainer = styled.div`
+//   position: relative;
+//   background-color: yellow;
+//   top: 0;
+//   left: 0;
+//   width: ${(props) => 200 / props.viewRatio}%;
+//   height: ${(props) => 200 / props.viewRatio}%;
+//   transform: scale(${(props) => props.viewRatio});
+//   transform-origin: left top; // todo: 커서위치 props로 줄 것
+//   text-align: left;
+// `;
+
+// const ExBox = styled.div`
+//   position: absolute;
+//   width: 50px;
+//   height: 30px;
+//   left: ${(props) => `${props.coord[0]}px`};
+//   top: ${(props) => `${props.coord[1]}px`};
+//   border: solid black 1px;
+//   background-color: cyan;
+// `;
+
+// console.log("root :", root);
+// console.log("descendants :", descendants[0]);
+// console.log("links :", links);
+
+// function Canvas() {
+//   const [viewRatio, setViewRatio] = useState(1);
+//   const [screen, setScreen] = useState({
+//     top: 0,
+//     left: 0,
+//   });
+//   const mapConRef = useRef();
+
+//   useEffect(() => {
+//     //console.log(mapConRef.current.offsetWidth);
+//   }, []);
+
+//   const wheelHandler = (e) => {
+//     if (viewRatio >= 0.2) {
+//       setViewRatio(viewRatio + 0.001 * e.deltaY);
+//     } else {
+//       setViewRatio(0.2);
+//     }
+//     //console.log("viewRatio: ", viewRatio);
+//     //console.log("mapConRef: ", mapConRef.current.offsetWidth);
+//   };
+
+//   let posX,
+//     posY = 100;
+
+//   const panScreenStart = (e) => {
+//     const img = new Image();
+//     e.dataTransfer.setDragImage(img, 0, 0);
+//     posX = e.clientX;
+//     posY = e.clientY;
+//   };
+
+//   const panScreen = (e) => {
+//     const limitX = e.target.offsetLeft + (e.clientX - posX) <= 0;
+//     const limitY = e.target.offsetTop + (e.clientY - posY) <= 0;
+
+//     e.target.style.left = limitX
+//       ? `${e.target.offsetLeft + (e.clientX - posX)}px`
+//       : "0px";
+//     e.target.style.top = limitY
+//       ? `${e.target.offsetTop + (e.clientY - posY)}px`
+//       : "0px";
+
+//     posX = limitX ? e.clientX : 0;
+//     posY = limitY ? e.clientY : 0;
+//   };
+
+//   const panScreenEnd = (e) => {
+//     const limitX = e.target.offsetLeft + (e.clientX - posX) <= 0;
+//     const limitY = e.target.offsetTop + (e.clientY - posY) <= 0;
+
+//     e.target.style.left = limitX
+//       ? `${e.target.offsetLeft + (e.clientX - posX)}px`
+//       : "0px";
+//     e.target.style.top = limitY
+//       ? `${e.target.offsetTop + (e.clientY - posY)}px`
+//       : "0px";
+
+//     setScreen({ top: e.target.style.top, left: e.target.style.left });
+//   };
+
+//   return (
+//     <Frame>
+//       {/* <MapContainer
+//         ref={mapConRef}
+//         viewRatio={viewRatio}
+//         onDoubleClick={(e) => alert([e.clientX, e.clientY])}
+//         onWheel={wheelHandler}
+//         onDragStart={panScreenStart}
+//         onDrag={panScreen}
+//         onDragEnd={panScreenEnd}
+//         draggable
+//       >
+//         {descendants.map((node) => (
+//           <ExBox key={node.data.name} coord={[node.x, node.y]}>
+//             {node.data.name}
+//           </ExBox>
+//         ))}
+//       </MapContainer> */}
+//     </Frame>
+//   );
+// }
+
+// export default Canvas;
