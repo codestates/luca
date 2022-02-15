@@ -16,7 +16,6 @@ module.exports = {
             const GOOGLE_REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI;
             const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
             const code = req.body.authorizationCode;
-
             if (code) {
                 const response = await axios({
                     method: 'POST',

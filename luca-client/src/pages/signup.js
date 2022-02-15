@@ -4,67 +4,67 @@ import {
   requestNaverLogin,
   requestGoogleLogin,
 } from '../api';
+import { Navigator, Backdrop, Container } from "../components/commons";
 
-export default function Signup() {
-
-  const SignupPage = styled.div`
-    /* border: solid; */
+const SignupPage = styled.div`
+  /* border: solid; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* justify-content: space-between; */
+  height: 60vh;
+`;
+const Registrybox = styled.div`
+  width: 1080px;
+  /* width: 80%; */
+  height: 90%;
+  border: solid;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: flex-end;
+  > div {
+    width: auto;
+    margin-right: 220px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    /* justify-content: space-between; */
-    height: 60vh;
-    `
-  const Registrybox = styled.div`
-    width: 1080px;
-    /* width: 80%; */
-    height: 90%;
-    border: solid;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
     align-items: flex-end;
     > div {
-      width: auto;
-      margin-right: 220px;
       display: flex;
-      flex-direction: column;
-      align-items: flex-end;
+      flex-direction: row;
       > div {
-        display: flex;
-        flex-direction: row;
-        > div {
-          margin-right: 20px;
-          font-size: 1.2rem;
-        }
-        > input {
-          margin-right: 20px;
-          width: 420px;
-          height: 30px;
-        }
-        > dummy {
-          width: 90px;
-        }
-        > button {
-          width: 90px;
-          height: 35px;
-        }
+        margin-right: 20px;
+        font-size: 1.2rem;
       }
-      > errm {
-        margin-right: 110px;
-      }
-      > submit {
-        margin-right: 240px;
-        width: 200px;
+      > input {
+        margin-right: 20px;
+        width: 420px;
         height: 30px;
-        border: solid;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+      }
+      > dummy {
+        width: 90px;
+      }
+      > button {
+        width: 90px;
+        height: 35px;
       }
     }
-  `
+    > errm {
+      margin-right: 110px;
+    }
+    > submit {
+      margin-right: 240px;
+      width: 200px;
+      height: 30px;
+      border: solid;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+`;
 
+export default function Signup() {
   return (
     <SignupPage>
       <h2>

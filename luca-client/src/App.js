@@ -13,51 +13,21 @@ import GooglePage from './pages/GooglePage';
 import styled from "styled-components";
 import { useState } from "react";
 
-const Navigator = styled.div`
-  width: 100vw;
-  height: 10vh;
-  background-color: cyan;
-  text-align: center;
-`;
-
-const Backdrop = styled.div`
-  width: 100vw;
-  min-height: 90vh;
-  height: auto;
-  background-color: grey;
-  justify-content: center;
-  display: flex;
-`;
-
-const Container = styled.div`
-  min-height: 90vh;
-  height: auto;
-  background-color: lightyellow;
-  flex: 1 0 auto;
-  max-width: 1320px;
-  margin: auto;
-`;
-
 function App() {
   const [isLogin, setIsLogin] = useState(false);
 
   return (
     <div>
-      <Navigator>this is Navigator</Navigator>
-      <Backdrop>
-        <Container>
-          <Routes>
-            <Route path="/" element={!isLogin ? <Main /> : <About />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/mypage" element={<Mypage />} />
-            <Route path="/changepassword" element={<ChangePassword />} />
-            <Route path="/project" element={<Project />} />
-            <Route path='/auth/callback/kakao' element={<KakaoPage />} />
-            <Route path='/auth/callback/naver' element={<NaverPage />} />
-            <Route path='/auth/callback/google' element={<GooglePage />} />
-          </Routes>
-        </Container>
-      </Backdrop>
+      <Routes>
+        <Route path="/" element={isLogin ? <Main /> : <About />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/mypage" element={<Mypage />} />
+        <Route path="/changepassword" element={<ChangePassword />} />
+        <Route path="/project" element={<Project />} />
+        <Route path='/auth/callback/kakao' element={<KakaoPage />} />
+        <Route path='/auth/callback/naver' element={<NaverPage />} />
+        <Route path='/auth/callback/google' element={<GooglePage />} />
+      </Routes>
     </div>
   );
 }
