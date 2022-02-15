@@ -1,4 +1,9 @@
 import styled from "styled-components";
+import {
+  requestKakaoLogin,
+  requestNaverLogin,
+  requestGoogleLogin,
+} from '../api';
 
 export default function Signup() {
 
@@ -72,7 +77,7 @@ export default function Signup() {
             <div>
               이메일
             </div>
-            <input type="text" placeholder="이메일을 입력해주세요"/>
+            <input type="text" placeholder="이메일을 입력해주세요" />
             <button>
               인증
             </button>
@@ -87,7 +92,7 @@ export default function Signup() {
             <div>
               이메일 인증
             </div>
-            <input type="text" placeholder="코드를 입력해주세요"/>
+            <input type="text" placeholder="코드를 입력해주세요" />
             <button>
               인증
             </button>
@@ -102,7 +107,7 @@ export default function Signup() {
             <div>
               이름
             </div>
-            <input type="text" placeholder="코드를 입력해주세요"/>
+            <input type="text" placeholder="코드를 입력해주세요" />
             <dummy></dummy>
           </div>
           <errm>
@@ -115,7 +120,7 @@ export default function Signup() {
             <div>
               비밀번호
             </div>
-            <input type="text" placeholder="코드를 입력해주세요"/>
+            <input type="text" placeholder="코드를 입력해주세요" />
             <dummy></dummy>
           </div>
           <errm>
@@ -128,7 +133,7 @@ export default function Signup() {
             <div>
               비밀번호 확인
             </div>
-            <input type="text" placeholder="코드를 입력해주세요"/>
+            <input type="text" placeholder="코드를 입력해주세요" />
             <dummy></dummy>
           </div>
           <errm>
@@ -136,8 +141,17 @@ export default function Signup() {
           </errm>
         </div>
 
-        <div> 
+        <div>
           <submit>회원가입</submit>
+        </div>
+        <div>
+          <submit onClick={requestKakaoLogin}>카카오</submit>
+        </div>
+        <div>
+          <submit onClick={requestGoogleLogin}>구글</submit>
+        </div>
+        <div>
+          <submit onClick={requestNaverLogin}>네이버</submit>
         </div>
       </Registrybox>
     </SignupPage>
