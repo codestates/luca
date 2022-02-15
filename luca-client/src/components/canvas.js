@@ -24,9 +24,6 @@ export default function Canvas() {
     transform-origin: left top; // todo: 커서위치 props로 줄 것
     text-align: left;
     > svg {
-      /* viewBox: 0 0 200 200;
-      width: ${(props) => 200 / props.viewRatio}%;
-      height: ${(props) => 200 / props.viewRatio}%; */
     }
   `;
 
@@ -58,23 +55,6 @@ export default function Canvas() {
 
   const canvasRef = useRef();
   const svgRef = useRef();
-  // const [data, setData] = useState(
-  //   {
-  //     content: "Zog",
-  //     children:[
-  //       {
-  //       content: "Bean",
-  //       children:[
-  //         {content: "Elfo"},
-  //         {content: "Lucy"}
-  //       ]
-  //       },
-  //       {
-  //         content: "Degma"
-  //       }
-  //     ]
-  //   }
-  // )
 
   const [viewRatio, setViewRatio] = useState(1);
   const [screen, setScreen] = useState({
