@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import { useState, useEffect, useRef } from "react";
+import axios from "axios";
 
 const ProjectcardBody = styled.div`
     background-color: seashell;
@@ -7,6 +9,7 @@ const ProjectcardBody = styled.div`
     flex-direction: column;
     justify-content: space-around;
     height: 100px;
+    margin-top: 20px;
     > projectcardhead {
         background-color: #f5f5f5;
         display: flex;
@@ -48,6 +51,13 @@ const ProjectcardBody = styled.div`
                 align-items: center;
                 justify-content: center;
             }
+            > modifybox:hover {
+                /* color: red; */
+                box-shadow: 0px 0px 10px black;
+            }
+            > modifybox:active {
+                color: red;
+            }
         }
     }
     > projectcardbottom {
@@ -64,30 +74,59 @@ const ProjectcardBody = styled.div`
     }
 `
 
-function Projectcard () {
+function Projectcard ({data}) {
+
+    const nameRef = useRef();
+    const descRef = useRef();
+
+    const [isClicked, setIsClicked] = useState(false);
+    const [cardData, setCardData] = useState(data);
+
+    const editProjectHandler = (name, desc) => {
+        // console.log(name.value);
+        // console.log(desc.value);
+        if(name.value === "" || desc.value === "") {
+            alert("빈칸을 채워주세요.");
+            return;
+        }else{
+            setCardData({...data, "title": name.value, "desc": desc.value});
+            console.log(data)
+            // 엑시오스 요청 post
+        }
+        // axios.post("url", data)
+    }
+
     return (
         <ProjectcardBody>
             <projectcardhead>
                 <projectname>
                     <h2>
-                        tutorial
+                        {isClicked?
+                        <input ref={nameRef}/>:
+                        cardData.title}
                     </h2>
                     <date>
-                        3weeks ago
+                        {cardData.updatedAt}
                     </date>
                 </projectname>
                 <projectfunc>
                     <type>
-                        private
+                        {cardData.isTeam ? "팀" : "개인"}
                     </type>
-                    <modifybox>
-                    <i class="fa-regular fa-pen-to-square"></i>
+                    <modifybox onClick={()=>{setIsClicked(!isClicked)}}>
+                        {
+                        isClicked?
+                        <div onClick={()=>{editProjectHandler(nameRef.current, descRef.current)}}>확인</div>:
+                        <i class="fa-regular fa-pen-to-square"></i>
+                        }
                     </modifybox>
                 </projectfunc>
             </projectcardhead>
             <projectcardbottom>
                 <desc>
-                    파이널 프로젝트에 관한 아이디어
+                    {isClicked?
+                    <input ref={descRef}/>:
+                    cardData.desc}
                 </desc>
                 <projectinfo>
                     5명의 참여자, 30개의 카드, 23개의 매칭

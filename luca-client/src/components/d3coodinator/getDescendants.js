@@ -109,7 +109,7 @@ const treeLayout = tree()
 treeLayout(root);
 
 // 모든 노드 배열
-let descendants = root.descendants();
+let nodes = root.descendants();
 
 // 모든 링크 배열
 let links = root.links();
@@ -159,4 +159,4 @@ let links = root.links();
 //   );
 // }
 
-export { root, descendants, links };
+export { root, nodes, links };
