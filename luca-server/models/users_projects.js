@@ -29,6 +29,10 @@ module.exports = (sequelize, DataTypes) => {
     projectId: {
       type: DataTypes.INTEGER,
       allowNull: false,
+    },
+    isAccept: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
     }
   }, {
     sequelize,

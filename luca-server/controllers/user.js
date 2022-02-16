@@ -1,5 +1,6 @@
 const { users } = require("../models");
 const { generateAccessToken, sendAccessToken } = require("./token");
+const { Op } = require("sequelize");
 const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt");
 const path = require("path");
@@ -9,18 +10,22 @@ const appDir = path.dirname(require.main.filename);
 module.exports = {
     guest: async (req, res) => {
         try {
-            const guestNum = Math.random().toString().substr(2, 6);
-
+            const { count } = await users.findAndCountAll({
+                where: {
+                    email: {
+                        [Op.like]: 'Guest%'
+                    }
+                },
+            })
             await users.create(
                 {
-                    name: `Guest${guestNum}`,
-                    email: `Guest${guestNum}@guest.com`,
+                    name: `Guest${count + 1}`,
+                    email: `Guest${count + 1}@guest.com`,
                     password: bcrypt.hashSync('password', 10),
                     isGuest: true,
                 });
-
             const userInfo = await users.findOne({
-                where: { email: `Guest${guestNum}@guest.com` }
+                where: { email: `Guest${count + 1}@guest.com` }
             });
 
             const accessToken = generateAccessToken(userInfo);
