@@ -37,6 +37,7 @@ module.exports = {
         email: 'jang@gmail.com',
         password: bcrypt.hashSync('jang', 10),
         isGuest: false,
+        isSocial: 'Kakao',
         createdAt: new Date(),
         updatedAt: new Date()
       }

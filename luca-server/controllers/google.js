@@ -9,7 +9,7 @@ axios.defaults.withCredentials = true;
 
 module.exports = {
     //로그인 및 회원가입
-    google: async (req, res, next) => {
+    login: async (req, res, next) => {
         try {
             // const authorizationCode = req.body.authorizationCode;
             const GOOGLE_REST_API_KEY = process.env.GOOGLE_REST_API_KEY;
@@ -59,7 +59,7 @@ module.exports = {
 
                 sendAccessToken(res, accessToken, 200, {
                     data: newUserInfo,
-                    message: "login success",
+                    message: "Login success",
                 });
             }
         } catch (err) {
