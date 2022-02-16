@@ -237,7 +237,7 @@ const SortModalBody = styled.div`
   border: 1px solid red;
   position: fixed;
   top: 40%;
-  left: 88.5%;
+  left: 78.5%;
   /* transform: translate(-50%, -50%); */
   height: 60px;
   > div {
