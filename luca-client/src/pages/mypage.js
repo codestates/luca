@@ -16,6 +16,14 @@ const MypageBody = styled.div`
     > userprofile {
       display: flex;
       flex-direction: column;
+      > h1 {
+        height: 25px;
+      }
+      > input {
+        width: 40%;
+        height: 30px;
+        margin-bottom: 10px;
+      }
     }
     > div {
       margin-top: 20px;
@@ -29,8 +37,13 @@ const MypageBody = styled.div`
 const Userbutton = styled.div`
   height: 30px;
   display: flex;
-  justify-content: space-between;
-  > button {
+  flex-direction: column;
+  justify-content: space-around;
+  height: 100px;
+  > modifybutton {
+    width: 200px;
+  }
+  > changepwbutton {
     width: 200px;
   }
 `;
@@ -84,16 +97,20 @@ export default function Mypage() {
               </profileimg>
               <userinfo>
                 <userprofile>
-                  <h1>Ian</h1>
+                  {
+                    isClicked?
+                    <h1>Ian</h1>:
+                    <input></input>
+                  }
                   <ueremail>ian58@gmail.com</ueremail>
                 </userprofile>
                 <div>
                   {isClicked ? (
                     <Userbutton>
-                      <button className="modifybutton" onClick={handleClick}>
+                      <modifybutton className="modifybutton" onClick={handleClick}>
                         회원정보 수정
-                      </button>
-                      <button className="pwbutton">비밀번호 변경</button>
+                      </modifybutton>
+                      <changepwbutton className="pwbutton">비밀번호 변경</changepwbutton>
                     </Userbutton>
                   ) : (
                     <Decisionbutton>

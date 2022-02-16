@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useRef, useState } from "react";
 
 // ============모달 props 사용법==========================
 
@@ -38,6 +39,11 @@ const ModalBackdrop = styled.div`
   background-color: rgba(0, 0, 0, 0.5);
   justify-content: center;
   display: flex;
+  /////////////////////flowervillagearp////////////////////////////
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `;
 
 const ModalView = styled.div`
@@ -152,33 +158,52 @@ export function LoginModal({ modalHandler }) {
   );
 }
 
-export function CreateProjectModal({ modalHandler }) {
+export function CreateProjectModal({ modalHandler, newProjectHandler }) {
+
+  const nameRef = useRef();
+  const descRef = useRef();
+  const inviteRef = useRef();
+  const typeRef = useRef();
+
+  const [type, setType] = useState("");
+
+  const handleType = (e) => {
+    setType(e);
+  }
+
   return (
     <ModalBackdrop onClick={() => modalHandler(false)}>
       <ModalView onClick={(e) => e.stopPropagation()}>
         <div className="modal-title">새 프로젝트</div>
         <div className="modal-body">
           <div className="query">
-            <button className="options">개인</button>
-            <button className="options">팀</button>
+            <button className="options" onClick={()=>{handleType("flase")}}>개인</button>
+            <button className="options" onClick={()=>{handleType("true")}}>팀</button>
           </div>
           <div className="query">
             <div className="index">이름</div>
-            <input />
+            {/* <input onChange={(e)=>{newProjectHandler(e, "name")}}/> */}
+            <input ref={nameRef}/>
           </div>
           <div className="query">
             <div className="index">설명</div>
-            <input />
+            {/* <input onChange={(e)=>{newProjectHandler(e, "desc")}}/> */}
+            <input ref={descRef}/>
           </div>
           <div className="query">
             <div className="index">초대</div>
-            <input />
+            {/* <input onChange={(e)=>{newProjectHandler(e, "invite")}}/> */}
+            <input ref={inviteRef}/>
           </div>
         </div>
         <div className="modal-footer">
           <div className="buttons">
-            <button onClick={() => modalHandler(false)}>취소</button>
-            <button className="confirm">시작</button>
+            <button onClick={modalHandler}>취소</button>
+            <button 
+            className="confirm" 
+            onClick={()=>{newProjectHandler(nameRef.current, descRef.current, inviteRef.current, type)}}>
+              생성
+            </button>
           </div>
         </div>
       </ModalView>
@@ -201,4 +226,40 @@ export function DeleteProjectModal({ modalHandler }) {
       </ModalView>
     </ModalBackdrop>
   );
+}
+
+const SortModalBody = styled.div`
+  background-color: gray;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  border: 1px solid red;
+  position: fixed;
+  top: 40%;
+  left: 88.5%;
+  /* transform: translate(-50%, -50%); */
+  height: 60px;
+  > div {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  > div:hover {
+    background-color: red;
+  }
+`
+
+export function Sortmodal ({sortHandler}) {
+
+  return (
+    <SortModalBody>
+      <div onClick={()=>{sortHandler("update")}}>
+        업데이트일 기준 정렬
+      </div>
+      <div onClick={()=>{sortHandler("create")}}>
+        생성일 기준 정렬
+      </div>
+    </SortModalBody>
+  )
 }
