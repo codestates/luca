@@ -10,7 +10,7 @@ axios.defaults.withCredentials = true;
 module.exports = {
     //로그인 및 회원가입
 
-    naver: async (req, res, next) => {
+    login: async (req, res, next) => {
         try {
             const authorizationCode = req.body.authorizationCode;
 
@@ -58,7 +58,7 @@ module.exports = {
 
                 sendAccessToken(res, accessToken, 200, {
                     data: newUserInfo,
-                    message: "login success",
+                    message: "Login success",
                 });
             }
         } catch (err) {

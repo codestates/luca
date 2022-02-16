@@ -7,7 +7,7 @@ module.exports = {
         try {
             const verifyInfo = isAuthorized(req);
             if (verifyInfo === 'not found') {
-                return res.status(401).send({ message: 'Token not found ' });
+                return res.status(401).send({ message: 'Not authorized' });
             } else if (verifyInfo === 'expired') {
                 return res.status(401).send({ message: 'Expired token' });
             } else {
@@ -18,7 +18,7 @@ module.exports = {
                 });
                 delete userInfo.dataValues.password;
 
-                res.status(200).json({ data: userInfo, message: 'ok' });
+                res.status(200).json({ data: userInfo, message: 'Get profile success' });
             }
         } catch (err) {
             res.status(500).json({ message: "Internal server error" });
@@ -29,7 +29,7 @@ module.exports = {
         try {
             const verifyInfo = isAuthorized(req);
             if (verifyInfo === 'not found') {
-                return res.status(401).send({ message: 'Token not found ' });
+                return res.status(401).send({ message: 'Not authorized' });
             } else if (verifyInfo === 'expired') {
                 return res.status(401).send({ message: 'Expired token' });
             } else {
@@ -38,26 +38,30 @@ module.exports = {
                         email: verifyInfo.email
                     }
                 });
-
                 if (userInfo) {
+                    const result = await projects.findAll({
+                        where: { admin: userInfo.id }
+                    })
+                    await result.map((el) => {
+                        users_projects.destroy({
+                            where: { projectId: el.dataValues.id },
+                        })
+                        cards.destroy({
+                            where: { projectId: el.dataValues.id },
+                        })
+                        projects.destroy({
+                            where: { id: el.dataValues.id },
+                        });
+                    })
                     await users.destroy({
                         where: { id: userInfo.id },
                     })
-                    await cards.destroy({
-                        where: { userId: userInfo.id },
-                    })
-                    await users_projects.destroy({
-                        where: { userId: userInfo.id },
-                    })
-                    await projects.destroy({
-                        where: { admin: userInfo.id },
-                    });
 
                     res.clearCookie('jwt', {
                         httpOnly: true,
                         secure: true,
                         sameSite: 'None',
-                    }).status(200).json({ mssage: 'ok' });
+                    }).status(200).json({ mssage: 'Delete profile success' });
                 }
             }
         } catch (err) {
@@ -67,10 +71,13 @@ module.exports = {
 
     patchName: async (req, res) => {
         const name = req.body.name;
+        if (!name) {
+            return res.status(422).json({ message: "Insufficient parameters supplied" });
+        }
         try {
             const verifyInfo = isAuthorized(req);
             if (verifyInfo === 'not found') {
-                return res.status(401).send({ message: 'Token not found ' });
+                return res.status(401).send({ message: 'Not authorized' });
             } else if (verifyInfo === 'expired') {
                 return res.status(401).send({ message: 'Expired token' });
             } else {
@@ -86,10 +93,13 @@ module.exports = {
 
     patchPassword: async (req, res) => {
         const { curPassword, newPassword } = req.body;
+        if (!curPassword || !newPassword) {
+            return res.status(422).json({ message: "Insufficient parameters supplied" });
+        }
         try {
             const verifyInfo = isAuthorized(req);
             if (verifyInfo === 'not found') {
-                return res.status(401).send({ message: 'Token not found ' });
+                return res.status(401).send({ message: 'Not authorized' });
             } else if (verifyInfo === 'expired') {
                 return res.status(401).send({ message: 'Expired token' });
             } else {
@@ -105,7 +115,7 @@ module.exports = {
                     await users.update({ password: bcrypt.hashSync(newPassword, 10) }, {
                         where: { id: verifyInfo.id }
                     });
-                    res.status(200).json({ message: 'ok' });
+                    res.status(200).json({ message: 'Change password success' });
                 }
             }
         } catch (err) {

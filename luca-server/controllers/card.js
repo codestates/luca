@@ -3,20 +3,24 @@ const { isAuthorized } = require('./token');
 
 module.exports = {
     post: async (req, res) => {
-        try {
-            const { projectId, content } = req.body;
-            const verifyInfo = isAuthorized(req);
-
-            await cards.create(
-                {
-                    projectId: projectId,
-                    userId: verifyInfo.id,
-                    content: content,
-                    storage: "card",
-                });
-            res.status(201).json({ message: 'ok' });
-        } catch (err) {
-            res.status(500).json({ message: "Internal server error" });
+        const { userId, projectId, content } = req.body;
+        if (!userId || !projectId || !content) {
+            return res
+                .status(422)
+                .json({ message: "Insufficient parameters supplied" });
+        } else {
+            try {
+                await cards.create(
+                    {
+                        userId: userId,
+                        projectId: projectId,
+                        content: content,
+                        storage: "card",
+                    });
+                res.status(201).json({ message: 'Create card success' });
+            } catch (err) {
+                res.status(500).json({ message: "Internal server error" });
+            }
         }
     },
 
@@ -24,7 +28,7 @@ module.exports = {
         try {
             const projectId = req.params.projectId;
             const cardInfo = await cards.findAll({ where: { projectId } });
-            res.status(200).json({ data: cardInfo, message: 'ok' });
+            res.status(200).json({ data: cardInfo, message: 'Get card list success' });
         } catch (err) {
             res.status(500).json({ message: "Internal server error" });
         }
@@ -33,13 +37,8 @@ module.exports = {
     delete: async (req, res) => {
         try {
             const cardId = req.params.id;
-            const result = await cards.destroy({ where: { id: cardId } });
-            // result가 0 과 1로 나옴
-            if (!result) {
-                res.status(400).json({ message: 'invalid id' });
-            } else {
-                res.status(200).json({ data: result, message: 'ok' });
-            }
+            await cards.destroy({ where: { id: cardId } });
+            res.status(200).json({ message: 'Delete card success' });
         } catch (err) {
             res.status(500).json({ message: "Internal server error" });
         }

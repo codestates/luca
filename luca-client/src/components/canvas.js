@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 import styled from "styled-components";
 import { useState, useRef, useEffect } from "react";
-import { root, descendants, links } from "./d3coodinator/getDescendants";
+import { root, nodes, links } from "./d3coodinator/getDescendants";
 
 export default function Canvas() {
   const Frame = styled.div`
@@ -23,9 +23,6 @@ export default function Canvas() {
     transform-origin: left top; // todo: 커서위치 props로 줄 것
     text-align: left;
     > svg {
-      /* viewBox: 0 0 200 200;
-      width: ${(props) => 200 / props.viewRatio}%;
-      height: ${(props) => 200 / props.viewRatio}%; */
     }
   `;
 
@@ -56,23 +53,6 @@ export default function Canvas() {
 
   const canvasRef = useRef();
   const svgRef = useRef();
-  // const [data, setData] = useState(
-  //   {
-  //     content: "Zog",
-  //     children:[
-  //       {
-  //       content: "Bean",
-  //       children:[
-  //         {content: "Elfo"},
-  //         {content: "Lucy"}
-  //       ]
-  //       },
-  //       {
-  //         content: "Degma"
-  //       }
-  //     ]
-  //   }
-  // )
 
   const [viewRatio, setViewRatio] = useState(1);
   const [screen, setScreen] = useState({
@@ -139,9 +119,6 @@ export default function Canvas() {
   useEffect(() => {
     // const svg = d3.select(svgRef.current);
     // const fild = d3.select(canvasRef.current);
-    // const root = d3.hierarchy(data);
-    const links = root.links();
-    const nodes = root.descendants();
     // const svg = fild.create('svg')
     //   .attr("viewBox", [-100 / 2, -100 / 2, 100, 100]);
 
@@ -192,13 +169,35 @@ export default function Canvas() {
     const content = svg
       .append("g")
       .selectAll("title")
-      .attr("dy", ".31em")
       .data(nodes)
       .join("title")
       .text((d) => d.data.name)
-      .attr("r", 2);
+      .attr("dy", ".31em")
+      .style("text-anchor", "middle")
+      .attr("r", 2)
+      .call(drag(simulation));
+
     // node.append("text")
     //   .attr("text", d => d.data.name);
+    // const content = svg.append("g")
+    // .selectAll("title")
+    // .data(nodes)
+    // .join("title")
+    // link.append("text")
+    // .attr("font-family", "Arial, Helvetica, sans-serif")
+    // .attr("fill", "Black")
+    // .style("font", "normal 12px Arial")
+    // .attr("transform", function(d) {
+    //     return "translate(" +
+    //         ((d.source.y + d.target.y)/2) + "," +
+    //         ((d.source.x + d.target.x)/2) + ")";
+    // })
+    // .attr("dy", ".35em")
+    // .attr("text-anchor", "middle")
+    // .text(function(d) {
+    //     console.log(d.target.rule);
+    //     return d.target.rule;
+    // });
 
     console.log(nodes);
 

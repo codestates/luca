@@ -25,7 +25,7 @@ const GooglePage = () => {
         check = true;
         axios
             .post(
-                `http://localhost:80/user/auth/google`,
+                `http://localhost:80/user/google`,
                 {
                     authorizationCode,
                 }
