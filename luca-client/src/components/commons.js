@@ -1,24 +1,29 @@
 import { useState } from "react/cjs/react.development";
 import styled from "styled-components";
+import { LoginModal } from "./modals";
 
 const NavigatorContainer = styled.div`
+  z-index: 999;
+  position: fixed;
+  top: 0;
   width: 100vw;
-  height: 10vh;
+  min-height: 10vh;
   background-color: white;
   text-align: center;
   align-items: center;
   display: flex;
-  box-shadow: 0vh 0.5vh 1vh 0.1vh rgba(0, 0, 0, 0.1);
+  box-shadow: 0vh 0.5vh 1vh 0.1vh rgba(0, 0, 0, 0.3);
 
   > a.logo {
     margin: 0 8vh;
 
     > img {
-      height: 5vh;
+      height: 2em;
       margin: 2.5vh 0;
     }
   }
-  > a.about {
+  > div.about {
+    font-family: "Poppins", sans-serif;
     flex: 2 0 auto;
     font-size: 1.4em;
     text-align: left;
@@ -30,10 +35,17 @@ const NavigatorContainer = styled.div`
     align-items: center;
     margin-right: 8vh;
 
-    > div.guest {
+    /* > div.guest {
       flex: 1 0 auto;
-      font-size: 1.2em;
-    }
+      background-color: ${(props) =>
+      props.impact ? "white" : "rgb(255, 127, 80)"};
+      color: ${(props) => (props.impact ? "black" : "white")};
+      border: solid black 1px;
+      margin: 0.5em;
+      padding: 0.6em;
+      border-radius: 2em;
+      cursor: pointer;
+    } */
     > div.profile {
       flex: 1 0 auto;
       height: 8vh;
@@ -41,7 +53,7 @@ const NavigatorContainer = styled.div`
       font-size: 1.2em;
       display: flex;
       align-items: center;
-      box-shadow: 1vh 1vh 1vh rgba(0, 0, 0, 0.1);
+      box-shadow: 0vh 0vh 2vh rgba(0, 0, 0, 0.2);
 
       > img.profile-image-thumb {
         height: 6vh;
@@ -51,11 +63,15 @@ const NavigatorContainer = styled.div`
       > div.profile-username {
         margin-left: 2vh;
         font-weight: bold;
+        cursor: pointer;
+      }
+      > div.profile-username:hover {
+        color: blue;
       }
       > div.profile-dropdown {
         z-index: 999;
         position: fixed;
-        top: 1vh;
+        top: 5vh;
         width: 10em;
         height: 8em;
         border-radius: 4vh;
@@ -71,9 +87,22 @@ const NavigatorContainer = styled.div`
     }
   }
 `;
+const Guest = styled.a`
+  flex: 1 0 auto;
+  background-color: ${(props) =>
+    props.impact ? "rgb(255, 127, 80)" : "white"};
+  color: ${(props) => (props.impact ? "white" : "black")};
+  font-weight: bold;
+  margin: 0.5em;
+  padding: 0.6em;
+  border-radius: 2em;
+  cursor: pointer;
+`;
 
-function Navigator() {
+function Navigator({ isLogin }) {
   const [dropdown, setDropdown] = useState(false);
+  // onClick이벤트 => onMouseOver 로 드롭다운 방법 변경, 구현 중
+
   const dropdownHandler = () => {
     setDropdown(!dropdown);
   };
@@ -83,38 +112,45 @@ function Navigator() {
       <a className="logo" href="/">
         <img src="Luca_logo.png" />
       </a>
-      <a className="about" href="/">
-        about
-      </a>
+      <div className="about">
+        <a href="/">about</a>
+      </div>
       <div className="account">
-        {/* <div className="guest">회원가입</div>
-        <div className="guest" style={{ fontWeight: "bold" }}>
-          로그인
-        </div> */}
-        <div className="profile">
-          {!dropdown ? (
-            <>
-              <img
-                className="profile-image-thumb"
-                src="https://picsum.photos/300/300?random=1"
-              />
-              <div className="profile-username" onClick={dropdownHandler}>
-                username
+        {!isLogin ? (
+          <div className="profile">
+            {!dropdown ? (
+              <>
+                <img
+                  className="profile-image-thumb"
+                  src="https://picsum.photos/300/300?random=1"
+                />
+                <div className="profile-username" onMouseOver={dropdownHandler}>
+                  Username
+                </div>
+              </>
+            ) : (
+              <div className="profile-dropdown">
+                <div className="dropdown-index" onClick={dropdownHandler}>
+                  Username
+                </div>
+                <div className="dropdown-index">
+                  <a href="/mypage">Mypage</a>
+                </div>
+                <div className="dropdown-index">Setting</div>
+                <div className="dropdown-index">Logout</div>
               </div>
-            </>
-          ) : (
-            <div className="profile-dropdown">
-              <div className="dropdown-index" onClick={dropdownHandler}>
-                username
-              </div>
-              <div className="dropdown-index">
-                <a href="/mypage">Mypage</a>
-              </div>
-              <div className="dropdown-index">Setting</div>
-              <div className="dropdown-index">Logout</div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        ) : (
+          <>
+            <Guest className="guest" href="/signup">
+              회원가입
+            </Guest>
+            <Guest className="guest" impact>
+              로그인
+            </Guest>
+          </>
+        )}
       </div>
     </NavigatorContainer>
   );

@@ -32,10 +32,11 @@ import styled from "styled-components";
 // const ModalContainer = styled.div``;
 
 const ModalBackdrop = styled.div`
-  z-index: 999;
+  z-index: 900;
   width: 100vw;
+  top: 0;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: black;
   justify-content: center;
   display: flex;
 `;
