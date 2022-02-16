@@ -7,7 +7,7 @@ module.exports = {
         try {
             const verifyInfo = isAuthorized(req);
             if (verifyInfo === 'not found') {
-                return res.status(401).send({ message: 'Token not found ' });
+                return res.status(401).send({ message: 'Not authorized' });
             } else if (verifyInfo === 'expired') {
                 return res.status(401).send({ message: 'Expired token' });
             } else {
@@ -18,7 +18,7 @@ module.exports = {
                 });
                 delete userInfo.dataValues.password;
 
-                res.status(200).json({ data: userInfo, message: 'ok' });
+                res.status(200).json({ data: userInfo, message: 'Get profile success' });
             }
         } catch (err) {
             res.status(500).json({ message: "Internal server error" });
@@ -29,7 +29,7 @@ module.exports = {
         try {
             const verifyInfo = isAuthorized(req);
             if (verifyInfo === 'not found') {
-                return res.status(401).send({ message: 'Token not found ' });
+                return res.status(401).send({ message: 'Not authorized' });
             } else if (verifyInfo === 'expired') {
                 return res.status(401).send({ message: 'Expired token' });
             } else {
@@ -57,7 +57,7 @@ module.exports = {
                         httpOnly: true,
                         secure: true,
                         sameSite: 'None',
-                    }).status(200).json({ mssage: 'ok' });
+                    }).status(200).json({ mssage: 'Delete profile success' });
                 }
             }
         } catch (err) {
@@ -67,10 +67,13 @@ module.exports = {
 
     patchName: async (req, res) => {
         const name = req.body.name;
+        if(!name) {
+            return res.status(422).json({ message: "Insufficient parameters supplied" });
+        }
         try {
             const verifyInfo = isAuthorized(req);
             if (verifyInfo === 'not found') {
-                return res.status(401).send({ message: 'Token not found ' });
+                return res.status(401).send({ message: 'Not authorized' });
             } else if (verifyInfo === 'expired') {
                 return res.status(401).send({ message: 'Expired token' });
             } else {
@@ -86,10 +89,13 @@ module.exports = {
 
     patchPassword: async (req, res) => {
         const { curPassword, newPassword } = req.body;
+        if(!curPassword || !newPassword) {
+            return res.status(422).json({ message: "Insufficient parameters supplied" });
+        }
         try {
             const verifyInfo = isAuthorized(req);
             if (verifyInfo === 'not found') {
-                return res.status(401).send({ message: 'Token not found ' });
+                return res.status(401).send({ message: 'Not authorized' });
             } else if (verifyInfo === 'expired') {
                 return res.status(401).send({ message: 'Expired token' });
             } else {

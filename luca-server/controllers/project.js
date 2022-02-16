@@ -4,7 +4,7 @@ module.exports = {
         try {
             const verifyInfo = isAuthorized(req);
             if (verifyInfo === 'not found') {
-                return res.status(401).send({ message: 'Token not found ' });
+                return res.status(401).send({ message: 'Not authorized' });
             } else if (verifyInfo === 'expired') {
                 return res.status(401).send({ message: 'Expired token' });
             } else {
@@ -13,7 +13,7 @@ module.exports = {
                         userId: verifyInfo.id
                     }
                 });
-                res.status(200).json({ data: result, message: 'ok' });
+                res.status(200).json({ data: result, message: 'Get project list success' });
             }
         } catch (err) {
             res.status(500).json({ message: "Internal server error" });
@@ -22,6 +22,9 @@ module.exports = {
 
     post: async (req, res) => {
         const { userId, title, desc, isTeam, memberUserId } = req.body;
+        if(!userId || !title || !desc || !isTeam || !memberUserId || memberUserId.length === 0) {
+            return res.status(422).json({ message: "Insufficient parameters supplied" });
+        }
         try {
             const result = await projects.create({ admin: userId, title, desc, isTeam });
             await memberUserId.map(function (el) {
@@ -30,13 +33,16 @@ module.exports = {
                     projectId: result.id
                 });
             });
-            res.status(200).json({ message: "ok" });
+            res.status(201).json({ message: "Create project success" });
         } catch (error) {
             res.status(500).json({ message: "Internal server error" });
         }
     },
     patch: async (req, res) => {
         const { projectId, title, desc } = req.body;
+        if(!projectId || !title || !desc) {
+            return res.status(422).json({ message: "Insufficient parameters supplied" });
+        }
         try {
             await projects.update({
                 title: title,
@@ -44,7 +50,7 @@ module.exports = {
             }, {
                 where: { id: projectId },
             })
-            res.status(200).json({ message: "ok" });
+            res.status(200).json({ message: "Change project success" });
         } catch (error) {
             res.status(500).json({ message: "Internal server error" });
         }
@@ -58,7 +64,7 @@ module.exports = {
             await users_projects.destroy({
                 where: { projectId: id },
             })
-            res.status(200).json({ message: "ok" });
+            res.status(200).json({ message: "Delete project success" });
         } catch (error) {
             res.status(500).json({ message: "Internal server error" });
         }
@@ -66,6 +72,9 @@ module.exports = {
 
     member: async (req, res) => {
         const { email } = req.body;
+        if(!email) {
+            return res.status(422).json({ message: "Insufficient parameters supplied" });
+        }
         try {
             const userInfo = await users.findOne({
                 where: {
@@ -73,13 +82,13 @@ module.exports = {
                 }
             });
             if (!userInfo) {
-                res.status(200).json({ message: 'Not found user' });
+                res.status(200).json({ data: null, message: 'Not found user' });
             } else {
                 const result = {
                     id: userInfo.dataValues.id,
                     email: userInfo.dataValues.email
                 };
-                res.status(200).json({ data: result, message: 'ok' });
+                res.status(201).json({ data: result, message: 'Found user' });
             }
         } catch (error) {
             res.status(500).json({ message: "Internal server error" });
