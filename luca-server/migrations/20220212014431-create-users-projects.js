@@ -13,6 +13,9 @@ module.exports = {
       },
       projectId: {
         type: Sequelize.INTEGER
+      },
+      isAccept: {
+        type: Sequelize.BOOLEAN
       }
     });
   },
