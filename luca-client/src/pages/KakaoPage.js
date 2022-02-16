@@ -24,7 +24,7 @@ const KakaoPage = () => {
         check = true;
         axios
             .post(
-                `${process.env.REACT_APP_API_URL}/user/auth/kakao`,
+                `${process.env.REACT_APP_API_URL}/user/kakao`,
                 {
                     authorizationCode,
                 },

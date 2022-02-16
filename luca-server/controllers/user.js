@@ -38,7 +38,7 @@ module.exports = {
 
         try {
             if (!accessToken) {
-                return res.status(404).send({ message: "Not authorized" });
+                return res.status(401).send({ message: "Not authorized" });
             } else {
                 // 쿠키 삭제를 통해 로그아웃을 구현한다.
                 res.clearCookie("jwt", {
@@ -93,7 +93,7 @@ module.exports = {
 
         if (!email) {
             return res
-                .status(400)
+                .status(422)
                 .json({ message: "Insufficient parameters supplied" });
         }
         try {
@@ -142,10 +142,10 @@ module.exports = {
                     res.json({ certCode: authNum });
                     transporter.close();
                 });
-                return res.status(200).json({ code: authNum })
+                return res.status(201).json({ data: { code: authNum }, message: "Check success" })
             }
             // 사용할 수 없는 email
-            res.status(200).json({ available: false });
+            res.status(200).json({ data: null, message: "Check fail" });
         } catch {
             res.status(500).json({ message: "Internal server error" });
         }
@@ -156,7 +156,7 @@ module.exports = {
 
         if (!email || !password) {
             return res
-                .status(400)
+                .status(422)
                 .json({ message: "Insufficient parameters supplied" });
         } else {
             try {
@@ -169,7 +169,7 @@ module.exports = {
 
                 // 로그인 실패
                 if (!userInfo) {
-                    return res.status(404).json({ message: "Wrong information" });
+                    return res.status(400).json({ message: "Wrong email" });
                 } else {
                     let passwordCheck = await bcrypt.compare(password, userInfo.password);
                     // 로그인이 성공하면 토큰이 생성되고 쿠기로 전송된다.
@@ -181,7 +181,7 @@ module.exports = {
                             message: "login success",
                         });
                     } else {
-                        return res.json({ messgae: "wrong password" });
+                        return res.status(400).json({ messgae: "Wrong password" });
                     }
                 }
             } catch (err) {
