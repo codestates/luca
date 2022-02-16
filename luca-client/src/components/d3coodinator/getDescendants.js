@@ -13,37 +13,45 @@ const data = {
     {
       name: "Levi",
       children: [
-        { name: "Falco" }, 
+        { name: "Falco" },
         { name: "Ani" },
-        {children: [
-          { name: "Armin" },
-          { name: "Erwin" },
-          { name: "Armin" },
-          { name: "Erwin" },
-          { name: "Armin" },
-          { name: "Erwin" },
-          { children: [
+        {
+          children: [
             { name: "Armin" },
             { name: "Erwin" },
-            { name: "Bertoldt" },
-            { name: "Historia" },
             { name: "Armin" },
-            { children: [
-              { name: "Armin" },
-              { name: "Erwin" },
-              { name: "Bertoldt" },
-              { name: "Historia" },
-              { name: "Armin" },
-              { children: [
+            { name: "Erwin" },
+            { name: "Armin" },
+            { name: "Erwin" },
+            {
+              children: [
                 { name: "Armin" },
                 { name: "Erwin" },
                 { name: "Bertoldt" },
                 { name: "Historia" },
-                { name: "Armin" }
-              ]}
-            ]}
-          ]}
-        ]}
+                { name: "Armin" },
+                {
+                  children: [
+                    { name: "Armin" },
+                    { name: "Erwin" },
+                    { name: "Bertoldt" },
+                    { name: "Historia" },
+                    { name: "Armin" },
+                    {
+                      children: [
+                        { name: "Armin" },
+                        { name: "Erwin" },
+                        { name: "Bertoldt" },
+                        { name: "Historia" },
+                        { name: "Armin" }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
       ],
     },
     {
