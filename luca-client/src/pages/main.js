@@ -1,6 +1,12 @@
 import styled from "styled-components";
 import Projectcard from "../components/projectcard";
 import { Navigator, Backdrop, Container } from "../components/commons";
+import {CreateProjectModal, Sortmodal} from "../components/modals";
+import {useState, useEffect} from "react";
+import axios from "axios";
+
+const url = process.env.URL;
+// console.log(url)
 
 const Maincomponent = styled.div`
   background-color: #f5f5f5;
@@ -20,7 +26,7 @@ const Maincomponent = styled.div`
       align-items: center;
       flex-direction: column;
     }
-    > startbuttom {
+    > startbutton {
       border: solid;
       border-radius: 20px;
       width: 200px;
@@ -28,6 +34,12 @@ const Maincomponent = styled.div`
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+    > startbutton:hover {
+      box-shadow: 0px 0px 10px black;
+    }
+    > startbutton:active {
+      color: red;
     }
   }
   > projectcontainer {
@@ -51,18 +63,102 @@ const Maincomponent = styled.div`
       > div {
         margin-right: 10px;
       }
+      > div:hover {
+        text-shadow: 0px 0px 10px black;  
+      }
+      /* > div:active {
+        color: red;
+      } */
     }
     > projectbox {
-      margin-top: 30px;
+      /* margin-top: 10px; */
     }
   }
 `;
 
 export function Main() {
+
+  const [projectList, setProjectList] = useState([
+    {
+      "id": 0,
+      "title": "string",
+      "desc": "string",
+      "isTeam": true,
+      "admin": 0,
+      "createdAt": "string",
+      "updatedAt": "2021.4.21"
+    },
+    {
+      "id": 1,
+      "title": "string2",
+      "desc": "string",
+      "isTeam": false,
+      "admin": 0,
+      "createdAt": "string",
+      "updatedAt": "2022.3.12"
+    },
+    {
+      "id": 1,
+      "title": "string2",
+      "desc": "string",
+      "isTeam": false,
+      "admin": 0,
+      "createdAt": "string",
+      "updatedAt": "2033.3.12"
+    }
+  ]);
+  const [isClicked, setIsClicked] = useState(false);
+  const [newProject, setNewProject] = useState({});
+  const [sortModal, setSortModal] = useState(false);
+  
+  const modalHandler = () => {
+    setIsClicked(!isClicked);
+  }
+
+  const newProjectHandler = (name, desc, invite, type) => {
+    setNewProject({
+      "title": name,
+      "desc": desc,
+      "isTeam": type
+    })
+    console.log(name.value);
+    console.log(desc.value);
+    console.log(invite.value);
+    console.log(type);
+    // axios.post()
+  }
+
+  const sortHandler = (e) => {
+    const projectsClone = [...projectList];
+    if(e === "update"){
+      projectsClone.sort((a, b) => {
+        return b.updatedAt.split(".").join("") - a.updatedAt.split(".").join("")
+      })
+      setProjectList([...projectsClone]);
+      console.log(projectList)
+    }
+    else if(e === "create"){
+      projectsClone.sort((a, b) => {
+        return b.createdAt.split(".").join("") - a.createdAt.split(".").join("")
+      })
+    }
+    setSortModal(!sortModal);
+  }
+
+  useEffect(() => {
+    // axios.get(`${url}/projects`)
+    // .then((res)=>{
+    //   setProjectList(res.data);
+    // })
+    // .catch((err)=>{
+    //   console.log(err);
+    // });
+  }, [projectList]);
+
   return (
     <div>
       <Navigator />
-      <Backdrop>
+      <Backdrop onClick={isClicked? modalHandler: null}>
         <Container>
           <Maincomponent>
             <startbox>
@@ -71,18 +167,34 @@ export function Main() {
                 img elements must have an alt prop, either with meaningful text,
                 or an empty string for decorative images
               </startinfo>
-              <startbuttom>start</startbuttom>
+              <startbutton onClick={modalHandler}>start</startbutton>
             </startbox>
             <projectcontainer>
               <sortbox>
-                <div>sort by update ▼</div>
+                {
+                  sortModal?
+                  <div>
+                    <div onClick={sortHandler}>sort by update ▲</div>
+                    <Sortmodal sortHandler={sortHandler}/>
+                  </div>:
+                  <div onClick={sortHandler}>sort by update ▼</div>
+                }
               </sortbox>
               <projectbox>
-                <Projectcard />
+                {
+                  projectList.map((el)=>{
+                    return <Projectcard data={el}/>
+                  })
+                }
               </projectbox>
             </projectcontainer>
           </Maincomponent>
         </Container>
+        {
+          isClicked?
+          <CreateProjectModal modalHandler={modalHandler} newProjectHandler={newProjectHandler}/>:
+          null
+        }
       </Backdrop>
       <div className="footer"></div>
     </div>
