@@ -4,8 +4,8 @@ import { Navigator, Backdrop, Container } from "../components/commons";
 export default function ChangePassword() {
   const ChangePW = styled.div`
     /* border: solid; */
+    margin-top: 10vh;
     height: 60vh;
-    margin-top: 50px;
     display: flex;
     flex-direction: column;
     align-items: center;

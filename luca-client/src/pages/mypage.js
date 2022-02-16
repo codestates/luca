@@ -1,14 +1,14 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { Navigator, Backdrop, Container } from "../components/commons";
+import { Navigator } from "../components/commons";
 
-const Page = styled.div`
+const Container = styled.div`
   margin-top: 10vh;
   display: flex;
   justify-content: center;
+  background-color: seashell;
 `;
 const MypageBody = styled.div`
-  background-color: seashell;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -88,47 +88,40 @@ export default function Mypage() {
   return (
     <div>
       <Navigator />
-      <Backdrop>
-        <Container>
-          <Page onClick={handleClick}>
-            <MypageBody>
-              <profileimg>
-                <img src="https://ww.namu.la/s/08c6a259933bf0159253cd7304180960a776791dcba49dba89d0e28648c20e544d87779113bcd874491d22a67d2cd4b9aab39683c3d27f90929872ef5b5ea10491d45a591ef332cbea92ba5ecd958221" />
-              </profileimg>
-              <userinfo>
-                <userprofile>
-                  {isClicked ? <h1>Ian</h1> : <input></input>}
-                  <ueremail>ian58@gmail.com</ueremail>
-                </userprofile>
-                <div>
-                  {isClicked ? (
-                    <Userbutton>
-                      <modifybutton
-                        className="modifybutton"
-                        onClick={handleClick}
-                      >
-                        회원정보 수정
-                      </modifybutton>
-                      <changepwbutton className="pwbutton">
-                        비밀번호 변경
-                      </changepwbutton>
-                    </Userbutton>
-                  ) : (
-                    <Decisionbutton>
-                      <div>
-                        <cancelbuttton>취소</cancelbuttton>
-                        <savebutton>저장</savebutton>
-                      </div>
-                      <withdrawal>회원탈퇴</withdrawal>
-                    </Decisionbutton>
-                  )}
-                </div>
-              </userinfo>
-            </MypageBody>
-            <div>{/* footer */}</div>
-          </Page>
-        </Container>
-      </Backdrop>
+      <Container onClick={handleClick}>
+        <MypageBody>
+          <profileimg>
+            <img src="https://ww.namu.la/s/08c6a259933bf0159253cd7304180960a776791dcba49dba89d0e28648c20e544d87779113bcd874491d22a67d2cd4b9aab39683c3d27f90929872ef5b5ea10491d45a591ef332cbea92ba5ecd958221" />
+          </profileimg>
+          <userinfo>
+            <userprofile>
+              {isClicked ? <h1>Ian</h1> : <input></input>}
+              <ueremail>ian58@gmail.com</ueremail>
+            </userprofile>
+            <div>
+              {isClicked ? (
+                <Userbutton>
+                  <modifybutton className="modifybutton" onClick={handleClick}>
+                    회원정보 수정
+                  </modifybutton>
+                  <changepwbutton className="pwbutton">
+                    비밀번호 변경
+                  </changepwbutton>
+                </Userbutton>
+              ) : (
+                <Decisionbutton>
+                  <div>
+                    <cancelbuttton>취소</cancelbuttton>
+                    <savebutton>저장</savebutton>
+                  </div>
+                  <withdrawal>회원탈퇴</withdrawal>
+                </Decisionbutton>
+              )}
+            </div>
+          </userinfo>
+        </MypageBody>
+        <div>{/* footer */}</div>
+      </Container>
     </div>
   );
 }

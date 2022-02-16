@@ -76,6 +76,7 @@ const NavigatorContainer = styled.div`
         }
       }
       > a.dropdown-index:hover {
+        font-weight: bold;
         background-color: rgba(0, 0, 0, 0.1);
       }
     }
@@ -92,11 +93,14 @@ const Guest = styled.a`
 `;
 
 function Navigator({ isLogin }) {
-  // 원래는 props 로 isLogin 을 받아야 합니다.
-  // 현재는 테스트용으로 로그인/로그아웃 버튼만 누르면 상태가 바뀌도록 되어있습니다.
+  const [modal, SetModal] = useState(false);
+  const modalHandler = (modalType) => {
+    SetModal(modalType);
+  };
 
   return (
     <NavigatorContainer>
+      {modal === "login" ? <LoginModal modalHandler={modalHandler} /> : null}
       <a className="logo" href="/">
         <img src="Luca_logo.png" />
       </a>
@@ -131,7 +135,9 @@ function Navigator({ isLogin }) {
       ) : (
         <div style={{ margin: "0 8vh" }}>
           <Guest href="/signup">회원가입</Guest>
-          <Guest impact>로그인</Guest>
+          <Guest impact onClick={() => modalHandler("login")}>
+            로그인
+          </Guest>
         </div>
       )}
     </NavigatorContainer>
