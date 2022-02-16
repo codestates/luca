@@ -23,7 +23,7 @@ const NaverPage = () => {
         check = true;
         axios
             .post(
-                `${process.env.REACT_APP_API_URL}/user/auth/naver`,
+                `${process.env.REACT_APP_API_URL}/user/naver`,
                 {
                     authorizationCode,
                 },
