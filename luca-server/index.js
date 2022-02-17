@@ -1,9 +1,8 @@
-
 require('dotenv').config();
+
 const express = require("express");
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
-const session = require('express-session');
 
 const app = express();
 const port = process.env.SERVER_PORT;
@@ -22,12 +21,7 @@ app.use(
     credentials: true,
   }),
 );
-app.use(session({
-  secret: 'ras',
-  resave: true,
-  secure: false,
-  saveUninitialized: false,
-}));
+
 
 // router
 app.use('/', indexRouter);
@@ -37,42 +31,4 @@ app.get('/', (req, res) => {
   res.send('Hi');
 });
 
-
-
-
-
-const server = require('http').createServer(app);
-const io = require('socket.io')(server, { cors: {origin: "*"}});
-
-
-
-//const aIo = io.of(/^\/porject\/\w{4,20}$/);
-io.on("connection", (socket) => {
-  console.log('con')
-
-
-  socket.on("changeProject", (req) => {
-    io.join()
-    console.log(req)
-  })
-  
-});
-// socket.join('a');
-// socket.on('send', (req) => {
-//   console.log(req)
-//   socket.emit('reply', '{Tree}')
-//   socket.to('a').emit('reply', '{Tree}')
-// })
-
-io.on("changeProject", (socket) => {
-  socket.on("changeProject", (req) => {
-    console.log(req)
-  })
-})
-
-
-
-
-server.listen(port, () => {
-  console.log(`server listening at http://localhost:${port}`);
-});
+module.exports = app;
