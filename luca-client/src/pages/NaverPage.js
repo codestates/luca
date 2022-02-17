@@ -16,23 +16,23 @@ const NaverLoginInfo = styled.div`
 `;
 var check = false;
 const NaverPage = () => {
-    const authorizationCode = new URL(window.location.href).searchParams.get(
-        'code'
-    );
-    if (!check) {
-        check = true;
-        axios
-            .post(
-                `${process.env.REACT_APP_API_URL}/user/naver`,
-                {
-                    authorizationCode,
-                },
-                { 'Content-Type': 'application/json', withCredentials: true }
-            )
-            .catch((err) => {
-                return err.response ? err.response : 'network error';
-            });
-    }
+    // const authorizationCode = new URL(window.location.href).searchParams.get(
+    //     'code'
+    // );
+    // if (!check) {
+    //     check = true;
+    //     axios
+    //         .post(
+    //             `${process.env.REACT_APP_API_URL}/user/naver`,
+    //             {
+    //                 authorizationCode,
+    //             },
+    //             { 'Content-Type': 'application/json', withCredentials: true }
+    //         )
+    //         .catch((err) => {
+    //             return err.response ? err.response : 'network error';
+    //         });
+    // }
 
     return (
         <NaverLoginInfo>

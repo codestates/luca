@@ -17,23 +17,23 @@ const GoogleLoginInfo = styled.div`
 var check = false;
 const GooglePage = () => {
     // 인가코드
-    const authorizationCode = new URL(window.location.href).search
-        .split('=')[1]
-        .split('&')[0];
+    // const authorizationCode = new URL(window.location.href).search
+    //     .split('=')[1]
+    //     .split('&')[0];
 
-    if (!check) {
-        check = true;
-        axios
-            .post(
-                `http://localhost:80/user/google`,
-                {
-                    authorizationCode,
-                }
-            )
-            .catch((err) => {
-                return err.response ? err.response : 'network error';
-            });
-    }
+    // if (!check) {
+    //     check = true;
+    //     axios
+    //         .post(
+    //             `http://localhost:80/user/google`,
+    //             {
+    //                 authorizationCode,
+    //             }
+    //         )
+    //         .catch((err) => {
+    //             return err.response ? err.response : 'network error';
+    //         });
+    // }
 
     return (
         <GoogleLoginInfo>
