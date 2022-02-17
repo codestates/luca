@@ -230,16 +230,16 @@ export function DeleteProjectModal({ modalHandler }) {
 }
 
 const SortModalBody = styled.div`
+  width: 150px;
   background-color: gray;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
   border: 1px solid red;
-  position: fixed;
-  top: 40%;
-  left: 78.5%;
-  /* transform: translate(-50%, -50%); */
+  position: absolute;
+  top: 5%;
+  right: 0%;
   height: 60px;
   > div {
     width: 100%;
@@ -262,5 +262,28 @@ export function Sortmodal ({sortHandler}) {
         생성일 기준 정렬
       </div>
     </SortModalBody>
+  )
+}
+
+const SaveAlertbox = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 400px;
+  height: 50px;
+  border: solid gray;
+  position: absolute;
+  background-color: gray;
+  border-radius: 30px;
+  top: 2%;
+  font-size: 1.4rem;
+  color: darkgray;
+`
+
+export function Savealert () {
+  return (
+    <SaveAlertbox>
+      <div>저장되었습니다</div>
+    </SaveAlertbox>
   )
 }

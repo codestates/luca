@@ -9,6 +9,7 @@ const url = process.env.URL;
 // console.log(url)
 
 const Maincomponent = styled.div`
+  margin-top: 10vh;
   background-color: #f5f5f5;
   display: flex;
   flex-direction: column;
@@ -43,6 +44,7 @@ const Maincomponent = styled.div`
     }
   }
   > projectcontainer {
+    position: relative;
     background-color: silver;
     height: 100vh;
     width: 1300px;
@@ -175,11 +177,16 @@ export function Main() {
                   sortModal?
                   <div>
                     <div onClick={sortHandler}>sort by update ▲</div>
-                    <Sortmodal sortHandler={sortHandler}/>
+                    {/* <Sortmodal sortHandler={sortHandler}/> */}
                   </div>:
                   <div onClick={sortHandler}>sort by update ▼</div>
                 }
               </sortbox>
+                {
+                  sortModal?
+                  <Sortmodal sortHandler={sortHandler}/>:
+                  null
+                }
               <projectbox>
                 {
                   projectList.map((el)=>{
