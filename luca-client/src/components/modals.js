@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import { useRef, useState } from "react";
+import axios from "axios";
+const serverUrl = "http://localhost:4000";
 
 // ============모달 props 사용법==========================
 
@@ -37,7 +39,7 @@ const ModalBackdrop = styled.div`
   width: 100vw;
   top: 0;
   height: 100vh;
-  background-color: black;
+  background-color: rgba(0, 0, 0, 0.5);
   justify-content: center;
   display: flex;
   /////////////////////flowervillagearp////////////////////////////
@@ -103,7 +105,8 @@ const ModalView = styled.div`
     }
 
     > span {
-      margin: 0 0.3em;
+      margin-right: 1em;
+      color: rgba(0, 0, 0, 0.5);
     }
   }
 
@@ -129,7 +132,41 @@ const ModalView = styled.div`
   }
 `;
 
-export function LoginModal({ modalHandler }) {
+export function LoginModal({ modalHandler, setUserinfo }) {
+  const [loginInfo, setLoginInfo] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleInputValue = (e, key) => {
+    setLoginInfo({ ...loginInfo, [key]: e.target.value });
+  };
+
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const LoginHandler = () => {
+    if (loginInfo.email.length === 0 || loginInfo.password.length === 0) {
+      return setErrorMessage("이메일과 비밀번호를 입력해주세요");
+    }
+    axios.post(`${serverUrl}/user/login`, loginInfo).then((res) => {
+      if (res.data.message === "Wrong email") {
+        return setErrorMessage("이메일 주소를 확인해주세요");
+      }
+      if (res.data.message === "Wrong password") {
+        return setErrorMessage("비밀번호를 확인해주세요");
+      }
+      if (res.data.message === "Internal server error") {
+        return setErrorMessage("서버 에러: 지금은 로그인할 수 없습니다");
+      }
+      if (res.status === 200) {
+        setErrorMessage("");
+        setUserinfo(res.data.data);
+      }
+    });
+  };
+
+  console.log(loginInfo);
+
   return (
     <ModalBackdrop onClick={() => modalHandler(false)}>
       <ModalView onClick={(e) => e.stopPropagation()}>
@@ -137,16 +174,19 @@ export function LoginModal({ modalHandler }) {
         <div className="modal-body">
           <div className="query">
             <div className="index">이메일</div>
-            <input />
+            <input onChange={(e) => handleInputValue(e, "email")} />
           </div>
           <div className="query">
             <div className="index">비밀번호</div>
-            <input />
+            <input
+              onChange={(e) => handleInputValue(e, "password")}
+              type="password"
+            />
           </div>
           <span>계정이 없으신가요?</span>
-          <span>
-            <a href="">회원가입</a>
-          </span>
+          <a href="/signup">
+            <span impact>회원가입</span>
+          </a>
         </div>
         <div className="modal-footer">
           <div className="buttons">
@@ -160,7 +200,6 @@ export function LoginModal({ modalHandler }) {
 }
 
 export function CreateProjectModal({ modalHandler, newProjectHandler }) {
-
   const nameRef = useRef();
   const descRef = useRef();
   const inviteRef = useRef();
@@ -170,7 +209,7 @@ export function CreateProjectModal({ modalHandler, newProjectHandler }) {
 
   const handleType = (e) => {
     setType(e);
-  }
+  };
 
   return (
     <ModalBackdrop onClick={() => modalHandler(false)}>
@@ -178,31 +217,53 @@ export function CreateProjectModal({ modalHandler, newProjectHandler }) {
         <div className="modal-title">새 프로젝트</div>
         <div className="modal-body">
           <div className="query">
-            <button className="options" onClick={()=>{handleType("flase")}}>개인</button>
-            <button className="options" onClick={()=>{handleType("true")}}>팀</button>
+            <button
+              className="options"
+              onClick={() => {
+                handleType("flase");
+              }}
+            >
+              개인
+            </button>
+            <button
+              className="options"
+              onClick={() => {
+                handleType("true");
+              }}
+            >
+              팀
+            </button>
           </div>
           <div className="query">
             <div className="index">이름</div>
             {/* <input onChange={(e)=>{newProjectHandler(e, "name")}}/> */}
-            <input ref={nameRef}/>
+            <input ref={nameRef} />
           </div>
           <div className="query">
             <div className="index">설명</div>
             {/* <input onChange={(e)=>{newProjectHandler(e, "desc")}}/> */}
-            <input ref={descRef}/>
+            <input ref={descRef} />
           </div>
           <div className="query">
             <div className="index">초대</div>
             {/* <input onChange={(e)=>{newProjectHandler(e, "invite")}}/> */}
-            <input ref={inviteRef}/>
+            <input ref={inviteRef} />
           </div>
         </div>
         <div className="modal-footer">
           <div className="buttons">
             <button onClick={modalHandler}>취소</button>
-            <button 
-            className="confirm" 
-            onClick={()=>{newProjectHandler(nameRef.current, descRef.current, inviteRef.current, type)}}>
+            <button
+              className="confirm"
+              onClick={() => {
+                newProjectHandler(
+                  nameRef.current,
+                  descRef.current,
+                  inviteRef.current,
+                  type
+                );
+              }}
+            >
               생성
             </button>
           </div>
@@ -230,16 +291,16 @@ export function DeleteProjectModal({ modalHandler }) {
 }
 
 const SortModalBody = styled.div`
+  width: 150px;
   background-color: gray;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
   border: 1px solid red;
-  position: fixed;
-  top: 40%;
-  left: 78.5%;
-  /* transform: translate(-50%, -50%); */
+  position: absolute;
+  top: 5%;
+  right: 0%;
   height: 60px;
   > div {
     width: 100%;
@@ -249,18 +310,48 @@ const SortModalBody = styled.div`
   > div:hover {
     background-color: red;
   }
-`
+`;
 
-export function Sortmodal ({sortHandler}) {
-
+export function Sortmodal({ sortHandler }) {
   return (
     <SortModalBody>
-      <div onClick={()=>{sortHandler("update")}}>
+      <div
+        onClick={() => {
+          sortHandler("update");
+        }}
+      >
         업데이트일 기준 정렬
       </div>
-      <div onClick={()=>{sortHandler("create")}}>
+      <div
+        onClick={() => {
+          sortHandler("create");
+        }}
+      >
         생성일 기준 정렬
       </div>
     </SortModalBody>
-  )
+  );
+}
+
+const SaveAlertbox = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 400px;
+  height: 50px;
+  border: solid gray;
+  position: absolute;
+  background-color: gray;
+  border-radius: 30px;
+  top: 2%;
+  font-size: 1.4rem;
+  color: darkgray;
+`;
+
+export function Savealert() {
+  return (
+    <SaveAlertbox>
+      <div>저장되었습니다</div>
+    </SaveAlertbox>
+  );
 }

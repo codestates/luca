@@ -12,10 +12,10 @@ const NavigatorContainer = styled.div`
   text-align: center;
   align-items: center;
   display: flex;
-  box-shadow: 0vh 0.5vh 1vh 0.1vh rgba(0, 0, 0, 0.3);
+  box-shadow: 0vh 0.5vh 1vh 0.1vh rgba(0, 0, 0, 0.1);
 
   > a.logo {
-    margin: 0 8vh;
+    margin: 0 10vh;
 
     > img {
       height: 2em;
@@ -29,129 +29,119 @@ const NavigatorContainer = styled.div`
     text-align: left;
     margin: 1em;
   }
-  > div.account {
-    width: 12em;
-    display: flex;
-    align-items: center;
-    margin-right: 8vh;
 
-    /* > div.guest {
-      flex: 1 0 auto;
-      background-color: ${(props) =>
-      props.impact ? "white" : "rgb(255, 127, 80)"};
-      color: ${(props) => (props.impact ? "black" : "white")};
-      border: solid black 1px;
-      margin: 0.5em;
-      padding: 0.6em;
-      border-radius: 2em;
+  > div.profile {
+    margin-right: 10vh;
+    padding: 2vh 0;
+    > img {
+      height: 6vh;
+      border-radius: 3vh;
       cursor: pointer;
-    } */
-    > div.profile {
-      flex: 1 0 auto;
-      height: 8vh;
-      border-radius: 4vh;
-      font-size: 1.2em;
+    }
+    > div.dropdown {
+      display: none;
+    }
+  }
+  > div.profile:hover {
+    > div.dropdown {
+      position: fixed;
+      top: 9.5vh;
+      right: 9vh;
+      border-radius: 1vh;
+      overflow: hidden;
+      background-color: white;
+      box-shadow: 0vh 0vh 1vh rgba(0, 0, 0, 0.1);
       display: flex;
-      align-items: center;
-      box-shadow: 0vh 0vh 2vh rgba(0, 0, 0, 0.2);
-
-      > img.profile-image-thumb {
-        height: 6vh;
-        border-radius: 3vh;
-        margin: 1vh;
-      }
-      > div.profile-username {
-        margin-left: 2vh;
+      flex-direction: column;
+      > div.username {
+        flex: 1 0 auto;
+        padding: 0.5em 0;
         font-weight: bold;
+        color: rgba(0, 0, 0, 0.7);
+      }
+      > a.dropdown-index {
+        flex: 1 0 auto;
+        width: 15vh;
+        padding: 0.7em;
+        text-align: left;
         cursor: pointer;
-      }
-      > div.profile-username:hover {
-        color: blue;
-      }
-      > div.profile-dropdown {
-        z-index: 999;
-        position: fixed;
-        top: 5vh;
-        width: 10em;
-        height: 8em;
-        border-radius: 4vh;
-        background-color: white;
-        box-shadow: 0vh 0vh 2vh rgba(0, 0, 0, 0.2);
         display: flex;
-        flex-direction: column;
-        > div.dropdown-index {
-          flex: 1 0 auto;
-          margin: 0.25em;
+        > i {
+          size: 1em;
+          margin-right: 0.8em;
+          color: rgba(0, 0, 0, 0.3);
         }
+        > div {
+          color: grey;
+        }
+      }
+      > a.dropdown-index:hover {
+        font-weight: bold;
+        background-color: rgba(0, 0, 0, 0.1);
       }
     }
   }
 `;
+
+/* */
+
 const Guest = styled.a`
-  flex: 1 0 auto;
   background-color: ${(props) =>
     props.impact ? "rgb(255, 127, 80)" : "white"};
-  color: ${(props) => (props.impact ? "white" : "black")};
-  font-weight: bold;
-  margin: 0.5em;
-  padding: 0.6em;
+  color: ${(props) => (props.impact ? "white" : "rgba(0,0,0,0.7)")};
+  padding: 0.8em;
   border-radius: 2em;
   cursor: pointer;
 `;
 
 function Navigator({ isLogin }) {
-  const [dropdown, setDropdown] = useState(false);
-  // onClick이벤트 => onMouseOver 로 드롭다운 방법 변경, 구현 중
-
-  const dropdownHandler = () => {
-    setDropdown(!dropdown);
+  const [modal, SetModal] = useState(false);
+  const modalHandler = (modalType) => {
+    SetModal(modalType);
   };
 
   return (
     <NavigatorContainer>
+      {modal === "login" ? <LoginModal modalHandler={modalHandler} /> : null}
       <a className="logo" href="/">
         <img src="Luca_logo.png" />
       </a>
       <div className="about">
         <a href="/">about</a>
       </div>
-      <div className="account">
-        {!isLogin ? (
-          <div className="profile">
-            {!dropdown ? (
-              <>
-                <img
-                  className="profile-image-thumb"
-                  src="https://picsum.photos/300/300?random=1"
-                />
-                <div className="profile-username" onMouseOver={dropdownHandler}>
-                  Username
-                </div>
-              </>
-            ) : (
-              <div className="profile-dropdown">
-                <div className="dropdown-index" onClick={dropdownHandler}>
-                  Username
-                </div>
-                <div className="dropdown-index">
-                  <a href="/mypage">Mypage</a>
-                </div>
-                <div className="dropdown-index">Setting</div>
-                <div className="dropdown-index">Logout</div>
-              </div>
-            )}
+      {!isLogin ? (
+        <div className="profile">
+          <img
+            className="profile"
+            src="https://picsum.photos/300/300?random=1"
+          />
+          <div className="dropdown">
+            <div className="username">김코딩</div>
+            <a className="dropdown-index" href="/mypage">
+              <i class="fa-solid fa-user"></i>
+              <div>마이페이지</div>
+            </a>
+            <a className="dropdown-index" href="/mypage">
+              <i class="fa-solid fa-gear"></i>
+              <div>설정</div>
+            </a>
+            <a className="dropdown-index">
+              <i
+                class="fa-solid fa-right-from-bracket"
+                style={{ color: "#FF5D50" }}
+              ></i>
+              <div style={{ color: "#FF5D50" }}>로그아웃</div>
+            </a>
           </div>
-        ) : (
-          <>
-            <Guest className="guest" href="/signup">
-              회원가입
-            </Guest>
-            <Guest className="guest" impact>
-              로그인
-            </Guest>
-          </>
-        )}
-      </div>
+        </div>
+      ) : (
+        <div style={{ margin: "0 8vh" }}>
+          <Guest href="/signup">회원가입</Guest>
+          <Guest impact onClick={() => modalHandler("login")}>
+            로그인
+          </Guest>
+        </div>
+      )}
     </NavigatorContainer>
   );
 }
