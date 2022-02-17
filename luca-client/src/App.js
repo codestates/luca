@@ -25,7 +25,7 @@ function App() {
     isAuthenticated();
   };
   const handleLogout = () => {
-    axios.post(`${serverUrl}/logout`).then((res) => {
+    axios.post(`${serverUrl}/user/logout`).then((res) => {
       setUserinfo(null);
       setIsLogin(false);
       console.log(res.data.message);

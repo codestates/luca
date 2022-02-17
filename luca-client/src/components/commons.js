@@ -82,11 +82,13 @@ const NavigatorContainer = styled.div`
     }
   }
 `;
+
+/* */
+
 const Guest = styled.a`
   background-color: ${(props) =>
     props.impact ? "rgb(255, 127, 80)" : "white"};
-  color: ${(props) => (props.impact ? "white" : "black")};
-  font-weight: bold;
+  color: ${(props) => (props.impact ? "white" : "rgba(0,0,0,0.7)")};
   padding: 0.8em;
   border-radius: 2em;
   cursor: pointer;
@@ -107,7 +109,7 @@ function Navigator({ isLogin }) {
       <div className="about">
         <a href="/">about</a>
       </div>
-      {isLogin ? (
+      {!isLogin ? (
         <div className="profile">
           <img
             className="profile"

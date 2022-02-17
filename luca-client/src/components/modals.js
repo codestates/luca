@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import { useRef, useState } from "react";
+import axios from "axios";
+const serverUrl = "http://localhost:4000";
 
 // ============모달 props 사용법==========================
 
@@ -103,7 +105,8 @@ const ModalView = styled.div`
     }
 
     > span {
-      margin: 0 0.3em;
+      margin-right: 1em;
+      color: rgba(0, 0, 0, 0.5);
     }
   }
 
@@ -129,7 +132,41 @@ const ModalView = styled.div`
   }
 `;
 
-export function LoginModal({ modalHandler }) {
+export function LoginModal({ modalHandler, setUserinfo }) {
+  const [loginInfo, setLoginInfo] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleInputValue = (e, key) => {
+    setLoginInfo({ ...loginInfo, [key]: e.target.value });
+  };
+
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const LoginHandler = () => {
+    if (loginInfo.email.length === 0 || loginInfo.password.length === 0) {
+      return setErrorMessage("이메일과 비밀번호를 입력해주세요");
+    }
+    axios.post(`${serverUrl}/user/login`, loginInfo).then((res) => {
+      if (res.data.message === "Wrong email") {
+        return setErrorMessage("이메일 주소를 확인해주세요");
+      }
+      if (res.data.message === "Wrong password") {
+        return setErrorMessage("비밀번호를 확인해주세요");
+      }
+      if (res.data.message === "Internal server error") {
+        return setErrorMessage("서버 에러: 지금은 로그인할 수 없습니다");
+      }
+      if (res.status === 200) {
+        setErrorMessage("");
+        setUserinfo(res.data.data);
+      }
+    });
+  };
+
+  console.log(loginInfo);
+
   return (
     <ModalBackdrop onClick={() => modalHandler(false)}>
       <ModalView onClick={(e) => e.stopPropagation()}>
@@ -137,16 +174,19 @@ export function LoginModal({ modalHandler }) {
         <div className="modal-body">
           <div className="query">
             <div className="index">이메일</div>
-            <input />
+            <input onChange={(e) => handleInputValue(e, "email")} />
           </div>
           <div className="query">
             <div className="index">비밀번호</div>
-            <input />
+            <input
+              onChange={(e) => handleInputValue(e, "password")}
+              type="password"
+            />
           </div>
           <span>계정이 없으신가요?</span>
-          <span>
-            <a href="">회원가입</a>
-          </span>
+          <a href="/signup">
+            <span impact>회원가입</span>
+          </a>
         </div>
         <div className="modal-footer">
           <div className="buttons">
