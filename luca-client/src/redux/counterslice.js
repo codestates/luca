@@ -1,30 +1,53 @@
-// import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
 
-// const initialState = {
-//     value: 0,
-// }
+export const checkLogin = createAsyncThunk('user/signin', async (reqData) => {
+    const data =
+    await axios.post('http://localhost:4000/user/login', reqData) //singin 아니라 login임
+    .then((res) =>{
+        // console.log(res)
+        return res.data.message
+    })
+    .catch((err) => {
+        // console.log(err.response.data.message)
+        return err.response.data.message
+    })
+    // console.log(data)
+    return data;
+});
 
-// export const counterSlice = createSlice({
-//     name: 'counter',
-//     initialState,
-//     reducers: {
-//     increment: (state) => {
-//       // Redux Toolkit allows us to write "mutating" logic in reducers. It
-//       // doesn't actually mutate the state because it uses the Immer library,
-//       // which detects changes to a "draft state" and produces a brand new
-//       // immutable state based off those changes
-//         state.value += 1
-//     },
-//     decrement: (state) => {
-//         state.value -= 1
-//     },
-//     incrementByAmount: (state, action) => {
-//         state.value += action.payload
-//     },
-//     },
-// })
+export const counterSlice = createSlice({
 
-// // Action creators are generated for each case reducer function
-// export const { increment, decrement, incrementByAmount } = counterSlice.actions
+    name: 'user',
 
-// export default counterSlice.reducer
+    initialState: {
+        projects: [],
+        isLogin: [],
+        test: 0
+    },
+
+    reducers: {
+        increament: (state) => {
+            state.test += 1;
+        },
+    },
+    
+    extraRefucers: (builder) => {
+        builder
+        .addCase(checkLogin.fulfilled, (state, action) => {
+            console.log(state.isLogin)
+            console.log(action.payload)
+            state.isLogin.push(action.payload)
+        })
+        .addCase(checkLogin.rejected, (state, {payload}) => {
+            console.log(state.isLogin)
+            console.log(payload)
+            state.isLogin.push(payload);
+        });
+    }
+});
+
+// Action creators are generated for each case reducer function
+export const { increament } = counterSlice.actions
+
+export default counterSlice.reducer

@@ -1,3 +1,5 @@
+// import dotenv from "dotenv";
+// require('dotenv').config();
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import About from "./pages/about";
@@ -12,14 +14,15 @@ import GooglePage from './pages/GooglePage';
 
 import styled from "styled-components";
 import { useState } from "react";
+// const url = process.env.SERVER_URL;
+// console.log(url);
 
 function App() {
   const [isLogin, setIsLogin] = useState(false);
-
   return (
     <div>
       <Routes>
-        <Route path="/" element={!isLogin ? <Main /> : <About />} />
+        <Route path="/" element={isLogin ? <Main /> : <About />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/mypage" element={<Mypage />} />
         <Route path="/changepassword" element={<ChangePassword />} />

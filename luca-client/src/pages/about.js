@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Navigator } from "../components/commons";
 
+
 const dummyIntro = [
   {
     title: "Lorem ipsum",

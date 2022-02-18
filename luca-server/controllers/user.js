@@ -157,11 +157,13 @@ module.exports = {
     },
 
     login: async (req, res) => {
+        console.log(req)
         const { email, password } = req.body;
+        console.log(email, password)
 
         if (!email || !password) {
             return res
-                .status(422)
+                .status(400)
                 .json({ message: "Insufficient parameters supplied" });
         } else {
             try {

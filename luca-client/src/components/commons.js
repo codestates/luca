@@ -101,14 +101,19 @@ const Guest = styled.a`
 
 function Navigator({ isLogin }) {
   const [dropdown, setDropdown] = useState(false);
+  const [isClicked, setIsClicked] = useState(false); //로그인 모달 띄우기 위한 생태입니다.(flowervillagearp)
   // onClick이벤트 => onMouseOver 로 드롭다운 방법 변경, 구현 중
 
   const dropdownHandler = () => {
     setDropdown(!dropdown);
   };
 
+  const onClickHandler = () => { //로그인 모달 띄우기 위한 생태 변경 함수입니다.(flowervillagearp)
+    setIsClicked(!isClicked);
+  }
+
   return (
-    <NavigatorContainer>
+    <NavigatorContainer onClick={isClicked? onClickHandler: null}> {/* 로그인 모달을 닫기 위한 조건문입니다.(flowervillagearp) */}
       <a className="logo" href="/">
         <img src="Luca_logo.png" />
       </a>
@@ -116,7 +121,7 @@ function Navigator({ isLogin }) {
         <a href="/">about</a>
       </div>
       <div className="account">
-        {!isLogin ? (
+        {isLogin ? (
           <div className="profile">
             {!dropdown ? (
               <>
@@ -146,9 +151,14 @@ function Navigator({ isLogin }) {
             <Guest className="guest" href="/signup">
               회원가입
             </Guest>
-            <Guest className="guest" impact>
+            <Guest className="guest" impact onClick={onClickHandler}>
               로그인
             </Guest>
+            {
+              isClicked ?
+              <LoginModal />:
+              null
+            }
           </>
         )}
       </div>
