@@ -7,6 +7,7 @@ const Page = styled.div`
   margin-top: 10vh;
   display: flex;
   justify-content: center;
+  background-color: seashell;
 `;
 const MypageBody = styled.div`
   position: relative;
@@ -137,9 +138,11 @@ export default function Mypage() {
 
   const handleSave = function () {
     setIsAlert(true);
-    setTimeout(()=>{setIsAlert(false)}, 1500);
+    setTimeout(() => {
+      setIsAlert(false);
+    }, 1500);
     setIsClicked(false);
-  }
+  };
 
   return (
     <div>
@@ -149,38 +152,45 @@ export default function Mypage() {
           <Page>
             <div>{/* navbar */}</div>
             <MypageBody>
-              {isAlert? <Savealert />: null}
+              {isAlert ? <Savealert /> : null}
               <profileimg>
                 <img src="https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/damien-hirst-1-1538661596.jpg" />
               </profileimg>
               <userinfo>
                 <userprofile>
-                  {
-                    isClicked?
+                  {isClicked ? (
                     <div>
-                    <input></input>
-                    </div>:
-                    <div>
-                    <h1>Ian</h1>
+                      <input></input>
                     </div>
-                  }
+                  ) : (
+                    <div>
+                      <h1>Ian</h1>
+                    </div>
+                  )}
                   <useremail>ian58@gmail.com</useremail>
                 </userprofile>
                 <div>
                   {isClicked ? (
                     <Decisionbutton>
                       <div>
-                        <cancelbuttton onClick={handleClick}>취소</cancelbuttton>
+                        <cancelbuttton onClick={handleClick}>
+                          취소
+                        </cancelbuttton>
                         <savebutton onClick={handleSave}>저장</savebutton>
                       </div>
                       <withdrawal>회원탈퇴</withdrawal>
                     </Decisionbutton>
                   ) : (
                     <Userbutton>
-                      <modifybutton className="modifybutton" onClick={handleClick}>
+                      <modifybutton
+                        className="modifybutton"
+                        onClick={handleClick}
+                      >
                         회원정보 수정
                       </modifybutton>
-                      <changepwbutton className="pwbutton">비밀번호 변경</changepwbutton>
+                      <changepwbutton className="pwbutton">
+                        비밀번호 변경
+                      </changepwbutton>
                     </Userbutton>
                   )}
                 </div>

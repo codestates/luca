@@ -10,7 +10,7 @@ export default function ChangePassword() {
     display: flex;
     justify-content: center;
     align-items: center;
-  `
+  `;
   const ChangePW = styled.div`
     /* border: solid; */
     /* margin-top: 10vh; */
@@ -33,7 +33,6 @@ export default function ChangePassword() {
       > new {
         /* display: flex;
         flex-direction: column; */
-
       }
       > confirm {
         /* display: flex;
@@ -122,38 +121,30 @@ export default function ChangePassword() {
   const [newPwAlert, setNewPwAlert] = useState("");
   const [newPwCheckAlert, setNewPwCheckAlert] = useState("");
 
-  const changePw = () => {
-
-  }
-  const checkCurPw = () => {
-    
-  }
+  const changePw = () => {};
+  const checkCurPw = () => {};
   const newPw = () => {
-    console.log("running")
+    console.log("running");
     const pw = newPwRef.current.value;
-    console.log(pw)
-    let symbol = 
-    pw.search(/[~!@#$%^&*()_+|<>?:{}]/g)
-    console.log(symbol)
-    if(pw.length < 8) {
+    console.log(pw);
+    let symbol = pw.search(/[~!@#$%^&*()_+|<>?:{}]/g);
+    console.log(symbol);
+    if (pw.length < 8) {
       setNewPwAlert("비밀번호는 8자 이상입니다.");
-    }
-    else if(symbol < 0) {
+    } else if (symbol < 0) {
       setNewPwAlert("비밀번호는 특수문자를 포함해야 합니다.");
-    }
-    else{
+    } else {
       setNewPwAlert("");
     }
-  }
+  };
   const checkNewPw = () => {
-    const pwCheck=newPwCheckRef.current.value
-    if(pwCheck === newPwRef.current.value) {
+    const pwCheck = newPwCheckRef.current.value;
+    if (pwCheck === newPwRef.current.value) {
       setNewPwCheckAlert("");
-    }
-    else{
+    } else {
       setNewPwCheckAlert("비밀번호가 일치하지 않습니다.");
     }
-  }
+  };
 
   return (
     <div>
@@ -166,31 +157,49 @@ export default function ChangePassword() {
               <current>
                 <box>
                   <div>현재 비밀변호</div>
-                  <input ref={curPwRef} type="text" placeholder="현재 비밀번호를 입력하세요." />
+                  <input
+                    ref={curPwRef}
+                    type="text"
+                    placeholder="현재 비밀번호를 입력하세요."
+                  />
                 </box>
-                {curPwAlert? <curalert>{curPwAlert}</curalert> : null}
+                {curPwAlert ? <curalert>{curPwAlert}</curalert> : null}
               </current>
               <new>
                 <box>
                   <div>새 비밀번호</div>
-                  <input ref={newPwRef} type="text" placeholder="새 비밀번호를 입력하세요."></input>
+                  <input
+                    ref={newPwRef}
+                    type="text"
+                    placeholder="새 비밀번호를 입력하세요."
+                  ></input>
                 </box>
-                {newPwAlert? <newalert>{newPwAlert}</newalert> : null}
+                {newPwAlert ? <newalert>{newPwAlert}</newalert> : null}
               </new>
               <confirm>
                 <box>
                   <div>비밀번호 확인</div>
-                  <input ref={newPwCheckRef} type="text" placeholder="비밀번호를 확인하세요."/>
+                  <input
+                    ref={newPwCheckRef}
+                    type="text"
+                    placeholder="비밀번호를 확인하세요."
+                  />
                 </box>
-                {newPwCheckAlert? <checkalert>{newPwCheckAlert}</checkalert> : null}
+                {newPwCheckAlert ? (
+                  <checkalert>{newPwCheckAlert}</checkalert>
+                ) : null}
               </confirm>
               <buttons>
                 <div>취소</div>
-                <div onClick={()=>{
-                  checkCurPw();
-                  newPw();
-                  checkNewPw();
-                }}>저장</div>
+                <div
+                  onClick={() => {
+                    checkCurPw();
+                    newPw();
+                    checkNewPw();
+                  }}
+                >
+                  저장
+                </div>
               </buttons>
             </registrybox>
           </ChangePW>

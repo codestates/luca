@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import {useSelector, useDispatch} from "react-redux";
 import {checkLogin, increament} from "../redux/counterslice.js";
 import axios from "axios";
+const serverUrl = "http://localhost:4000";
 
 // ============모달 props 사용법==========================
 
@@ -40,7 +41,7 @@ const ModalBackdrop = styled.div`
   width: 100vw;
   top: 0;
   height: 100vh;
-  background-color: black;
+  background-color: rgba(0, 0, 0, 0.5);
   justify-content: center;
   display: flex;
   /////////////////////flowervillagearp////////////////////////////
@@ -106,7 +107,8 @@ const ModalView = styled.div`
     }
 
     > span {
-      margin: 0 0.3em;
+      margin-right: 1em;
+      color: rgba(0, 0, 0, 0.5);
     }
   }
 
@@ -166,9 +168,9 @@ export function LoginModal({ modalHandler }) {
             <input ref={pwRef}/>
           </div>
           <span>계정이 없으신가요?</span>
-          <span>
-            <a href="">회원가입</a>
-          </span>
+          <a href="/signup">
+            <span impact>회원가입</span>
+          </a>
         </div>
         <div className="modal-footer">
           <div className="buttons">
@@ -182,7 +184,6 @@ export function LoginModal({ modalHandler }) {
 }
 
 export function CreateProjectModal({ modalHandler, newProjectHandler }) {
-
   const nameRef = useRef();
   const descRef = useRef();
   const inviteRef = useRef();
@@ -192,7 +193,7 @@ export function CreateProjectModal({ modalHandler, newProjectHandler }) {
 
   const handleType = (e) => {
     setType(e);
-  }
+  };
 
   return (
     <ModalBackdrop onClick={() => modalHandler(false)}>
@@ -200,31 +201,53 @@ export function CreateProjectModal({ modalHandler, newProjectHandler }) {
         <div className="modal-title">새 프로젝트</div>
         <div className="modal-body">
           <div className="query">
-            <button className="options" onClick={()=>{handleType("flase")}}>개인</button>
-            <button className="options" onClick={()=>{handleType("true")}}>팀</button>
+            <button
+              className="options"
+              onClick={() => {
+                handleType("flase");
+              }}
+            >
+              개인
+            </button>
+            <button
+              className="options"
+              onClick={() => {
+                handleType("true");
+              }}
+            >
+              팀
+            </button>
           </div>
           <div className="query">
             <div className="index">이름</div>
             {/* <input onChange={(e)=>{newProjectHandler(e, "name")}}/> */}
-            <input ref={nameRef}/>
+            <input ref={nameRef} />
           </div>
           <div className="query">
             <div className="index">설명</div>
             {/* <input onChange={(e)=>{newProjectHandler(e, "desc")}}/> */}
-            <input ref={descRef}/>
+            <input ref={descRef} />
           </div>
           <div className="query">
             <div className="index">초대</div>
             {/* <input onChange={(e)=>{newProjectHandler(e, "invite")}}/> */}
-            <input ref={inviteRef}/>
+            <input ref={inviteRef} />
           </div>
         </div>
         <div className="modal-footer">
           <div className="buttons">
             <button onClick={modalHandler}>취소</button>
-            <button 
-            className="confirm" 
-            onClick={()=>{newProjectHandler(nameRef.current, descRef.current, inviteRef.current, type)}}>
+            <button
+              className="confirm"
+              onClick={() => {
+                newProjectHandler(
+                  nameRef.current,
+                  descRef.current,
+                  inviteRef.current,
+                  type
+                );
+              }}
+            >
               생성
             </button>
           </div>
@@ -271,20 +294,27 @@ const SortModalBody = styled.div`
   > div:hover {
     background-color: red;
   }
-`
+`;
 
-export function Sortmodal ({sortHandler}) {
-
+export function Sortmodal({ sortHandler }) {
   return (
     <SortModalBody>
-      <div onClick={()=>{sortHandler("update")}}>
+      <div
+        onClick={() => {
+          sortHandler("update");
+        }}
+      >
         업데이트일 기준 정렬
       </div>
-      <div onClick={()=>{sortHandler("create")}}>
+      <div
+        onClick={() => {
+          sortHandler("create");
+        }}
+      >
         생성일 기준 정렬
       </div>
     </SortModalBody>
-  )
+  );
 }
 
 const SaveAlertbox = styled.div`
@@ -300,12 +330,12 @@ const SaveAlertbox = styled.div`
   top: 2%;
   font-size: 1.4rem;
   color: darkgray;
-`
+`;
 
-export function Savealert () {
+export function Savealert() {
   return (
     <SaveAlertbox>
       <div>저장되었습니다</div>
     </SaveAlertbox>
-  )
+  );
 }
