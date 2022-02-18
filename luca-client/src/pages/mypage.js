@@ -2,7 +2,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import { Savealert } from "../components/modals";
 import { Navigator, Backdrop, Container } from "../components/commons";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 const Page = styled.div`
   margin-top: 10vh;
@@ -130,7 +130,7 @@ const Decisionbutton = styled.div`
 `;
 
 export default function Mypage() {
-  const userInfo = useSelector((state) => state.userInfo.userInfo);
+  //const userInfo = useSelector((state) => state.userInfo.userInfo);
   const [isClicked, setIsClicked] = useState(false);
   const [isAlert, setIsAlert] = useState(false);
 
@@ -168,7 +168,7 @@ export default function Mypage() {
                       <h1>Ian</h1>
                     </div>
                   )}
-                  <useremail>ian@gmail.com</useremail>
+                  <useremail>ian58@gmail.com</useremail>
                 </userprofile>
                 <div>
                   {isClicked ? (

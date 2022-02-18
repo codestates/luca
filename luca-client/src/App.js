@@ -24,7 +24,7 @@ function App() {
   const isAuthenticated = () => {
     if (window.localStorage.userInfo) {
       dispatch(setIsLogin(true));
-      dispatch(setUserInfo(window.localStorage.userInfo));
+      dispatch(setUserInfo(JSON.parse(window.localStorage.userInfo)));
     } else {
       dispatch(setIsLogin(false));
       dispatch(setUserInfo(null));

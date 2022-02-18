@@ -161,9 +161,12 @@ export function LoginModal({ modalHandler }) {
       .then((res) => {
         if (res.status === 200) {
           dispatch(setIsLogin(true));
-          dispatch(setUserInfo(res.data));
+          dispatch(setUserInfo(res.data.userInfo));
           modalHandler(false);
-          window.localStorage.setItem("userInfo", res.data);
+          window.localStorage.setItem(
+            "userInfo",
+            JSON.stringify(res.data.userInfo)
+          );
           window.location.replace("/");
         }
       })
