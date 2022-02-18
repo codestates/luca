@@ -1,7 +1,7 @@
 ---
 name: Dev Log
 about: Completed / To-Do Task Check
-title: "[Dev Log] dev log"
+title: "[Dev Log] name / 20YY-MM-DD"
 labels: ''
 assignees: ''
 
