@@ -1,7 +1,7 @@
 ---
 name: Error Handling
 about: Error Handling
-title: ''
+title: "[Error Handling]"
 labels: ''
 assignees: ''
 
