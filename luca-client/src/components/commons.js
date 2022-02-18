@@ -167,19 +167,34 @@ function Navigator() {
 // =======================여기까지 네비게이터에 필요한 컴포넌트입니다=======================
 
 const Backdrop = styled.div`
-  width: 100vw;
+  min-width: 90vw;
   min-height: 90vh;
+  margin: 0 5vw;
   height: auto;
+  display: flex;
   justify-content: center;
+  background-color: grey;
+`;
+
+// const Container = styled.div`
+//   min-height: 90vh;
+//   height: auto;
+//   flex: 1 0 auto;
+//   max-width: 1320px;
+//   margin: auto;
+// `;
+
+const FooterContainer = styled.div`
+  bottom: 0;
+  width: 100vw;
+  min-height: 20vh;
+  background-color: rgb(70, 70, 70);
+  align-items: center;
   display: flex;
 `;
 
-const Container = styled.div`
-  min-height: 90vh;
-  height: auto;
-  flex: 1 0 auto;
-  max-width: 1320px;
-  margin: auto;
-`;
+function Footer() {
+  return <FooterContainer>this is footer</FooterContainer>;
+}
 
-export { Navigator, Backdrop, Container };
+export { Navigator, Backdrop, Footer };
