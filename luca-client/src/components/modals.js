@@ -1,5 +1,8 @@
 import styled from "styled-components";
 import { useRef, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setIsLogin } from "../redux/slicer/loginSlice";
+import { setUserInfo } from "../redux/slicer/userInfoSlice";
 import axios from "axios";
 const serverUrl = "http://localhost:4000";
 
@@ -132,7 +135,9 @@ const ModalView = styled.div`
   }
 `;
 
-export function LoginModal({ modalHandler, setUserinfo }) {
+export function LoginModal({ modalHandler }) {
+  const dispatch = useDispatch();
+
   const [loginInfo, setLoginInfo] = useState({
     email: "",
     password: "",
@@ -148,23 +153,26 @@ export function LoginModal({ modalHandler, setUserinfo }) {
     if (loginInfo.email.length === 0 || loginInfo.password.length === 0) {
       return setErrorMessage("이메일과 비밀번호를 입력해주세요");
     }
-    axios.post(`${serverUrl}/user/login`, loginInfo).then((res) => {
-      if (res.data.message === "Wrong email") {
-        return setErrorMessage("이메일 주소를 확인해주세요");
-      }
-      if (res.data.message === "Wrong password") {
-        return setErrorMessage("비밀번호를 확인해주세요");
-      }
-      if (res.data.message === "Internal server error") {
-        return setErrorMessage("서버 에러: 지금은 로그인할 수 없습니다");
-      }
-      if (res.status === 200) {
-        setErrorMessage("");
-        setUserinfo(res.data.data);
-      }
-    });
+    axios
+      .post(`${serverUrl}/user/login`, loginInfo, {
+        "Content-Type": "application/json",
+        withCredentials: true,
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          dispatch(setIsLogin(true));
+          dispatch(setUserInfo(res.data));
+          modalHandler(false);
+          window.localStorage.setItem("userInfo", res.data);
+          window.location.replace("/");
+        }
+      })
+      .catch((err) => {
+        if (err.response.status === 400) {
+          return setErrorMessage("잘못된 이메일 혹은 비밀번호입니다.");
+        }
+      });
   };
-
   console.log(loginInfo);
 
   return (
@@ -174,15 +182,28 @@ export function LoginModal({ modalHandler, setUserinfo }) {
         <div className="modal-body">
           <div className="query">
             <div className="index">이메일</div>
-            <input onChange={(e) => handleInputValue(e, "email")} />
+            <input
+              onChange={(e) => handleInputValue(e, "email")}
+              onKeyPress={(e) => {
+                if (e.key === "Enter") {
+                  return LoginHandler();
+                }
+              }}
+            />
           </div>
           <div className="query">
             <div className="index">비밀번호</div>
             <input
               onChange={(e) => handleInputValue(e, "password")}
+              onKeyPress={(e) => {
+                if (e.key === "Enter") {
+                  return LoginHandler();
+                }
+              }}
               type="password"
             />
           </div>
+          <div style={{ color: "red" }}>{errorMessage}</div>
           <span>계정이 없으신가요?</span>
           <a href="/signup">
             <span impact>회원가입</span>
@@ -191,7 +212,9 @@ export function LoginModal({ modalHandler, setUserinfo }) {
         <div className="modal-footer">
           <div className="buttons">
             <button>소셜 로그인</button>
-            <button className="confirm">로그인</button>
+            <button className="confirm" onClick={LoginHandler}>
+              로그인
+            </button>
           </div>
         </div>
       </ModalView>

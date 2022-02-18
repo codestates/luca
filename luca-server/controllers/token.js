@@ -3,12 +3,14 @@ const { sign, verify } = require("jsonwebtoken");
 
 module.exports = {
   generateAccessToken: (data) => {
-    return sign(data.dataValues, process.env.ACCESS_SECRET, {
+    console.log("=====> data for token: ", data);
+    return sign(data, process.env.ACCESS_SECRET, {
       expiresIn: "15d",
     });
   },
   sendAccessToken: (res, accessToken, statusCode, data) => {
     return res
+      .header("Set-Cookie")
       .cookie("jwt", accessToken, {
         domain: "localhost",
         path: "/",
@@ -21,17 +23,17 @@ module.exports = {
       .json(data);
   },
   isAuthorized: (req) => {
-    if ('jwt' in req.cookies) {
+    if ("jwt" in req.cookies) {
       try {
         const userInfo = verify(req.cookies.jwt, process.env.ACCESS_SECRET);
         delete userInfo.iat;
         delete userInfo.exp;
         return userInfo;
-      } catch(err) {
-        return 'expired'
+      } catch (err) {
+        return "expired";
       }
     } else {
-      return 'not found';
+      return "not found";
     }
   },
 };

@@ -10,39 +10,30 @@ import KakaoPage from "./pages/oauth/KakaoPage";
 import NaverPage from "./pages/oauth/NaverPage";
 import GooglePage from "./pages/oauth/GooglePage";
 import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setIsLogin } from "../src/redux/slicer/loginSlice";
+import { setUserInfo } from "./redux/slicer/userInfoSlice";
 import axios from "axios";
 const serverUrl = "http://localhost:4000";
 
 function App() {
-  const [isLogin, setIsLogin] = useState(false);
-  const [userinfo, setUserinfo] = useState(null);
-  const isAuthenticated = () => {
-    if (userinfo !== null) {
-      setIsLogin(true);
-    }
-  };
-  const handleResponseSuccess = () => {
-    isAuthenticated();
-  };
-  const handleLogout = () => {
-    axios.post(`${serverUrl}/user/logout`).then((res) => {
-      setUserinfo(null);
-      setIsLogin(false);
-      console.log(res.data.message);
-    });
-  };
+  const dispatch = useDispatch();
+  const isLogin = useSelector((state) => state.login.isLogin);
+  //const [userinfo, setUserinfo] = useState(null);
 
-  const testServerConnection = () => {
-    // http 서버 연결 테스트용입니다.
-    axios.get(serverUrl).then((res) => {
-      console.log(res);
-    });
+  const isAuthenticated = () => {
+    if (window.localStorage.userInfo) {
+      dispatch(setIsLogin(true));
+      dispatch(setUserInfo(window.localStorage.userInfo));
+    } else {
+      dispatch(setIsLogin(false));
+      dispatch(setUserInfo(null));
+    }
   };
 
   useEffect(() => {
-    testServerConnection();
-    handleLogout();
-  }, []);
+    isAuthenticated();
+  });
 
   return (
     <div>

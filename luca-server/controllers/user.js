@@ -39,6 +39,7 @@ module.exports = {
 
   logout: (req, res) => {
     const accessToken = req.cookies.jwt;
+    console.log("=====> logout cookies", req.cookies);
 
     try {
       if (!accessToken) {
@@ -50,6 +51,7 @@ module.exports = {
           //secure: true,
           sameSite: "None",
         });
+        //res.cookie("logout", { maxAge: 0 });
         return res.status(200).send({ message: "Signout succeed" });
       }
     } catch (err) {
@@ -157,6 +159,7 @@ module.exports = {
   },
 
   login: async (req, res) => {
+    console.log("=====> req:", req.body);
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -170,7 +173,7 @@ module.exports = {
             email: email,
           },
         });
-        console.log(userInfo);
+        console.log("=====> userInfo: ", userInfo);
 
         // 로그인 실패
         if (!userInfo) {
@@ -180,11 +183,13 @@ module.exports = {
           // 로그인이 성공하면 토큰이 생성되고 쿠기로 전송된다.
           delete userInfo.dataValues.password;
           if (passwordCheck) {
-            const accessToken = generateAccessToken(userInfo);
+            const accessToken = generateAccessToken(userInfo.dataValues);
+            console.log("=====> AccessToken generated ! :", accessToken);
             sendAccessToken(res, accessToken, 200, {
               data: userInfo,
               message: "login success",
             });
+            // console.log("=====> AccessToken sent !");
           } else {
             return res.status(400).json({ message: "Wrong password" });
           }

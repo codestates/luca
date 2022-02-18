@@ -1,6 +1,10 @@
 import { useState } from "react/cjs/react.development";
+import { useSelector, useDispatch } from "react-redux";
+import { setIsLogin } from "../redux/slicer/loginSlice";
 import styled from "styled-components";
 import { LoginModal } from "./modals";
+import axios from "axios";
+const serverUrl = "http://localhost:4000";
 
 const NavigatorContainer = styled.div`
   z-index: 999;
@@ -94,10 +98,24 @@ const Guest = styled.a`
   cursor: pointer;
 `;
 
-function Navigator({ isLogin }) {
+function Navigator() {
+  const dispatch = useDispatch();
+  const isLogin = useSelector((state) => state.login.isLogin);
+
   const [modal, SetModal] = useState(false);
+
   const modalHandler = (modalType) => {
     SetModal(modalType);
+  };
+
+  const logoutHandler = () => {
+    // axios.get(`${serverUrl}/user/logout`).then((res) => {
+    //   console.log("logout res: ", res);
+    // });
+    // logout 요청시 토큰이 없기때문에 (현재 localstorage로 로그인 유지 구현) 401 에러 뜸
+    dispatch(setIsLogin(false));
+    window.localStorage.clear();
+    window.location.replace("/");
   };
 
   return (
@@ -109,7 +127,7 @@ function Navigator({ isLogin }) {
       <div className="about">
         <a href="/">about</a>
       </div>
-      {!isLogin ? (
+      {isLogin ? (
         <div className="profile">
           <img
             className="profile"
@@ -118,16 +136,16 @@ function Navigator({ isLogin }) {
           <div className="dropdown">
             <div className="username">김코딩</div>
             <a className="dropdown-index" href="/mypage">
-              <i class="fa-solid fa-user"></i>
+              <i className="fa-solid fa-user"></i>
               <div>마이페이지</div>
             </a>
             <a className="dropdown-index" href="/mypage">
-              <i class="fa-solid fa-gear"></i>
+              <i className="fa-solid fa-gear"></i>
               <div>설정</div>
             </a>
-            <a className="dropdown-index">
+            <a className="dropdown-index" onClick={logoutHandler}>
               <i
-                class="fa-solid fa-right-from-bracket"
+                className="fa-solid fa-right-from-bracket"
                 style={{ color: "#FF5D50" }}
               ></i>
               <div style={{ color: "#FF5D50" }}>로그아웃</div>
