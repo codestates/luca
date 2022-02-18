@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import { useRef, useState } from "react";
+import {useSelector, useDispatch} from "react-redux";
+import {checkLogin, increament} from "../redux/counterslice.js";
 import axios from "axios";
 const serverUrl = "http://localhost:4000";
 
@@ -132,56 +134,38 @@ const ModalView = styled.div`
   }
 `;
 
-export function LoginModal({ modalHandler, setUserinfo }) {
-  const [loginInfo, setLoginInfo] = useState({
-    email: "",
-    password: "",
-  });
+export function LoginModal({ modalHandler }) {
+  // pw, email 정보를 받기 위해 이메일, 비밀번호 인풋에 emailRef, pwRef를 추가했습니다.(flowervillagearp)
+  const emailRef = useRef();
+  const pwRef = useRef();
+  const dispatch = useDispatch();
+  // const headers = {
+    //   "Content-Type": "application/json",
+    //   withCredentials: true
+    // }
+    // axios.defaults.headers.post = null;
+    const { isLogin } = useSelector((state) => state.user); // 유저 정보를 가져오기 위해 user slice를 사용합니다.(flowervillagearp)
+    const { test } = useSelector((state) => state.user);
+    const loginHandler = async() => { //로그인 버튼을 눌렀을때 counterslice에서 loginCheck action을 호출하기위한 함수입니다.(flowervillagearp)
+      const reqData = {email: `${emailRef.current.value}`, password: `${pwRef.current.value}`}; // 이 요청데이터를 보내주면 되는데 json형식으로 어떻게 변횐했더라...
+      await dispatch(checkLogin(reqData));
+      dispatch(increament());
+      console.log(isLogin)
 
-  const handleInputValue = (e, key) => {
-    setLoginInfo({ ...loginInfo, [key]: e.target.value });
-  };
-
-  const [errorMessage, setErrorMessage] = useState("");
-
-  const LoginHandler = () => {
-    if (loginInfo.email.length === 0 || loginInfo.password.length === 0) {
-      return setErrorMessage("이메일과 비밀번호를 입력해주세요");
-    }
-    axios.post(`${serverUrl}/user/login`, loginInfo).then((res) => {
-      if (res.data.message === "Wrong email") {
-        return setErrorMessage("이메일 주소를 확인해주세요");
-      }
-      if (res.data.message === "Wrong password") {
-        return setErrorMessage("비밀번호를 확인해주세요");
-      }
-      if (res.data.message === "Internal server error") {
-        return setErrorMessage("서버 에러: 지금은 로그인할 수 없습니다");
-      }
-      if (res.status === 200) {
-        setErrorMessage("");
-        setUserinfo(res.data.data);
-      }
-    });
-  };
-
-  console.log(loginInfo);
-
+  }
+  
   return (
     <ModalBackdrop onClick={() => modalHandler(false)}>
       <ModalView onClick={(e) => e.stopPropagation()}>
-        <div className="modal-title">로그인</div>
+        <div className="modal-title">{isLogin+"입니다."+test}</div>
         <div className="modal-body">
           <div className="query">
             <div className="index">이메일</div>
-            <input onChange={(e) => handleInputValue(e, "email")} />
+            <input ref={emailRef}/>
           </div>
           <div className="query">
             <div className="index">비밀번호</div>
-            <input
-              onChange={(e) => handleInputValue(e, "password")}
-              type="password"
-            />
+            <input ref={pwRef}/>
           </div>
           <span>계정이 없으신가요?</span>
           <a href="/signup">
@@ -191,7 +175,7 @@ export function LoginModal({ modalHandler, setUserinfo }) {
         <div className="modal-footer">
           <div className="buttons">
             <button>소셜 로그인</button>
-            <button className="confirm">로그인</button>
+            <button className="confirm" onClick={loginHandler}>로그인</button>
           </div>
         </div>
       </ModalView>
