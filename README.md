@@ -2,7 +2,7 @@
 ## LOGO
 ![](https://images.velog.io/images/portis082/post/7a37c12f-7979-43a4-b68b-99e6dd30a30f/Luca_logo.jpg)
 
-🏠 &nbsp; <a href="http://luca-client.s3-website.ap-northeast-2.amazonaws.com/">Luca Homepage</a>
+🏠 &nbsp; <a href="http://luca-client.s3-website.ap-northeast-2.amazonaws.com/">Luca Homepage</a>
 
 ## About
 브레인 스토밍에서 나온 아이디어를 마인드맵으로 구성할 수 있는 실시간 아이디에이션 기획 툴입니다.
