@@ -18,6 +18,8 @@ import { setUserInfo } from "./redux/slicer/userInfoSlice";
 import axios from "axios";
 import { counterSlice } from "./redux/counterslice";
 const serverUrl = "http://localhost:4000";
+import TestMain from './pages/testMain';
+import TestProject from './pages/testProject';
 
 function App() {
   const dispatch = useDispatch();
@@ -50,9 +52,12 @@ function App() {
         <Route path="/mypage" element={<Mypage userInfo={userInfo} />} />
         <Route path="/changepassword" element={<ChangePassword />} />
         <Route path="/project" element={<Project />} />
-        <Route path="/auth/callback/kakao" element={<KakaoPage />} />
-        <Route path="/auth/callback/naver" element={<NaverPage />} />
-        <Route path="/auth/callback/google" element={<GooglePage />} />
+        <Route path='/auth/callback/kakao' element={<KakaoPage />} />
+        <Route path='/auth/callback/naver' element={<NaverPage />} />
+        <Route path='/auth/callback/google' element={<GooglePage />} />
+        <Route path='/test' element={<TestMain />} />
+        <Route path='/test/project/1' element={<TestProject />} />
+        <Route path='/test/project/2' element={<TestProject />} />
       </Routes>
     </div>
   );

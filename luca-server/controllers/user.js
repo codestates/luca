@@ -48,10 +48,9 @@ module.exports = {
         // 쿠키 삭제를 통해 로그아웃을 구현한다.
         res.clearCookie("jwt", {
           httpOnly: true,
-          //secure: true,
-          //sameSite: "None",
+          // secure: true,
+          // sameSite: "None",
         });
-        //res.cookie("logout", { maxAge: 0 });
         return res.status(200).send({ message: "Signout succeed" });
       }
     } catch (err) {
@@ -173,7 +172,7 @@ module.exports = {
             email: email,
           },
         });
-        
+
         // 로그인 실패
         if (!userInfo) {
           return res.status(400).json({ message: "Wrong email" });
