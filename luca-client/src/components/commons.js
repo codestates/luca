@@ -1,11 +1,10 @@
 import { useState } from "react/cjs/react.development";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { setIsLogin } from "../redux/slicer/loginSlice";
 import styled from "styled-components";
 import { LoginModal } from "./modals";
-import { checkLogin, getUserInfo } from "../redux/counterslice.js";
 import axios from "axios";
+import {setIsLogin, setUserInfo} from "../redux/rootSlice.js";
 const serverUrl = "http://localhost:4000";
 
 const NavigatorContainer = styled.div`
@@ -100,7 +99,7 @@ const Guest = styled.a`
 
 function Navigator() {
   const dispatch = useDispatch();
-  const isLogin = useSelector((state) => state.login.isLogin);
+  const isLogin = useSelector((state) => state.user.isLogin);
 
   const [modal, setModal] = useState(false);
 

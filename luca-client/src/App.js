@@ -13,19 +13,18 @@ import NaverPage from "./pages/oauth/NaverPage";
 import GooglePage from "./pages/oauth/GooglePage";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setIsLogin } from "../src/redux/slicer/loginSlice";
-import { setUserInfo } from "./redux/slicer/userInfoSlice";
+// import { setIsLogin } from "../src/redux/slicer/loginSlice";
+// import { setUserInfo } from "./redux/slicer/userInfoSlice";
+import { setIsLogin, setUserInfo } from "../src/redux/rootSlice";
 import axios from "axios";
-import { counterSlice } from "./redux/counterslice";
+// import { rootSlice } from "./redux/rootSlice";
 import TestMain from './pages/testMain';
 import TestProject from './pages/testProject';
 
 function App() {
   const dispatch = useDispatch();
-  const isLogin = useSelector((state) => state.login.isLogin);
-  const userInfo = useSelector((state) => state.userInfo.userInfo);
-  console.log("App userInfo: ", userInfo);
-
+  // console.log("App userInfo: ", userInfo);
+  
   const isAuthenticated = () => {
     if (window.localStorage.userInfo) {
       dispatch(setIsLogin(true));
@@ -35,12 +34,13 @@ function App() {
       dispatch(setUserInfo(null));
     }
   };
-
+  
   useEffect(() => {
     isAuthenticated();
   }, []);
-
-  // const { isLogin } = useSelector((state) => state.user);
+  
+  const userInfo = useSelector((state) => state.user.userInfo);
+  const isLogin = useSelector((state) => state.user.isLogin);
   // console.log(isLogin);
 
   return (
