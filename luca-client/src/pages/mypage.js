@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Savealert } from "../components/modals";
-import { Navigator, Footer } from "../components/commons";
+import { Navigator, Backdrop, Footer } from "../components/commons";
+import { useSelector, useDispatch } from "react-redux";
+// import { getUserProjects } from "../redux/counterslice.js";
+import {checkLogin, getUserInfo} from "../redux/counterslice.js";
+import axios from "axios";
 //import { useSelector, useDispatch } from "react-redux";
 
 const Container = styled.div`
@@ -60,6 +64,15 @@ const Upper = styled.div`
   }
 `;
 
+// export default function Mypage() {
+//   const {isLogin} = useSelector(state => state.user);
+//   const [isClicked, setIsClicked] = useState(false);
+//   const [isAlert, setIsAlert] = useState(false);
+
+//   console.log(isLogin);
+//   const handleClick = function () {
+//     setIsClicked(!isClicked);
+//   };
 const Lower = styled.div`
   font-size: 1.2em;
   font-weight: bold;
@@ -88,6 +101,7 @@ const Button = styled.button`
   }
 `;
 
+
 export default function Mypage() {
   // const dispatch = useDispatch();
   // const userInfo = useSelector((state) => state.userInfo.userInfo);
@@ -95,6 +109,23 @@ export default function Mypage() {
   // 현재 localstorage 사용해 가져옴
   const [isEditOn, setIsEditOn] = useState(false);
   const userInfo = JSON.parse(window.localStorage.userInfo);
+
+  const dispatch = useDispatch();
+  // const { userInfo } = useSelector(state => state.user);
+  useEffect(async() => {
+    await axios.get("http://localhost:4000/profile")
+    .then((res) => {
+      console.log(res)
+      dispatch(getUserInfo(res.data));
+    })
+    .catch((err) => {
+      console.log(err.response.data.message)
+      dispatch(getUserInfo(err.response.data.message));
+    })
+
+    console.log(userInfo)
+  }, [])
+
 
   return (
     <div>

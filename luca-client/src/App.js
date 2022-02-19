@@ -16,6 +16,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { setIsLogin } from "../src/redux/slicer/loginSlice";
 import { setUserInfo } from "./redux/slicer/userInfoSlice";
 import axios from "axios";
+import { counterSlice } from "./redux/counterslice";
 const serverUrl = "http://localhost:4000";
 
 function App() {
@@ -38,10 +39,13 @@ function App() {
     isAuthenticated();
   }, []);
 
+  // const { isLogin } = useSelector((state) => state.user);
+  // console.log(isLogin);
+
   return (
     <div>
       <Routes>
-        <Route path="/" element={isLogin ? <Main /> : <About />} />
+        <Route path="/" element={isLogin === "login success" ? <Main /> : <About />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/mypage" element={<Mypage userInfo={userInfo} />} />
         <Route path="/changepassword" element={<ChangePassword />} />

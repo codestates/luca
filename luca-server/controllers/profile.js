@@ -4,8 +4,10 @@ const bcrypt = require('bcrypt');
 
 module.exports = {
     get: async (req, res) => {
+        // console.log(req.cookies)
         try {
             const verifyInfo = isAuthorized(req);
+            console.log(verifyInfo)
             if (verifyInfo === 'not found') {
                 return res.status(401).send({ message: 'Not authorized' });
             } else if (verifyInfo === 'expired') {

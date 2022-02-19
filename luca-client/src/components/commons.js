@@ -4,6 +4,7 @@ import { setIsLogin } from "../redux/slicer/loginSlice";
 import styled from "styled-components";
 import { LoginModal } from "./modals";
 import axios from "axios";
+import {checkLogin, getUserInfo} from "../redux/counterslice.js";
 const serverUrl = "http://localhost:4000";
 
 const NavigatorContainer = styled.div`

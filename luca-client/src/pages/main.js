@@ -154,6 +154,10 @@ export function Main() {
   };
 
   useEffect(() => {
+    axios.get('http://localhost:4000/project')
+    .then(res => {
+      console.log(res.data);
+    })
     // dispatch(getUserProjects());
   }, []);
 
