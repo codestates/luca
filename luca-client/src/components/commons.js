@@ -134,7 +134,7 @@ function Navigator() {
             src="https://picsum.photos/300/300?random=1"
           />
           <div className="dropdown">
-            <div className="username">김코딩</div>
+            <div className="username">-username-</div>
             <a className="dropdown-index" href="/mypage">
               <i className="fa-solid fa-user"></i>
               <div>마이페이지</div>

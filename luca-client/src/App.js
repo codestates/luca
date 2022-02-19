@@ -19,7 +19,8 @@ const serverUrl = "http://localhost:4000";
 function App() {
   const dispatch = useDispatch();
   const isLogin = useSelector((state) => state.login.isLogin);
-  //const [userinfo, setUserinfo] = useState(null);
+  const userInfo = useSelector((state) => state.userInfo.userInfo);
+  console.log("App userInfo: ", userInfo);
 
   const isAuthenticated = () => {
     if (window.localStorage.userInfo) {
@@ -33,14 +34,14 @@ function App() {
 
   useEffect(() => {
     isAuthenticated();
-  });
+  }, []);
 
   return (
     <div>
       <Routes>
         <Route path="/" element={isLogin ? <Main /> : <About />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/mypage" element={<Mypage />} />
+        <Route path="/mypage" element={<Mypage userInfo={userInfo} />} />
         <Route path="/changepassword" element={<ChangePassword />} />
         <Route path="/project" element={<Project />} />
         <Route path="/auth/callback/kakao" element={<KakaoPage />} />

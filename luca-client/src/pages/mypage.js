@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Savealert } from "../components/modals";
 import { Navigator, Footer } from "../components/commons";
-import { useSelector, useDispatch } from "react-redux";
+//import { useSelector, useDispatch } from "react-redux";
 
 const Container = styled.div`
   min-width: 90vw;
@@ -78,20 +78,23 @@ const Button = styled.button`
   margin-right: 1em;
   border-style: none;
   background-color: white;
-  color: rgb(80, 80, 80);
+  color: ${(props) => (props.warn ? "red" : "rgb(80, 80, 80)")};
   box-shadow: 0vh 0.5vh 1vh 0.1vh rgba(0, 0, 0, 0.2);
   cursor: pointer;
   &:hover {
-    background-color: #ff7f50;
-    color: white;
+    color: ${(props) => (props.warn ? "red" : "white")};
+    background-color: ${(props) => (props.warn ? "white" : "#ff7f50")};
+    border: ${(props) => (props.warn ? "solid red 2px" : "none")};
   }
 `;
 
 export default function Mypage() {
-  const userInfo = useSelector((state) => state.userInfo.userInfo);
-  console.log(userInfo);
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
+  // const userInfo = useSelector((state) => state.userInfo.userInfo);
+  // redux-thunk 비동기 처리 필요
+  // 현재 localstorage 사용해 가져옴
   const [isEditOn, setIsEditOn] = useState(false);
+  const userInfo = JSON.parse(window.localStorage.userInfo);
 
   return (
     <div>
@@ -106,8 +109,8 @@ export default function Mypage() {
                 <input placeholder={userInfo.name} />
               </div>
               <div className="edit">
-                <Button onClick={() => setIsEditOn(true)}>프로필 수정</Button>
-                <Button>비밀번호 변경</Button>
+                <Button onClick={() => setIsEditOn(false)}>저장</Button>
+                <Button warn={true}>회원탈퇴</Button>
               </div>
             </Upper>
             <Lower>
@@ -122,7 +125,9 @@ export default function Mypage() {
               <div className="email">{userInfo.email}</div>
               <div className="edit">
                 <Button onClick={() => setIsEditOn(true)}>프로필 수정</Button>
-                <Button>비밀번호 변경</Button>
+                <a href="/changepassword">
+                  <Button>비밀번호 변경</Button>
+                </a>
               </div>
             </Upper>
             <Lower>
