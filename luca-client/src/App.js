@@ -1,3 +1,5 @@
+// import dotenv from "dotenv";
+// require('dotenv').config();
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import About from "./pages/about";

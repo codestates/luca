@@ -1,12 +1,11 @@
 import styled from "styled-components";
 import Projectcard from "../components/projectcard";
 import { Navigator, Backdrop, Container } from "../components/commons";
-import { CreateProjectModal, Sortmodal } from "../components/modals";
-import { useState, useEffect } from "react";
+import {CreateProjectModal, Sortmodal} from "../components/modals";
+import {useState, useEffect} from "react";
+import {useSelector, useDispatch} from "react-redux";
+// import {getUserProjects} from "../redux/counterslice.js";
 import axios from "axios";
-
-const url = process.env.URL;
-// console.log(url)
 
 const Maincomponent = styled.div`
   margin-top: 10vh;
@@ -108,10 +107,15 @@ export function Main() {
       updatedAt: "2033.3.12",
     },
   ]);
+  
+  const { projects } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   const [isClicked, setIsClicked] = useState(false);
   const [newProject, setNewProject] = useState({});
   const [sortModal, setSortModal] = useState(false);
 
+
+  
   const modalHandler = () => {
     setIsClicked(!isClicked);
   };
@@ -150,14 +154,8 @@ export function Main() {
   };
 
   useEffect(() => {
-    // axios.get(`${url}/projects`)
-    // .then((res)=>{
-    //   setProjectList(res.data);
-    // })
-    // .catch((err)=>{
-    //   console.log(err);
-    // });
-  }, [projectList]);
+    // dispatch(getUserProjects());
+  }, []);
 
   return (
     <div>

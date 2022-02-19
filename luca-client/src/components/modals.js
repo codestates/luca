@@ -11,7 +11,7 @@ const serverUrl = "http://localhost:4000";
 // const [modal, SetModal] = useState(false);
 
 // const modalHandler = (modalType) => {
-//   SetModal(modalType);
+//   setModal(modalType);
 // };
 
 // return (
@@ -137,6 +137,7 @@ const ModalView = styled.div`
 
 export function LoginModal({ modalHandler }) {
   const dispatch = useDispatch();
+  const isLogin = useSelector((state) => state.login.isLogin);
 
   const [loginInfo, setLoginInfo] = useState({
     email: "",
@@ -181,7 +182,7 @@ export function LoginModal({ modalHandler }) {
   return (
     <ModalBackdrop onClick={() => modalHandler(false)}>
       <ModalView onClick={(e) => e.stopPropagation()}>
-        <div className="modal-title">로그인</div>
+        <div className="modal-title">{isLogin + "입니다."}</div>
         <div className="modal-body">
           <div className="query">
             <div className="index">이메일</div>
