@@ -35,6 +35,9 @@ export const counterSlice = createSlice({
         },
         getUserInfo: (state, action) => {
             state.userinfo = action.payload;
+        },
+        getUserProjects: (state, action) => {
+            state.projects = action.payload;
         }
     },
 
@@ -54,6 +57,6 @@ export const counterSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { increament, checkLogin, getUserInfo } = counterSlice.actions
+export const { increament, checkLogin, getUserInfo, getUserProjects } = counterSlice.actions
 
 export default counterSlice.reducer
