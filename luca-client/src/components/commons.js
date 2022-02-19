@@ -1,6 +1,9 @@
 import { useState } from "react/cjs/react.development";
 import styled from "styled-components";
 import { LoginModal } from "./modals";
+import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
+import {checkLogin, getUserInfo} from "../redux/counterslice.js";
 
 const NavigatorContainer = styled.div`
   z-index: 999;
@@ -99,7 +102,9 @@ const Guest = styled.a`
   cursor: pointer;
 `;
 
-function Navigator({ isLogin }) {
+
+function Navigator () {
+  const { isLogin } = useSelector((state) => state.user)
   const [dropdown, setDropdown] = useState(false);
   const [isClicked, setIsClicked] = useState(false); //로그인 모달 띄우기 위한 생태입니다.(flowervillagearp)
   // onClick이벤트 => onMouseOver 로 드롭다운 방법 변경, 구현 중
@@ -121,7 +126,7 @@ function Navigator({ isLogin }) {
         <a href="/">about</a>
       </div>
       <div className="account">
-        {isLogin ? (
+        {isLogin === "login success" ? (
           <div className="profile">
             {!dropdown ? (
               <>
@@ -139,7 +144,7 @@ function Navigator({ isLogin }) {
                   Username
                 </div>
                 <div className="dropdown-index">
-                  <a href="/mypage">Mypage</a>
+                  <a href="/mypage" >Mypage</a> 
                 </div>
                 <div className="dropdown-index">Setting</div>
                 <div className="dropdown-index">Logout</div>

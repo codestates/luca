@@ -1,7 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Savealert } from "../components/modals";
 import { Navigator, Backdrop, Container } from "../components/commons";
+import { useSelector, useDispatch } from "react-redux";
+// import { getUserProjects } from "../redux/counterslice.js";
+import {checkLogin, getUserInfo} from "../redux/counterslice.js";
+import axios from "axios";
 
 const Page = styled.div`
   margin-top: 10vh;
@@ -129,9 +133,11 @@ const Decisionbutton = styled.div`
 `;
 
 export default function Mypage() {
+  const {isLogin} = useSelector(state => state.user);
   const [isClicked, setIsClicked] = useState(false);
   const [isAlert, setIsAlert] = useState(false);
 
+  console.log(isLogin);
   const handleClick = function () {
     setIsClicked(!isClicked);
   };
@@ -143,6 +149,23 @@ export default function Mypage() {
     }, 1500);
     setIsClicked(false);
   };
+
+  const dispatch = useDispatch();
+  const { userInfo } = useSelector(state => state.user);
+  useEffect(async() => {
+    await axios.get("http://localhost:4000/profile")
+    .then((res) => {
+      console.log(res)
+      dispatch(getUserInfo(res.data));
+    })
+    .catch((err) => {
+      console.log(err.response.data.message)
+      dispatch(getUserInfo(err.response.data.message));
+    })
+
+    console.log(userInfo)
+  }, [])
+
 
   return (
     <div>

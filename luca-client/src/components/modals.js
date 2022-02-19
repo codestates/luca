@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useRef, useState } from "react";
 import {useSelector, useDispatch} from "react-redux";
-import {checkLogin, increament} from "../redux/counterslice.js";
+import {checkLogin, getUserInfo} from "../redux/counterslice.js";
 import axios from "axios";
 const serverUrl = "http://localhost:4000";
 
@@ -148,16 +148,25 @@ export function LoginModal({ modalHandler }) {
     const { test } = useSelector((state) => state.user);
     const loginHandler = async() => { //로그인 버튼을 눌렀을때 counterslice에서 loginCheck action을 호출하기위한 함수입니다.(flowervillagearp)
       const reqData = {email: `${emailRef.current.value}`, password: `${pwRef.current.value}`}; // 이 요청데이터를 보내주면 되는데 json형식으로 어떻게 변횐했더라...
-      await dispatch(checkLogin(reqData));
-      dispatch(increament());
-      console.log(isLogin)
-
+      const resData = 
+      await axios.post('http://localhost:4000/user/login', reqData)
+      .then((res) => {
+        return res.data.message;
+      })
+      .catch((err) => {
+        return err.response.data.message; 
+      })
+      dispatch(checkLogin(resData)); //여기까지 로그인의 응답 메세지를 받아오는 코드입니다.(flowervillagearp)
+      
+      // if(isLogin === "login success"){
+      //   window.location.replace('/');
+      // }
   }
   
   return (
     <ModalBackdrop onClick={() => modalHandler(false)}>
       <ModalView onClick={(e) => e.stopPropagation()}>
-        <div className="modal-title">{isLogin+"입니다."+test}</div>
+        <div className="modal-title">로그인</div>
         <div className="modal-body">
           <div className="query">
             <div className="index">이메일</div>
