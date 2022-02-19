@@ -3,8 +3,7 @@ const { sign, verify } = require("jsonwebtoken");
 
 module.exports = {
   generateAccessToken: (data) => {
-    console.log("=====> data for token: ", data);
-    return sign(data, process.env.ACCESS_SECRET, {
+    return sign(data.dataValues, process.env.ACCESS_SECRET, {
       expiresIn: "15d",
     });
   },
@@ -22,8 +21,7 @@ module.exports = {
       .json(data);
   },
   isAuthorized: (req) => {
-    // if ('jwt' in req.cookies) {
-    if (req.cookies.accessToken) {
+    if ('jwt' in req.cookies) {
       try {
         const userInfo = verify(req.cookies.jwt, process.env.ACCESS_SECRET);
         delete userInfo.iat;
