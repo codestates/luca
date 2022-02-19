@@ -83,11 +83,9 @@ export function Main() {
   const [isClicked, setIsClicked] = useState(false);
   const [newProject, setNewProject] = useState({});
   const [sortModal, setSortModal] = useState(false);
-
-
   
   const modalHandler = () => {
-    console.log(projects)
+    console.log(projectList)
     setIsClicked(!isClicked);
   };
 
@@ -125,14 +123,8 @@ export function Main() {
   };
 
   useEffect( async () => {
-    const array = [];
     const result = await axios.get('http://localhost:4000/project')
-    .then(res => {
-      console.log(res.data)
-      return res.data.data;
-    })
-    // console.log(result.data.data);
-    dispatch(setProjectList(result));
+    dispatch(setProjectList(result.data.data));
   }, []);
 
   return (
@@ -160,7 +152,6 @@ export function Main() {
               )}
             </sortbox>
             {sortModal ? <Sortmodal sortHandler={sortHandler} /> : null}
-            {console.log('=========a1========',projects)}
             <projectbox>
               {projects.map((el) => {
                 return <Projectcard data={el} />;
