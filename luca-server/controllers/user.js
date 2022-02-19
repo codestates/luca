@@ -48,7 +48,7 @@ module.exports = {
         res.clearCookie("jwt", {
           httpOnly: true,
           //secure: true,
-          sameSite: "None",
+          //sameSite: "None",
         });
         return res.status(200).send({ message: "Signout succeed" });
       }

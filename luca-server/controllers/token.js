@@ -11,9 +11,9 @@ module.exports = {
     return res
       .cookie("jwt", accessToken, {
         domain: "localhost",
-        path: "/",
+        path: '/',
         maxAge: 24 * 6 * 60 * 10000,
-        sameSite: "None",
+        // sameSite: 'none',
         httpOnly: true,
         // secure: true,
       })
