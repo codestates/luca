@@ -5,7 +5,8 @@ import styled from "styled-components";
 import { LoginModal } from "./modals";
 import axios from "axios";
 import {checkLogin, getUserInfo} from "../redux/counterslice.js";
-const serverUrl = "http://localhost:4000";
+import { useNavigate } from "react-router-dom";
+import { setUserInfo } from "../redux/slicer/userInfoSlice";
 
 const NavigatorContainer = styled.div`
   z-index: 999;
@@ -105,6 +106,7 @@ const Guest = styled.a`
 `;
 
 function Navigator() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const isLogin = useSelector((state) => state.login.isLogin);
 
@@ -115,13 +117,19 @@ function Navigator() {
   };
 
   const logoutHandler = () => {
-    // axios.get(`${serverUrl}/user/logout`).then((res) => {
-    //   console.log("logout res: ", res);
-    // });
+    axios.get(`${process.env.REACT_APP_API_URL}/user/logout`, {
+      'Content-Type': 'application/json', 
+      withCredentials: true 
+    })
+    .then(() => {
+      dispatch(setIsLogin(false));
+      dispatch(setUserInfo(null));
+      navigate("/")
+    });
     // logout 요청시 토큰이 없기때문에 (현재 localstorage로 로그인 유지 구현) 401 에러 뜸
-    dispatch(setIsLogin(false));
-    window.localStorage.clear();
-    window.location.replace("/");
+
+    // window.localStorage.clear();
+    // window.location.replace("/");
   };
 
   return (

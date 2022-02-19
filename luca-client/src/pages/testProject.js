@@ -7,7 +7,7 @@ export default function Project() {
     const navigate = useNavigate();
     const [socketIo, setSocketIO] = useState();
     const roomName = window.location.pathname.substring(14);
-    const socket = io.connect("http://127.0.0.1:80")
+    const socket = io.connect(`${process.env.REACT_APP_API_URL}`)
     const disconnectSocket = useCallback(() => {
         socket.on("bye", () => {
             console.log('bye')

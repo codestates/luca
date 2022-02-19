@@ -1,7 +1,7 @@
 // import dotenv from "dotenv";
 // require('dotenv').config();
 import "./App.css";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import About from "./pages/about";
 import Main from "./pages/main";
 import Signup from "./pages/signup";
@@ -21,19 +21,39 @@ import TestMain from './pages/testMain';
 import TestProject from './pages/testProject';
 
 function App() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const isLogin = useSelector((state) => state.login.isLogin);
   const userInfo = useSelector((state) => state.userInfo.userInfo);
   console.log("App userInfo: ", userInfo);
 
   const isAuthenticated = () => {
-    if (window.localStorage.userInfo) {
+    axios.get(`${process.env.REACT_APP_API_URL}/profile`, {
+      'Content-Type': 'application/json', 
+      withCredentials: true 
+    }).then((data) => {
+      dispatch(setUserInfo(data.data.data));
       dispatch(setIsLogin(true));
-      dispatch(setUserInfo(JSON.parse(window.localStorage.userInfo)));
-    } else {
-      dispatch(setIsLogin(false));
-      dispatch(setUserInfo(null));
-    }
+      navigate("/")
+    }).catch((err) => {
+      if(err.response.status === 401) {
+        dispatch(setIsLogin(false));
+        dispatch(setUserInfo(null));
+      }
+      // if(err.response.status === 401){
+      // }
+      // setIsLogin(false);
+      // navigate("/")
+    })
+    // if(isLogin)
+
+    // if (window.localStorage.userInfo) {
+    //   dispatch(setIsLogin(true));
+    //   dispatch(setUserInfo(JSON.parse(window.localStorage.userInfo)));
+    // } else {
+    //   dispatch(setIsLogin(false));
+    //   dispatch(setUserInfo(null));
+    // }
   };
 
   useEffect(() => {

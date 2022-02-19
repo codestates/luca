@@ -124,7 +124,7 @@ export function Main() {
   };
 
   useEffect( async () => {
-    const result = await axios.get('http://localhost:4000/project')
+    const result = await axios.get(`${process.env.REACT_APP_API_URL}/project`)
     dispatch(setProjectList(result.data.data));
   }, []);
 
