@@ -1,4 +1,5 @@
 require("dotenv").config();
+
 const { sign, verify } = require("jsonwebtoken");
 
 module.exports = {
@@ -13,7 +14,7 @@ module.exports = {
         domain: "localhost",
         path: "/",
         maxAge: 24 * 6 * 60 * 10000,
-        sameSite: "None",
+        // sameSite: "None",
         httpOnly: true,
         // secure: true,
       })
@@ -27,7 +28,7 @@ module.exports = {
         delete userInfo.iat;
         delete userInfo.exp;
         return userInfo;
-      } catch(err) {
+      } catch (err) {
         return 'expired'
       }
     } else {

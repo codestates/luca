@@ -1,5 +1,4 @@
-const { users, cards, projects } = require("../models");
-const { isAuthorized } = require('./token');
+const { cards } = require("../models");
 
 module.exports = {
     post: async (req, res) => {
