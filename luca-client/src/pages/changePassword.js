@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useState, useEffect, useRef } from "react";
-import { Navigator, Backdrop, Container } from "../components/commons";
+import { Navigator, Backdrop } from "../components/commons";
 
 export default function ChangePassword() {
   const Container = styled.div`

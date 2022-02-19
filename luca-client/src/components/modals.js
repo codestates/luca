@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import { useRef, useState } from "react";
-import {useSelector, useDispatch} from "react-redux";
-import {checkLogin, getUserInfo} from "../redux/counterslice.js";
+import { useSelector, useDispatch } from "react-redux";
+import { setIsLogin } from "../redux/slicer/loginSlice";
+import { setUserInfo } from "../redux/slicer/userInfoSlice";
 import axios from "axios";
 const serverUrl = "http://localhost:4000";
 
@@ -10,7 +11,7 @@ const serverUrl = "http://localhost:4000";
 // const [modal, SetModal] = useState(false);
 
 // const modalHandler = (modalType) => {
-//   SetModal(modalType);
+//   setModal(modalType);
 // };
 
 // return (
@@ -135,47 +136,78 @@ const ModalView = styled.div`
 `;
 
 export function LoginModal({ modalHandler }) {
-  // pw, email 정보를 받기 위해 이메일, 비밀번호 인풋에 emailRef, pwRef를 추가했습니다.(flowervillagearp)
-  const emailRef = useRef();
-  const pwRef = useRef();
   const dispatch = useDispatch();
-  // const headers = {
-    //   "Content-Type": "application/json",
-    //   withCredentials: true
-    // }
-    // axios.defaults.headers.post = null;
-    const { isLogin } = useSelector((state) => state.user); // 유저 정보를 가져오기 위해 user slice를 사용합니다.(flowervillagearp)
-    const { test } = useSelector((state) => state.user);
-    const loginHandler = async() => { //로그인 버튼을 눌렀을때 counterslice에서 loginCheck action을 호출하기위한 함수입니다.(flowervillagearp)
-      const reqData = {email: `${emailRef.current.value}`, password: `${pwRef.current.value}`}; // 이 요청데이터를 보내주면 되는데 json형식으로 어떻게 변횐했더라...
-      const resData = 
-      await axios.post('http://localhost:4000/user/login', reqData)
+  const isLogin = useSelector((state) => state.login.isLogin);
+
+  const [loginInfo, setLoginInfo] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleInputValue = (e, key) => {
+    setLoginInfo({ ...loginInfo, [key]: e.target.value });
+  };
+
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const LoginHandler = () => {
+    if (loginInfo.email.length === 0 || loginInfo.password.length === 0) {
+      return setErrorMessage("이메일과 비밀번호를 입력해주세요");
+    }
+    axios
+      .post(`${serverUrl}/user/login`, loginInfo, {
+        "Content-Type": "application/json",
+        withCredentials: true,
+      })
       .then((res) => {
-        return res.data.message;
+        if (res.status === 200) {
+          dispatch(setIsLogin(true));
+          dispatch(setUserInfo(res.data.userInfo));
+          modalHandler(false);
+          window.localStorage.setItem(
+            "userInfo",
+            JSON.stringify(res.data.userInfo)
+          );
+          window.location.replace("/");
+        }
       })
       .catch((err) => {
-        return err.response.data.message; 
-      })
-      dispatch(checkLogin(resData)); //여기까지 로그인의 응답 메세지를 받아오는 코드입니다.(flowervillagearp)
-      
-      // if(isLogin === "login success"){
-      //   window.location.replace('/');
-      // }
-  }
-  
+        if (err.response.status === 400) {
+          return setErrorMessage("잘못된 이메일 혹은 비밀번호입니다.");
+        }
+      });
+  };
+  console.log(loginInfo);
+
   return (
     <ModalBackdrop onClick={() => modalHandler(false)}>
       <ModalView onClick={(e) => e.stopPropagation()}>
-        <div className="modal-title">로그인</div>
+        <div className="modal-title">{isLogin + "입니다."}</div>
         <div className="modal-body">
           <div className="query">
             <div className="index">이메일</div>
-            <input ref={emailRef}/>
+            <input
+              onChange={(e) => handleInputValue(e, "email")}
+              onKeyPress={(e) => {
+                if (e.key === "Enter") {
+                  return LoginHandler();
+                }
+              }}
+            />
           </div>
           <div className="query">
             <div className="index">비밀번호</div>
-            <input ref={pwRef}/>
+            <input
+              onChange={(e) => handleInputValue(e, "password")}
+              onKeyPress={(e) => {
+                if (e.key === "Enter") {
+                  return LoginHandler();
+                }
+              }}
+              type="password"
+            />
           </div>
+          <div style={{ color: "red" }}>{errorMessage}</div>
           <span>계정이 없으신가요?</span>
           <a href="/signup">
             <span impact>회원가입</span>
@@ -184,7 +216,9 @@ export function LoginModal({ modalHandler }) {
         <div className="modal-footer">
           <div className="buttons">
             <button>소셜 로그인</button>
-            <button className="confirm" onClick={loginHandler}>로그인</button>
+            <button className="confirm" onClick={LoginHandler}>
+              로그인
+            </button>
           </div>
         </div>
       </ModalView>

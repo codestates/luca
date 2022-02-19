@@ -39,6 +39,7 @@ module.exports = {
 
   logout: (req, res) => {
     const accessToken = req.cookies.jwt;
+    console.log("=====> logout cookies", req.cookies);
 
     try {
       if (!accessToken) {
@@ -50,6 +51,7 @@ module.exports = {
           //secure: true,
           sameSite: "None",
         });
+        //res.cookie("logout", { maxAge: 0 });
         return res.status(200).send({ message: "Signout succeed" });
       }
     } catch (err) {
@@ -160,6 +162,7 @@ module.exports = {
     const { email, password } = req.body;
 
     if (!email || !password) {
+      // !email || !password 는 클라이언트에서 state 로 필터하고 있습니다.
       return res
         .status(422)
         .json({ message: "Insufficient parameters supplied" });
@@ -170,21 +173,28 @@ module.exports = {
             email: email,
           },
         });
-        console.log(userInfo);
+        console.log("=====> userInfo: ", userInfo);
 
         // 로그인 실패
         if (!userInfo) {
           return res.status(400).json({ message: "Wrong email" });
         } else {
           let passwordCheck = await bcrypt.compare(password, userInfo.password);
-          // 로그인이 성공하면 토큰이 생성되고 쿠기로 전송된다.
+          // 로그인이 성공하면 토큰이 생성되고 쿠키로 전송된다.
           delete userInfo.dataValues.password;
           if (passwordCheck) {
-            const accessToken = generateAccessToken(userInfo);
-            sendAccessToken(res, accessToken, 200, {
-              data: userInfo,
+            const accessToken = generateAccessToken(userInfo.dataValues);
+            //console.log("=====> AccessToken generated ! :", accessToken);
+            sendAccessToken(res, accessToken);
+            return res.status(200).send({
               message: "login success",
+              userInfo: userInfo.dataValues,
             });
+            // 200
+            // data: userInfo,
+            // message: "login success",
+
+            // console.log("=====> AccessToken sent !");
           } else {
             return res.status(400).json({ message: "Wrong password" });
           }

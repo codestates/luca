@@ -165,36 +165,35 @@ export function Main() {
     <div>
       <Navigator />
       <Backdrop onClick={isClicked ? modalHandler : null}>
-        <Container>
-          <Maincomponent>
-            <startbox>
-              <startinfo>
-                <h2>Lorem ipsum</h2>
-                img elements must have an alt prop, either with meaningful text,
-                or an empty string for decorative images
-              </startinfo>
-              <startbutton onClick={modalHandler}>start</startbutton>
-            </startbox>
-            <projectcontainer>
-              <sortbox>
-                {sortModal ? (
-                  <div>
-                    <div onClick={sortHandler}>sort by update ▲</div>
-                    {/* <Sortmodal sortHandler={sortHandler}/> */}
-                  </div>
-                ) : (
-                  <div onClick={sortHandler}>sort by update ▼</div>
-                )}
-              </sortbox>
-              {sortModal ? <Sortmodal sortHandler={sortHandler} /> : null}
-              <projectbox>
-                {projectList.map((el) => {
-                  return <Projectcard data={el} />;
-                })}
-              </projectbox>
-            </projectcontainer>
-          </Maincomponent>
-        </Container>
+        <Maincomponent>
+          <startbox>
+            <startinfo>
+              <h2>Lorem ipsum</h2>
+              img elements must have an alt prop, either with meaningful text,
+              or an empty string for decorative images
+            </startinfo>
+            <startbutton onClick={modalHandler}>start</startbutton>
+          </startbox>
+          <projectcontainer>
+            <sortbox>
+              {sortModal ? (
+                <div>
+                  <div onClick={sortHandler}>sort by update ▲</div>
+                  {/* <Sortmodal sortHandler={sortHandler}/> */}
+                </div>
+              ) : (
+                <div onClick={sortHandler}>sort by update ▼</div>
+              )}
+            </sortbox>
+            {sortModal ? <Sortmodal sortHandler={sortHandler} /> : null}
+            <projectbox>
+              {projectList.map((el) => {
+                return <Projectcard data={el} />;
+              })}
+            </projectbox>
+          </projectcontainer>
+        </Maincomponent>
+
         {isClicked ? (
           <CreateProjectModal
             modalHandler={modalHandler}

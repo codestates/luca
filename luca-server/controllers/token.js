@@ -3,7 +3,8 @@ const { sign, verify } = require("jsonwebtoken");
 
 module.exports = {
   generateAccessToken: (data) => {
-    return sign(data.dataValues, process.env.ACCESS_SECRET, {
+    console.log("=====> data for token: ", data);
+    return sign(data, process.env.ACCESS_SECRET, {
       expiresIn: "15d",
     });
   },
@@ -28,11 +29,11 @@ module.exports = {
         delete userInfo.iat;
         delete userInfo.exp;
         return userInfo;
-      } catch(err) {
-        return 'expired'
+      } catch (err) {
+        return "expired";
       }
     } else {
-      return 'not found';
+      return "not found";
     }
   },
 };

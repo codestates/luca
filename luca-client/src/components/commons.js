@@ -1,9 +1,11 @@
 import { useState } from "react/cjs/react.development";
+import { useSelector, useDispatch } from "react-redux";
+import { setIsLogin } from "../redux/slicer/loginSlice";
 import styled from "styled-components";
 import { LoginModal } from "./modals";
 import axios from "axios";
-import { useSelector, useDispatch } from "react-redux";
 import {checkLogin, getUserInfo} from "../redux/counterslice.js";
+const serverUrl = "http://localhost:4000";
 
 const NavigatorContainer = styled.div`
   z-index: 999;
@@ -102,68 +104,74 @@ const Guest = styled.a`
   cursor: pointer;
 `;
 
+function Navigator() {
+  const dispatch = useDispatch();
+  const isLogin = useSelector((state) => state.login.isLogin);
 
-function Navigator () {
-  const { isLogin } = useSelector((state) => state.user)
-  const [dropdown, setDropdown] = useState(false);
-  const [isClicked, setIsClicked] = useState(false); //로그인 모달 띄우기 위한 생태입니다.(flowervillagearp)
-  // onClick이벤트 => onMouseOver 로 드롭다운 방법 변경, 구현 중
+  const [modal, setModal] = useState(false);
 
-  const dropdownHandler = () => {
-    setDropdown(!dropdown);
+  const modalHandler = (modalType) => {
+    setModal(modalType);
   };
 
-  const onClickHandler = () => { //로그인 모달 띄우기 위한 생태 변경 함수입니다.(flowervillagearp)
-    setIsClicked(!isClicked);
-  }
+  const logoutHandler = () => {
+    // axios.get(`${serverUrl}/user/logout`).then((res) => {
+    //   console.log("logout res: ", res);
+    // });
+    // logout 요청시 토큰이 없기때문에 (현재 localstorage로 로그인 유지 구현) 401 에러 뜸
+    dispatch(setIsLogin(false));
+    window.localStorage.clear();
+    window.location.replace("/");
+  };
 
   return (
-    <NavigatorContainer onClick={isClicked? onClickHandler: null}> {/* 로그인 모달을 닫기 위한 조건문입니다.(flowervillagearp) */}
+    <NavigatorContainer>
+      {modal === "login" ? <LoginModal modalHandler={modalHandler} /> : null}
+      {/* 로그인 모달을 닫기 위한 조건문입니다.(flowervillagearp) */}
       <a className="logo" href="/">
         <img src="Luca_logo.png" />
       </a>
       <div className="about">
         <a href="/">about</a>
       </div>
-      <div className="account">
-        {isLogin === "login success" ? (
+      <div>
+        {isLogin ? (
           <div className="profile">
-            {!dropdown ? (
-              <>
-                <img
-                  className="profile-image-thumb"
-                  src="https://picsum.photos/300/300?random=1"
-                />
-                <div className="profile-username" onMouseOver={dropdownHandler}>
-                  Username
-                </div>
-              </>
-            ) : (
-              <div className="profile-dropdown">
-                <div className="dropdown-index" onClick={dropdownHandler}>
-                  Username
-                </div>
-                <div className="dropdown-index">
-                  <a href="/mypage" >Mypage</a> 
-                </div>
-                <div className="dropdown-index">Setting</div>
-                <div className="dropdown-index">Logout</div>
-              </div>
-            )}
+            <img
+              className="profile"
+              src="https://picsum.photos/300/300?random=1"
+            />
+            <div className="dropdown">
+              <div className="username">-username-</div>
+              <a className="dropdown-index" href="/mypage">
+                <i className="fa-solid fa-user"></i>
+                <div>마이페이지</div>
+              </a>
+              <a className="dropdown-index" href="/mypage">
+                <i className="fa-solid fa-gear"></i>
+                <div>설정</div>
+              </a>
+              <a className="dropdown-index" onClick={logoutHandler}>
+                <i
+                  className="fa-solid fa-right-from-bracket"
+                  style={{ color: "#FF5D50" }}
+                ></i>
+                <div style={{ color: "#FF5D50" }}>로그아웃</div>
+              </a>
+            </div>
           </div>
         ) : (
           <>
             <Guest className="guest" href="/signup">
               회원가입
             </Guest>
-            <Guest className="guest" impact onClick={onClickHandler}>
+            <Guest
+              className="guest"
+              onClick={() => modalHandler("login")}
+              impact
+            >
               로그인
             </Guest>
-            {
-              isClicked ?
-              <LoginModal />:
-              null
-            }
           </>
         )}
       </div>
@@ -174,19 +182,34 @@ function Navigator () {
 // =======================여기까지 네비게이터에 필요한 컴포넌트입니다=======================
 
 const Backdrop = styled.div`
-  width: 100vw;
+  min-width: 90vw;
   min-height: 90vh;
+  margin: 0 5vw;
   height: auto;
+  display: flex;
   justify-content: center;
+  background-color: grey;
+`;
+
+// const Container = styled.div`
+//   min-height: 90vh;
+//   height: auto;
+//   flex: 1 0 auto;
+//   max-width: 1320px;
+//   margin: auto;
+// `;
+
+const FooterContainer = styled.div`
+  bottom: 0;
+  width: 100vw;
+  min-height: 20vh;
+  background-color: rgb(70, 70, 70);
+  align-items: center;
   display: flex;
 `;
 
-const Container = styled.div`
-  min-height: 90vh;
-  height: auto;
-  flex: 1 0 auto;
-  max-width: 1320px;
-  margin: auto;
-`;
+function Footer() {
+  return <FooterContainer>this is footer</FooterContainer>;
+}
 
-export { Navigator, Backdrop, Container };
+export { Navigator, Backdrop, Footer };

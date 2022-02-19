@@ -1,9 +1,10 @@
-import { configureStore } from '@reduxjs/toolkit'
-import userReducer from './counterslice.js'
+import { configureStore } from "@reduxjs/toolkit";
+import loginReducer from "./slicer/loginSlice";
+import userInfoReducer from "./slicer/userInfoSlice";
 
-export const store = configureStore({
-    reducer: {
-        user: userReducer,
-        checkLogin: userReducer
-    },
-})
+export default configureStore({
+  reducer: {
+    login: loginReducer,
+    userInfo: userInfoReducer,
+  },
+});

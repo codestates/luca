@@ -13,42 +13,33 @@ import NaverPage from "./pages/oauth/NaverPage";
 import GooglePage from "./pages/oauth/GooglePage";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { setIsLogin } from "../src/redux/slicer/loginSlice";
+import { setUserInfo } from "./redux/slicer/userInfoSlice";
 import axios from "axios";
 import { counterSlice } from "./redux/counterslice";
 const serverUrl = "http://localhost:4000";
 
 function App() {
-  // const [isLogin, setIsLogin] = useState(false);
-  const [userinfo, setUserinfo] = useState(null);
-  const isAuthenticated = () => {
-    if (userinfo !== null) {
-      // setIsLogin(true);
-    }
-  };
-  const handleResponseSuccess = () => {
-    isAuthenticated();
-  };
-  const handleLogout = () => {
-    axios.post(`${serverUrl}/user/logout`).then((res) => {
-      setUserinfo(null);
-      // setIsLogin(false);
-      // console.log(res.data.message);
-    });
-  };
+  const dispatch = useDispatch();
+  const isLogin = useSelector((state) => state.login.isLogin);
+  const userInfo = useSelector((state) => state.userInfo.userInfo);
+  console.log("App userInfo: ", userInfo);
 
-  const testServerConnection = () => {
-    // http 서버 연결 테스트용입니다.
-    axios.get(serverUrl).then((res) => {
-      // console.log(res);
-    });
+  const isAuthenticated = () => {
+    if (window.localStorage.userInfo) {
+      dispatch(setIsLogin(true));
+      dispatch(setUserInfo(JSON.parse(window.localStorage.userInfo)));
+    } else {
+      dispatch(setIsLogin(false));
+      dispatch(setUserInfo(null));
+    }
   };
 
   useEffect(() => {
-    testServerConnection();
-    handleLogout();
+    isAuthenticated();
   }, []);
 
-  const { isLogin } = useSelector((state) => state.user);
+  // const { isLogin } = useSelector((state) => state.user);
   // console.log(isLogin);
 
   return (
@@ -56,7 +47,7 @@ function App() {
       <Routes>
         <Route path="/" element={isLogin === "login success" ? <Main /> : <About />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/mypage" element={<Mypage />} />
+        <Route path="/mypage" element={<Mypage userInfo={userInfo} />} />
         <Route path="/changepassword" element={<ChangePassword />} />
         <Route path="/project" element={<Project />} />
         <Route path="/auth/callback/kakao" element={<KakaoPage />} />
