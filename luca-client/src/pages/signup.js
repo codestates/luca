@@ -14,12 +14,13 @@ const SignupPage = styled.div`
   align-items: center;
   /* justify-content: space-between; */
   height: 60vh;
+  background-color: seashell;
 `;
 const Registrybox = styled.div`
   width: 1080px;
   /* width: 80%; */
   height: 90%;
-  border: solid;
+  border: solid red;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -70,70 +71,68 @@ export default function Signup() {
     <div>
       <Navigator />
       <Backdrop>
-        <Container>
-          <SignupPage>
-            <h2>회원가입</h2>
-            <Registrybox>
+        <SignupPage>
+          <h2>회원가입</h2>
+          <Registrybox>
+            <div>
               <div>
-                <div>
-                  <div>이메일</div>
-                  <input type="text" placeholder="이메일을 입력해주세요" />
-                  <button>인증</button>
-                </div>
-                <errm>errmessage</errm>
+                <div>이메일</div>
+                <input type="text" placeholder="이메일을 입력해주세요" />
+                <button>인증</button>
               </div>
+              <errm>errmessage</errm>
+            </div>
 
+            <div>
               <div>
-                <div>
-                  <div>이메일 인증</div>
-                  <input type="text" placeholder="코드를 입력해주세요" />
-                  <button>인증</button>
-                </div>
-                <errm>errmessage</errm>
+                <div>이메일 인증</div>
+                <input type="text" placeholder="코드를 입력해주세요" />
+                <button>인증</button>
               </div>
+              <errm>errmessage</errm>
+            </div>
 
+            <div>
               <div>
-                <div>
-                  <div>이름</div>
-                  <input type="text" placeholder="코드를 입력해주세요" />
-                  <dummy></dummy>
-                </div>
-                <errm>errmessage</errm>
+                <div>이름</div>
+                <input type="text" placeholder="코드를 입력해주세요" />
+                <dummy></dummy>
               </div>
+              <errm>errmessage</errm>
+            </div>
 
+            <div>
               <div>
-                <div>
-                  <div>비밀번호</div>
-                  <input type="text" placeholder="코드를 입력해주세요" />
-                  <dummy></dummy>
-                </div>
-                <errm>errmessage</errm>
+                <div>비밀번호</div>
+                <input type="text" placeholder="코드를 입력해주세요" />
+                <dummy></dummy>
               </div>
+              <errm>errmessage</errm>
+            </div>
 
+            <div>
               <div>
-                <div>
-                  <div>비밀번호 확인</div>
-                  <input type="text" placeholder="코드를 입력해주세요" />
-                  <dummy></dummy>
-                </div>
-                <errm>errmessage</errm>
+                <div>비밀번호 확인</div>
+                <input type="text" placeholder="코드를 입력해주세요" />
+                <dummy></dummy>
               </div>
+              <errm>errmessage</errm>
+            </div>
 
-              <div>
-                <submit>회원가입</submit>
-              </div>
-              <div>
-                <submit onClick={requestKakaoLogin}>카카오</submit>
-              </div>
-              <div>
-                <submit onClick={requestGoogleLogin}>구글</submit>
-              </div>
-              <div>
-                <submit onClick={requestNaverLogin}>네이버</submit>
-              </div>
-            </Registrybox>
-          </SignupPage>
-        </Container>
+            <div>
+              <submit>회원가입</submit>
+            </div>
+            <div>
+              <submit onClick={requestKakaoLogin}>카카오</submit>
+            </div>
+            <div>
+              <submit onClick={requestGoogleLogin}>구글</submit>
+            </div>
+            <div>
+              <submit onClick={requestNaverLogin}>네이버</submit>
+            </div>
+          </Registrybox>
+        </SignupPage>
       </Backdrop>
     </div>
   );

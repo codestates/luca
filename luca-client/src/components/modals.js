@@ -1,5 +1,10 @@
 import styled from "styled-components";
 import { useRef, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setIsLogin } from "../redux/slicer/loginSlice";
+import { setUserInfo } from "../redux/slicer/userInfoSlice";
+import axios from "axios";
+const serverUrl = "http://localhost:4000";
 
 // ============모달 props 사용법==========================
 
@@ -103,7 +108,8 @@ const ModalView = styled.div`
     }
 
     > span {
-      margin: 0 0.3em;
+      margin-right: 1em;
+      color: rgba(0, 0, 0, 0.5);
     }
   }
 
@@ -130,6 +136,48 @@ const ModalView = styled.div`
 `;
 
 export function LoginModal({ modalHandler }) {
+  const dispatch = useDispatch();
+
+  const [loginInfo, setLoginInfo] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleInputValue = (e, key) => {
+    setLoginInfo({ ...loginInfo, [key]: e.target.value });
+  };
+
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const LoginHandler = () => {
+    if (loginInfo.email.length === 0 || loginInfo.password.length === 0) {
+      return setErrorMessage("이메일과 비밀번호를 입력해주세요");
+    }
+    axios
+      .post(`${serverUrl}/user/login`, loginInfo, {
+        "Content-Type": "application/json",
+        withCredentials: true,
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          dispatch(setIsLogin(true));
+          dispatch(setUserInfo(res.data.userInfo));
+          modalHandler(false);
+          window.localStorage.setItem(
+            "userInfo",
+            JSON.stringify(res.data.userInfo)
+          );
+          window.location.replace("/");
+        }
+      })
+      .catch((err) => {
+        if (err.response.status === 400) {
+          return setErrorMessage("잘못된 이메일 혹은 비밀번호입니다.");
+        }
+      });
+  };
+  console.log(loginInfo);
+
   return (
     <ModalBackdrop onClick={() => modalHandler(false)}>
       <ModalView onClick={(e) => e.stopPropagation()}>
@@ -137,21 +185,39 @@ export function LoginModal({ modalHandler }) {
         <div className="modal-body">
           <div className="query">
             <div className="index">이메일</div>
-            <input />
+            <input
+              onChange={(e) => handleInputValue(e, "email")}
+              onKeyPress={(e) => {
+                if (e.key === "Enter") {
+                  return LoginHandler();
+                }
+              }}
+            />
           </div>
           <div className="query">
             <div className="index">비밀번호</div>
-            <input />
+            <input
+              onChange={(e) => handleInputValue(e, "password")}
+              onKeyPress={(e) => {
+                if (e.key === "Enter") {
+                  return LoginHandler();
+                }
+              }}
+              type="password"
+            />
           </div>
+          <div style={{ color: "red" }}>{errorMessage}</div>
           <span>계정이 없으신가요?</span>
-          <span>
-            <a href="">회원가입</a>
-          </span>
+          <a href="/signup">
+            <span impact>회원가입</span>
+          </a>
         </div>
         <div className="modal-footer">
           <div className="buttons">
             <button>소셜 로그인</button>
-            <button className="confirm">로그인</button>
+            <button className="confirm" onClick={LoginHandler}>
+              로그인
+            </button>
           </div>
         </div>
       </ModalView>
@@ -251,16 +317,16 @@ export function DeleteProjectModal({ modalHandler }) {
 }
 
 const SortModalBody = styled.div`
+  width: 150px;
   background-color: gray;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
   border: 1px solid red;
-  position: fixed;
-  top: 40%;
-  left: 78.5%;
-  /* transform: translate(-50%, -50%); */
+  position: absolute;
+  top: 5%;
+  right: 0%;
   height: 60px;
   > div {
     width: 100%;
@@ -290,5 +356,28 @@ export function Sortmodal({ sortHandler }) {
         생성일 기준 정렬
       </div>
     </SortModalBody>
+  );
+}
+
+const SaveAlertbox = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 400px;
+  height: 50px;
+  border: solid gray;
+  position: absolute;
+  background-color: gray;
+  border-radius: 30px;
+  top: 2%;
+  font-size: 1.4rem;
+  color: darkgray;
+`;
+
+export function Savealert() {
+  return (
+    <SaveAlertbox>
+      <div>저장되었습니다</div>
+    </SaveAlertbox>
   );
 }

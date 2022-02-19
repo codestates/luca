@@ -1,6 +1,10 @@
 import { useState } from "react/cjs/react.development";
+import { useSelector, useDispatch } from "react-redux";
+import { setIsLogin } from "../redux/slicer/loginSlice";
 import styled from "styled-components";
 import { LoginModal } from "./modals";
+import axios from "axios";
+const serverUrl = "http://localhost:4000";
 
 const NavigatorContainer = styled.div`
   z-index: 999;
@@ -82,20 +86,36 @@ const NavigatorContainer = styled.div`
     }
   }
 `;
+
+/* */
+
 const Guest = styled.a`
   background-color: ${(props) =>
     props.impact ? "rgb(255, 127, 80)" : "white"};
-  color: ${(props) => (props.impact ? "white" : "black")};
-  font-weight: bold;
+  color: ${(props) => (props.impact ? "white" : "rgba(0,0,0,0.7)")};
   padding: 0.8em;
   border-radius: 2em;
   cursor: pointer;
 `;
 
-function Navigator({ isLogin }) {
+function Navigator() {
+  const dispatch = useDispatch();
+  const isLogin = useSelector((state) => state.login.isLogin);
+
   const [modal, SetModal] = useState(false);
+
   const modalHandler = (modalType) => {
     SetModal(modalType);
+  };
+
+  const logoutHandler = () => {
+    // axios.get(`${serverUrl}/user/logout`).then((res) => {
+    //   console.log("logout res: ", res);
+    // });
+    // logout 요청시 토큰이 없기때문에 (현재 localstorage로 로그인 유지 구현) 401 에러 뜸
+    dispatch(setIsLogin(false));
+    window.localStorage.clear();
+    window.location.replace("/");
   };
 
   return (
@@ -114,18 +134,18 @@ function Navigator({ isLogin }) {
             src="https://picsum.photos/300/300?random=1"
           />
           <div className="dropdown">
-            <div className="username">김코딩</div>
+            <div className="username">-username-</div>
             <a className="dropdown-index" href="/mypage">
-              <i class="fa-solid fa-user"></i>
+              <i className="fa-solid fa-user"></i>
               <div>마이페이지</div>
             </a>
             <a className="dropdown-index" href="/mypage">
-              <i class="fa-solid fa-gear"></i>
+              <i className="fa-solid fa-gear"></i>
               <div>설정</div>
             </a>
-            <a className="dropdown-index">
+            <a className="dropdown-index" onClick={logoutHandler}>
               <i
-                class="fa-solid fa-right-from-bracket"
+                className="fa-solid fa-right-from-bracket"
                 style={{ color: "#FF5D50" }}
               ></i>
               <div style={{ color: "#FF5D50" }}>로그아웃</div>
@@ -147,19 +167,34 @@ function Navigator({ isLogin }) {
 // =======================여기까지 네비게이터에 필요한 컴포넌트입니다=======================
 
 const Backdrop = styled.div`
-  width: 100vw;
+  min-width: 90vw;
   min-height: 90vh;
+  margin: 0 5vw;
   height: auto;
+  display: flex;
   justify-content: center;
+  background-color: grey;
+`;
+
+// const Container = styled.div`
+//   min-height: 90vh;
+//   height: auto;
+//   flex: 1 0 auto;
+//   max-width: 1320px;
+//   margin: auto;
+// `;
+
+const FooterContainer = styled.div`
+  bottom: 0;
+  width: 100vw;
+  min-height: 20vh;
+  background-color: rgb(70, 70, 70);
+  align-items: center;
   display: flex;
 `;
 
-const Container = styled.div`
-  min-height: 90vh;
-  height: auto;
-  flex: 1 0 auto;
-  max-width: 1320px;
-  margin: auto;
-`;
+function Footer() {
+  return <FooterContainer>this is footer</FooterContainer>;
+}
 
-export { Navigator, Backdrop, Container };
+export { Navigator, Backdrop, Footer };
