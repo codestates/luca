@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Navigator } from "../components/commons";
 
+
 const dummyIntro = [
   {
     title: "Lorem ipsum",
@@ -61,6 +62,7 @@ const IntroContainer = styled.div`
         border-style: hidden;
         background-color: rgba(255, 255, 255, 0.5);
         font-size: 1.2em;
+        cursor: pointer;
       }
     }
   }
