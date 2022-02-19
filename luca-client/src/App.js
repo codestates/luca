@@ -17,7 +17,6 @@ import { setIsLogin } from "../src/redux/slicer/loginSlice";
 import { setUserInfo } from "./redux/slicer/userInfoSlice";
 import axios from "axios";
 import { counterSlice } from "./redux/counterslice";
-const serverUrl = "http://localhost:4000";
 import TestMain from './pages/testMain';
 import TestProject from './pages/testProject';
 
@@ -47,7 +46,7 @@ function App() {
   return (
     <div>
       <Routes>
-        <Route path="/" element={isLogin === "login success" ? <Main /> : <About />} />
+        <Route path="/" element={isLogin ? <Main /> : <About />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/mypage" element={<Mypage userInfo={userInfo} />} />
         <Route path="/changepassword" element={<ChangePassword />} />

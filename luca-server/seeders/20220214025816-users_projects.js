@@ -14,7 +14,13 @@ module.exports = {
         userId: 2,
         projectId: 1,
         isAccept: true
-      }
+      },
+      {
+        id: 3,
+        userId: 1,
+        projectId: 2,
+        isAccept: true
+      },
     ]);
   },
 

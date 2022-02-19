@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import Projectcard from "../components/projectcard";
 import { Navigator, Backdrop, Container } from "../components/commons";
-import {CreateProjectModal, Sortmodal} from "../components/modals";
-import {useState, useEffect} from "react";
-import {useSelector, useDispatch} from "react-redux";
-// import {getUserProjects} from "../redux/counterslice.js";
+import { CreateProjectModal, Sortmodal} from "../components/modals";
+import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { getUserProjects } from "../redux/counterslice.js";
 import axios from "axios";
 
 const Maincomponent = styled.div`
@@ -108,7 +108,7 @@ export function Main() {
     },
   ]);
   
-  const { projects } = useSelector((state) => state.user);
+  const { projects } = useSelector((state) => state.userInfo);
   const dispatch = useDispatch();
   const [isClicked, setIsClicked] = useState(false);
   const [newProject, setNewProject] = useState({});
@@ -117,6 +117,7 @@ export function Main() {
 
   
   const modalHandler = () => {
+    console.log(projects)
     setIsClicked(!isClicked);
   };
 
@@ -153,17 +154,17 @@ export function Main() {
     setSortModal(!sortModal);
   };
 
-  useEffect(() => {
-    axios.get('http://localhost:4000/project')
-    .then(res => {
-      console.log(res.data);
-    })
-    // dispatch(getUserProjects());
+  useEffect( async () => {
+    const array = [];
+    const result = await axios.get('http://localhost:4000/project')
+    console.log(result.data.data);
+
+    dispatch(getUserProjects(result.data.data));
   }, []);
 
   return (
     <div>
-      <Navigator />
+      {/* <Navigator /> */}
       <Backdrop onClick={isClicked ? modalHandler : null}>
         <Maincomponent>
           <startbox>
@@ -186,8 +187,9 @@ export function Main() {
               )}
             </sortbox>
             {sortModal ? <Sortmodal sortHandler={sortHandler} /> : null}
+            {console.log('=========a1========',projects)}
             <projectbox>
-              {projectList.map((el) => {
+              {[].map((el) => {
                 return <Projectcard data={el} />;
               })}
             </projectbox>

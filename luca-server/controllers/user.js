@@ -172,7 +172,6 @@ module.exports = {
             email: email,
           },
         });
-
         // 로그인 실패
         if (!userInfo) {
           return res.status(400).json({ message: "Wrong email" });
@@ -182,11 +181,7 @@ module.exports = {
           delete userInfo.dataValues.password;
           if (passwordCheck) {
             const accessToken = generateAccessToken(userInfo);
-            sendAccessToken(res, accessToken);
-            return res.status(200).send({
-              message: "login success",
-              data: userInfo,
-            });
+            sendAccessToken(res, accessToken, 200, { data: userInfo, message: "Login success" });
           } else {
             return res.status(400).json({ message: "Wrong password" });
           }
