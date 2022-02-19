@@ -1,12 +1,11 @@
 import styled from "styled-components";
 import Projectcard from "../components/projectcard";
 import { Navigator, Backdrop, Container } from "../components/commons";
-import { CreateProjectModal, Sortmodal } from "../components/modals";
-import { useState, useEffect } from "react";
+import {CreateProjectModal, Sortmodal} from "../components/modals";
+import {useState, useEffect} from "react";
+import {useSelector, useDispatch} from "react-redux";
+// import {getUserProjects} from "../redux/counterslice.js";
 import axios from "axios";
-
-const url = process.env.URL;
-// console.log(url)
 
 const Maincomponent = styled.div`
   margin-top: 10vh;
@@ -108,10 +107,15 @@ export function Main() {
       updatedAt: "2033.3.12",
     },
   ]);
+  
+  const { projects } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   const [isClicked, setIsClicked] = useState(false);
   const [newProject, setNewProject] = useState({});
   const [sortModal, setSortModal] = useState(false);
 
+
+  
   const modalHandler = () => {
     setIsClicked(!isClicked);
   };
@@ -150,49 +154,46 @@ export function Main() {
   };
 
   useEffect(() => {
-    // axios.get(`${url}/projects`)
-    // .then((res)=>{
-    //   setProjectList(res.data);
-    // })
-    // .catch((err)=>{
-    //   console.log(err);
-    // });
-  }, [projectList]);
+    axios.get('http://localhost:4000/project')
+    .then(res => {
+      console.log(res.data);
+    })
+    // dispatch(getUserProjects());
+  }, []);
 
   return (
     <div>
       <Navigator />
       <Backdrop onClick={isClicked ? modalHandler : null}>
-        <Container>
-          <Maincomponent>
-            <startbox>
-              <startinfo>
-                <h2>Lorem ipsum</h2>
-                img elements must have an alt prop, either with meaningful text,
-                or an empty string for decorative images
-              </startinfo>
-              <startbutton onClick={modalHandler}>start</startbutton>
-            </startbox>
-            <projectcontainer>
-              <sortbox>
-                {sortModal ? (
-                  <div>
-                    <div onClick={sortHandler}>sort by update ▲</div>
-                    {/* <Sortmodal sortHandler={sortHandler}/> */}
-                  </div>
-                ) : (
-                  <div onClick={sortHandler}>sort by update ▼</div>
-                )}
-              </sortbox>
-              {sortModal ? <Sortmodal sortHandler={sortHandler} /> : null}
-              <projectbox>
-                {projectList.map((el) => {
-                  return <Projectcard data={el} />;
-                })}
-              </projectbox>
-            </projectcontainer>
-          </Maincomponent>
-        </Container>
+        <Maincomponent>
+          <startbox>
+            <startinfo>
+              <h2>Lorem ipsum</h2>
+              img elements must have an alt prop, either with meaningful text,
+              or an empty string for decorative images
+            </startinfo>
+            <startbutton onClick={modalHandler}>start</startbutton>
+          </startbox>
+          <projectcontainer>
+            <sortbox>
+              {sortModal ? (
+                <div>
+                  <div onClick={sortHandler}>sort by update ▲</div>
+                  {/* <Sortmodal sortHandler={sortHandler}/> */}
+                </div>
+              ) : (
+                <div onClick={sortHandler}>sort by update ▼</div>
+              )}
+            </sortbox>
+            {sortModal ? <Sortmodal sortHandler={sortHandler} /> : null}
+            <projectbox>
+              {projectList.map((el) => {
+                return <Projectcard data={el} />;
+              })}
+            </projectbox>
+          </projectcontainer>
+        </Maincomponent>
+
         {isClicked ? (
           <CreateProjectModal
             modalHandler={modalHandler}

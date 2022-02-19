@@ -19,6 +19,7 @@ app.use(
     origin: true,
     method: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
     credentials: true,
+    SameSite: 'None',
   }),
 );
 

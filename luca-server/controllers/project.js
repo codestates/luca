@@ -3,6 +3,7 @@ const { isAuthorized } = require('./token');
 
 module.exports = {
     get: async (req, res) => {
+        console.log(res.cookies)
         try {
             const verifyInfo = isAuthorized(req);
             if (verifyInfo === 'not found') {
