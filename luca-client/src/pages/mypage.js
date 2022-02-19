@@ -4,7 +4,7 @@ import { Savealert } from "../components/modals";
 import { Navigator, Backdrop, Footer } from "../components/commons";
 import { useSelector, useDispatch } from "react-redux";
 // import { getUserProjects } from "../redux/counterslice.js";
-import {checkLogin, getUserInfo} from "../redux/counterslice.js";
+import {setIsLogin, setUserInfo} from "../redux/rootSlice.js";
 import axios from "axios";
 //import { useSelector, useDispatch } from "react-redux";
 
@@ -116,11 +116,11 @@ export default function Mypage() {
     await axios.get(`${process.env.REACT_APP_API_URL}/profile`)
     .then((res) => {
       console.log(res)
-      dispatch(getUserInfo(res.data));
+      dispatch(setUserInfo(res.data));
     })
     .catch((err) => {
       console.log(err.response.data.message)
-      dispatch(getUserInfo(err.response.data.message));
+      dispatch(setUserInfo(err.response.data.message));
     })
 
     console.log(userInfo)

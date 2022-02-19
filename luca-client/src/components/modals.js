@@ -1,8 +1,9 @@
 import styled from "styled-components";
 import { useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setIsLogin } from "../redux/slicer/loginSlice";
-import { setUserInfo } from "../redux/slicer/userInfoSlice";
+// import { setIsLogin } from "../redux/slicer/loginSlice";
+// import { setUserInfo } from "../redux/slicer/userInfoSlice";
+import { setIsLogin, setUserInfo } from "../redux/rootSlice";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -138,7 +139,7 @@ const ModalView = styled.div`
 export function LoginModal({ modalHandler }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const isLogin = useSelector((state) => state.login.isLogin);
+  const isLogin = useSelector((state) => state.user.isLogin);
 
   const [loginInfo, setLoginInfo] = useState({
     email: "",
