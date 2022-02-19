@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import { LoginModal } from "./modals";
-import { checkLogin, getUserInfo } from "../redux/counterslice.js";
 import axios from "axios";
 import {setIsLogin, setUserInfo} from "../redux/rootSlice.js";
 const serverUrl = "http://localhost:4000";

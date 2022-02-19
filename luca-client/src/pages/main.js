@@ -85,7 +85,6 @@ export function Main() {
   const [sortModal, setSortModal] = useState(false);
   
   const modalHandler = () => {
-    console.log(projectList)
     setIsClicked(!isClicked);
   };
 
