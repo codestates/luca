@@ -155,18 +155,18 @@ export function LoginModal({ modalHandler }) {
       return setErrorMessage("이메일과 비밀번호를 입력해주세요");
     }
     axios
-      .post(`${serverUrl}/user/login`, loginInfo, {
+      .post('http://localhost:4000/user/login', loginInfo, {
         "Content-Type": "application/json",
         withCredentials: true,
       })
       .then((res) => {
         if (res.status === 200) {
           dispatch(setIsLogin(true));
-          dispatch(setUserInfo(res.data.userInfo));
+          dispatch(setUserInfo(res.data.data));
           modalHandler(false);
           window.localStorage.setItem(
             "userInfo",
-            JSON.stringify(res.data.userInfo)
+            JSON.stringify(res.data.data)
           );
           window.location.replace("/");
         }

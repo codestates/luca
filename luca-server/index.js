@@ -23,7 +23,6 @@ app.use(
   }),
 );
 
-
 // router
 app.use('/', indexRouter);
 
