@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { LoginModal } from "./modals";
 import axios from "axios";
 import {setIsLogin, setUserInfo} from "../redux/rootSlice.js";
-const serverUrl = "http://localhost:4000";
+import { useNavigate } from "react-router-dom";
 
 const NavigatorContainer = styled.div`
   z-index: 999;
@@ -98,6 +98,7 @@ const Guest = styled.a`
 `;
 
 function Navigator() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const isLogin = useSelector((state) => state.user.isLogin);
 
@@ -108,9 +109,15 @@ function Navigator() {
   };
 
   const logoutHandler = () => {
-    dispatch(setIsLogin(false));
-    window.localStorage.clear();
-    window.location.replace("/");
+    axios.get(`${process.env.REACT_APP_API_URL}/user/logout`, {
+      'Content-Type': 'application/json', 
+      withCredentials: true 
+    })
+    .then(() => {
+      dispatch(setIsLogin(false));
+      dispatch(setUserInfo(null));
+      navigate("/")
+    });
   };
 
   return (

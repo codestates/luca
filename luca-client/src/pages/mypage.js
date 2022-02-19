@@ -113,7 +113,7 @@ export default function Mypage() {
   const dispatch = useDispatch();
   // const { userInfo } = useSelector(state => state.user);
   useEffect(async() => {
-    await axios.get("http://localhost:4000/profile")
+    await axios.get(`${process.env.REACT_APP_API_URL}/profile`)
     .then((res) => {
       console.log(res)
       dispatch(setUserInfo(res.data));
