@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { setProjectList, updateProjectList } from "../redux/rootSlice";
+import { Link } from "react-router-dom";
 
 const ProjectcardBody = styled.div`
   background-color: seashell;
@@ -60,7 +61,7 @@ const ProjectcardBody = styled.div`
         display: flex;
         align-items: center;
         justify-content: space-around;
-        
+
         > div {
           border: solid green;
         }
@@ -88,7 +89,8 @@ const ProjectcardBody = styled.div`
   }
 `;
 
-function Projectcard({ projectInfo, index }) { //projects에서 해당 프로젝트를 구분하기 위해 메인페이지에서 projects의 인덱스를 내려주었습니다.
+function Projectcard({ projectInfo, index }) {
+  //projects에서 해당 프로젝트를 구분하기 위해 메인페이지에서 projects의 인덱스를 내려주었습니다.
   const dispatch = useDispatch();
   const projects = useSelector((state) => state.user.projects);
   const userInfo = useSelector((state) => state.user.userInfo);
@@ -99,82 +101,107 @@ function Projectcard({ projectInfo, index }) { //projects에서 해당 프로젝
   // const [cardData, setCardData] = useState({...projects[index]});
 
   const editProjectHandler = (title, desc) => {
-    dispatch(updateProjectList({index: index, inputData: [title.value, desc.value]}));
-    axios.patch(`${process.env.REACT_APP_API_URL}/project`, {
-      projectId: projectInfo.id,
-      title: title.value,
-      desc: desc.value,
-    },
-    {
-      "Content-Type": "application/json",
-      withCredentials: true
-    })
-    .then((res) => {
-      console.log(res)
-    })
-    .catch((err) => {
-      console.log(err)
-    })
+    if (title.value || desc.value) {
+      dispatch(
+        updateProjectList({
+          index: index,
+          inputData: [title.value, desc.value],
+        })
+      );
+      axios
+        .patch(
+          `${process.env.REACT_APP_API_URL}/project`,
+          {
+            projectId: projectInfo.id,
+            title: title.value,
+            desc: desc.value,
+          },
+          {
+            "Content-Type": "application/json",
+            withCredentials: true,
+          }
+        )
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   };
 
   const deleteProjectHandler = () => {
-    axios.delete(`${process.env.REACT_APP_API_URL}/project/${projectInfo.id}`)
-    .then((res) => {
-      console.log(res)
-      window.location.reload(); // 임시로 새로고침 합니다.
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-  }
+    axios
+      .delete(`${process.env.REACT_APP_API_URL}/project/${projectInfo.id}`)
+      .then((res) => {
+        console.log(res);
+        window.location.reload(); // 임시로 새로고침 합니다.
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const handlePartyRequest = (el) => {
     // console.log(userInfo.id, userInfo)
-    if(el === "accept"){
-      axios.patch(`${process.env.REACT_APP_API_URL}/project/accept`, {
-        userId: userInfo.id,
-        projectId: projectInfo.id,
-        isAccept: true
-      })
-      .then((res) => {
-        console.log(res)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
+    if (el === "accept") {
+      axios
+        .patch(`${process.env.REACT_APP_API_URL}/project/accept`, {
+          userId: userInfo.id,
+          projectId: projectInfo.id,
+          isAccept: true,
+        })
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else if (el === "refuse") {
+      axios
+        .patch(`${process.env.REACT_APP_API_URL}/project/accept`, {
+          userId: userInfo.id,
+          projectId: projectInfo.id,
+          isAccept: false,
+        })
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
-    else if(el === "refuse"){
-      axios.patch(`${process.env.REACT_APP_API_URL}/project/accept`, {
-        userId: userInfo.id,
-        projectId: projectInfo.id,
-        isAccept: false
-      })
-      .then((res) => {
-        console.log(res)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-    }
-  }
+  };
 
   return (
     <ProjectcardBody>
       {console.log(userInfo)}
       <div className="projectcardhead">
+        {/* <Link to={`/project/${projectInfo.id}`}> */}
         <div className="projectname">
           <h2>{isClicked ? <input ref={titleRef} /> : projectInfo.title}</h2>
           <div className="date">{projectInfo.updatedAt}</div>
         </div>
+        {/* </Link> */}
         <div className="projectfunc">
-          {
-          projectInfo.isAccept === 1?
-          null:
-          <div className="acceptbox">
-            <div onClick={()=>{handlePartyRequest("accept")}}>수락</div>
-            <div onClick={()=>{handlePartyRequest("refuse")}}>거절</div>
-          </div>
-          }
+          {projectInfo.isAccept === 1 ? null : (
+            <div className="acceptbox">
+              <div
+                onClick={() => {
+                  handlePartyRequest("accept");
+                }}
+              >
+                수락
+              </div>
+              <div
+                onClick={() => {
+                  handlePartyRequest("refuse");
+                }}
+              >
+                거절
+              </div>
+            </div>
+          )}
           <div className="type">{projectInfo.isTeam ? "팀" : "개인"}</div>
           <div
             className="modifybox"
@@ -184,16 +211,14 @@ function Projectcard({ projectInfo, index }) { //projects에서 해당 프로젝
           >
             {isClicked ? (
               <>
-              <div
-                onClick={() => {
-                  editProjectHandler(titleRef.current, descRef.current);
-                }}
-              >
-                확인
-              </div>
-              <div onClick={deleteProjectHandler}>
-                삭제
-              </div>
+                <div
+                  onClick={() => {
+                    editProjectHandler(titleRef.current, descRef.current);
+                  }}
+                >
+                  확인
+                </div>
+                <div onClick={deleteProjectHandler}>삭제</div>
               </>
             ) : (
               <i className="fa-regular fa-pen-to-square"></i>

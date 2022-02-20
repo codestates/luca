@@ -6,7 +6,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { setIsLogin, setUserInfo, setProjectList } from "../redux/rootSlice";
 import axios from "axios";
 
-
 // ============모달 props 사용법==========================
 
 // const [modal, SetModal] = useState(false);
@@ -106,10 +105,14 @@ const ModalView = styled.div`
         margin: 0.5em;
         // 탭으로 구현할 것
         border-radius: 10px;
+        background-color: ${(props) => (props.guestBlock ? "grey" : "white")};
+        cursor: ${(props) => (props.guestBlock ? "not-allowed" : "pointer")};
       }
 
-      button.options:visited { // 버튼을 클릭했을때 시각적으로 구분할수 잇어야 할듯함
+      button.options:visited {
+        // 버튼을 클릭했을때 시각적으로 구분할수 잇어야 할듯함
         /* border: solid red; */
+        color: blue;
         border-radius: 10px;
       }
     }
@@ -234,6 +237,7 @@ export function CreateProjectModal({ modalHandler }) {
   const inviteRef = useRef();
   const dispatch = useDispatch();
   const userInfo = useSelector((state) => state.user.userInfo);
+  console.log("isGuest: ", userInfo.isGuest);
 
   const [isTeam, setIsTeam] = useState(false);
   const [memberId, setMemberId] = useState([]);
@@ -246,66 +250,79 @@ export function CreateProjectModal({ modalHandler }) {
   };
 
   const findMemberHandler = async () => {
-    if(inviteRef.current.value === "") {
+    if (inviteRef.current.value === "") {
       alert("내용을 입력해 주세요");
-    } else if(inviteRef.current.value === userInfo.email) {
+    } else if (inviteRef.current.value === userInfo.email) {
       alert("본인입니다");
     } else {
-      const result = await axios.post(`${process.env.REACT_APP_API_URL}/project/member`, { 
-        email: inviteRef.current.value
-      },{
-        'Content-Type': 'application/json', 
-        withCredentials: true 
-      }).catch((err) => {
-        // ====== 에러 핸들링 ======
-        console.log('err', err)
-      })
-      console.log(result);
-        if(result.data.message === 'Found user') {
-          if(memberEmail.includes(result.data.data.email)){
-            alert("이미 추가된 회원입니다");
-          } else {
-            setMemberId([...memberId, result.data.data.id])
-            setMemberEmail([...memberEmail, result.data.data.email])
+      const result = await axios
+        .post(
+          `${process.env.REACT_APP_API_URL}/project/member`,
+          {
+            email: inviteRef.current.value,
+          },
+          {
+            "Content-Type": "application/json",
+            withCredentials: true,
           }
-        } else if(result.data.message === 'Not found user') {
-          alert("존재하지 않는 유저입니다");
+        )
+        .catch((err) => {
+          // ====== 에러 핸들링 ======
+          console.log("err", err);
+        });
+      console.log(result);
+      if (result.data.message === "Found user") {
+        if (memberEmail.includes(result.data.data.email)) {
+          alert("이미 추가된 회원입니다");
+        } else {
+          setMemberId([...memberId, result.data.data.id]);
+          setMemberEmail([...memberEmail, result.data.data.email]);
         }
+      } else if (result.data.message === "Not found user") {
+        alert("존재하지 않는 유저입니다");
+      }
     }
   };
 
   const createNewProject = () => {
-    if(nameRef.current.value === "" || descRef.current.value === "") {
-      alert("내용을 채워주세요")
+    if (nameRef.current.value === "" || descRef.current.value === "") {
+      alert("내용을 채워주세요");
     } else {
-      axios.post(`${process.env.REACT_APP_API_URL}/project`, {
-        userId: userInfo.id,
-        title: nameRef.current.value,
-        desc: descRef.current.value,
-        isTeam: isTeam,
-        memberUserId: [userInfo.id, ...memberId]
-      }, {
-        'Content-Type': 'application/json',
-        withCredentials: true 
-      })
-      .then(() => {
-        axios.get(`${process.env.REACT_APP_API_URL}/project`, {
-          'Content-Type': 'application/json', 
-          withCredentials: true 
-        }).then((res) => {
-          dispatch(setProjectList(res.data.data));
+      axios
+        .post(
+          `${process.env.REACT_APP_API_URL}/project`,
+          {
+            userId: userInfo.id,
+            title: nameRef.current.value,
+            desc: descRef.current.value,
+            isTeam: isTeam,
+            memberUserId: [userInfo.id, ...memberId],
+          },
+          {
+            "Content-Type": "application/json",
+            withCredentials: true,
+          }
+        )
+        .then(() => {
+          axios
+            .get(`${process.env.REACT_APP_API_URL}/project`, {
+              "Content-Type": "application/json",
+              withCredentials: true,
+            })
+            .then((res) => {
+              dispatch(setProjectList(res.data.data));
+            });
         })
-      })
-      .catch((err) => {
-        // ====== 에러 핸들링 ======
-        if(err.response.status === 422) {
-          alert("내용을 채워주세요");
-        }
-        console.log(err);
-      })
+        .catch((err) => {
+          // ====== 에러 핸들링 ======
+          if (err.response.status === 422) {
+            alert("내용을 채워주세요");
+          }
+          console.log(err);
+        });
       modalHandler(false);
     }
-  }
+  };
 
   return (
     <ModalBackdrop onClick={() => modalHandler(false)}>
@@ -321,14 +338,20 @@ export function CreateProjectModal({ modalHandler }) {
             >
               개인
             </button>
-            <button
-              className="options"
-              onClick={() => {
-                handleTeam(true);
-              }}
-            >
-              팀
-            </button>
+            {!userInfo.isGuest ? (
+              <button
+                className="options"
+                onClick={() => {
+                  handleTeam(true);
+                }}
+              >
+                팀
+              </button>
+            ) : (
+              <button className="options" guestBlock={true}>
+                팀
+              </button>
+            )}
           </div>
           <div className="query">
             <div className="index">이름</div>
@@ -350,9 +373,7 @@ export function CreateProjectModal({ modalHandler }) {
               </div>
               <div>
                 {memberEmail.map((el) => {
-                  return (
-                    <div>{el}</div>
-                  )
+                  return <div>{el}</div>;
                 })}
               </div>
             </div>
