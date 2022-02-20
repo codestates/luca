@@ -134,6 +134,7 @@ export function Main() {
 
   return (
     <div>
+      {/* {console.log(projects)} */}
       <Navigator />
       <Backdrop onClick={isClicked ? modalHandler : null}>
         <Maincomponent>
@@ -158,8 +159,8 @@ export function Main() {
             </sortbox>
             {sortModal ? <Sortmodal sortHandler={sortHandler} /> : null}
             <projectbox>
-              {projects.map((el) => {
-                return <Projectcard projectInfo={el} key={el.id} />;
+              {projects.map((el, i) => {
+                return <Projectcard projectInfo={el} index={i} key={el.id} />;
               })}
             </projectbox>
           </projectcontainer>
