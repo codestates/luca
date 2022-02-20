@@ -81,25 +81,25 @@ export function Main() {
   const projects = useSelector((state) => state.user.projects);
   const dispatch = useDispatch();
   const [isClicked, setIsClicked] = useState(false);
-  const [newProject, setNewProject] = useState({});
+  // const [newProject, setNewProject] = useState({});
   const [sortModal, setSortModal] = useState(false);
   
   const modalHandler = () => {
     setIsClicked(!isClicked);
   };
 
-  const newProjectHandler = (name, desc, invite, type) => {
-    setNewProject({
-      title: name,
-      desc: desc,
-      isTeam: type,
-    });
-    console.log(name.value);
-    console.log(desc.value);
-    console.log(invite.value);
-    console.log(type);
-    // axios.post()
-  };
+  // const newProjectHandler = (name, desc, invite, type) => {
+  //   setNewProject({
+  //     title: name,
+  //     desc: desc,
+  //     isTeam: type,
+  //   });
+  //   console.log(name.value);
+  //   console.log(desc.value);
+  //   console.log(invite.value);
+  //   console.log(type);
+  //   // axios.post()
+  // };
 
   const sortHandler = (e) => {
     // const projectsClone = [...projectList];
@@ -152,8 +152,8 @@ export function Main() {
             </sortbox>
             {sortModal ? <Sortmodal sortHandler={sortHandler} /> : null}
             <projectbox>
-              {projects.map((el) => {
-                return <Projectcard data={el} />;
+              {projects.map((el, i) => {
+                return <Projectcard index={i} />;
               })}
             </projectbox>
           </projectcontainer>
@@ -162,7 +162,7 @@ export function Main() {
         {isClicked ? (
           <CreateProjectModal
             modalHandler={modalHandler}
-            newProjectHandler={newProjectHandler}
+            // newProjectHandler={newProjectHandler}
           />
         ) : null}
       </Backdrop>

@@ -105,6 +105,12 @@ const ModalView = styled.div`
         font-size: 1.2em;
         margin: 0.5em;
         // 탭으로 구현할 것
+        border-radius: 10px;
+      }
+
+      button.options:visited { // 버튼을 클릭했을때 시각적으로 구분할수 잇어야 할듯함
+        /* border: solid red; */
+        border-radius: 10px;
       }
     }
 
@@ -227,17 +233,36 @@ export function LoginModal({ modalHandler }) {
   );
 }
 
-export function CreateProjectModal({ modalHandler, newProjectHandler }) {
+export function CreateProjectModal({ modalHandler }) {
   const nameRef = useRef();
   const descRef = useRef();
   const inviteRef = useRef();
-  const typeRef = useRef();
+  // const typeRef = useRef();
+  const userInfo = useSelector((state) => state.user.userInfo);
 
   const [type, setType] = useState("");
 
   const handleType = (e) => {
     setType(e);
   };
+
+  const createNewProject = () => {
+    console.log(userInfo)
+    // const newProjectReqData = {
+    //   userId: userInfo.id,
+    //   title: nameRef.current.value,
+    //   desc: descRef.current.value,
+    //   isTeam: type,
+    //   memberUserId: [1] // 임시로 데이터입니다.
+    // }
+    // axios.post(`${process.env.REACT_APP_SERVER_URL}/project`, newProjectReqData)
+    // .then((res) => {
+    //   console.log(res);
+    // })
+    // .catch((err) => {
+    //   console.log(err);
+    // })
+  }
 
   return (
     <ModalBackdrop onClick={() => modalHandler(false)}>
@@ -248,7 +273,7 @@ export function CreateProjectModal({ modalHandler, newProjectHandler }) {
             <button
               className="options"
               onClick={() => {
-                handleType("flase");
+                handleType(false);
               }}
             >
               개인
@@ -256,7 +281,7 @@ export function CreateProjectModal({ modalHandler, newProjectHandler }) {
             <button
               className="options"
               onClick={() => {
-                handleType("true");
+                handleType(true);
               }}
             >
               팀
@@ -284,12 +309,14 @@ export function CreateProjectModal({ modalHandler, newProjectHandler }) {
             <button
               className="confirm"
               onClick={() => {
-                newProjectHandler(
-                  nameRef.current,
-                  descRef.current,
-                  inviteRef.current,
-                  type
-                );
+                // newProjectHandler(
+                //   nameRef.current,
+                //   descRef.current,
+                //   inviteRef.current,
+                //   type
+                // );
+                createNewProject();
+                // modalHandler(false);
               }}
             >
               생성
