@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 // import { setIsLogin } from "../redux/slicer/loginSlice";
 // import { setUserInfo } from "../redux/slicer/userInfoSlice";
@@ -245,20 +245,21 @@ export function CreateProjectModal({ modalHandler }) {
 
   const createNewProject = () => {
     console.log(userInfo)
-    // const newProjectReqData = {
-    //   userId: userInfo.id,
-    //   title: nameRef.current.value,
-    //   desc: descRef.current.value,
-    //   isTeam: type,
-    //   memberUserId: [1] // 임시로 데이터입니다.
-    // }
-    // axios.post(`${process.env.REACT_APP_SERVER_URL}/project`, newProjectReqData)
-    // .then((res) => {
-    //   console.log(res);
-    // })
-    // .catch((err) => {
-    //   console.log(err);
-    // })
+    const newProjectReqData = {
+      userId: userInfo.id,
+      title: nameRef.current.value,
+      desc: descRef.current.value,
+      isTeam: type,
+      memberUserId: [1] // 임시로 데이터입니다.
+    }
+    axios.post(`${process.env.REACT_APP_API_URL}/project`, newProjectReqData)
+    .then((res) => {
+      console.log(res);
+
+    })
+    .catch((err) => {
+      console.log(err);
+    })
   }
 
   return (
@@ -313,7 +314,7 @@ export function CreateProjectModal({ modalHandler }) {
                 //   type
                 // );
                 createNewProject();
-                // modalHandler(false);
+                modalHandler(false);
               }}
             >
               생성
