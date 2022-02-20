@@ -31,6 +31,7 @@ function App() {
       'Content-Type': 'application/json', 
       withCredentials: true 
     }).then((data) => {
+      // console.log(data.data.data)
       dispatch(setUserInfo(data.data.data));
       dispatch(setIsLogin(true));
       navigate("/")

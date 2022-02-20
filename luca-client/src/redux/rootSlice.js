@@ -31,10 +31,10 @@ export const rootSlice = createSlice({
             state.isLogin = action.payload;
         },
         setUserInfo: (state, action) => {
-            state.userinfo = action.payload;
+            state.userInfo = action.payload;
         },
         setProjectList: (state, action) => {
-            console.log(action.payload)
+            // console.log(action.payload)
             state.projects = action.payload;
         },
         updateProjectList: (state, action) => {

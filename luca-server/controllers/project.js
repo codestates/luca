@@ -3,7 +3,6 @@ const { isAuthorized } = require('./token');
 
 module.exports = {
     get: async (req, res) => {
-        console.log(res.cookies)
         try {
             const verifyInfo = isAuthorized(req);
             if (verifyInfo === 'not found') {
@@ -19,6 +18,7 @@ module.exports = {
                             attributes: []
                         }
                     ],
+                    attributes: ['id', 'title', 'desc', 'isTeam', 'admin', 'createdAt', 'updatedAt', [Sequelize.col('users_projects.isAccept'), 'isAccept']],
                     where: {
                         '$users_projects.userId$': verifyInfo.id
                     }
@@ -26,13 +26,14 @@ module.exports = {
                 res.status(200).json({ data: result, message: 'Get project list success' });
             }
         } catch (err) {
+            console.log(err)
             res.status(500).json({ message: "Internal server error" });
         }
     },
 
     post: async (req, res) => {
         const { userId, title, desc, isTeam, memberUserId } = req.body;
-        if (!userId || !title || !desc || !isTeam || !memberUserId || memberUserId.length === 0) {
+        if (!userId || !title || !desc || isTeam === undefined || !memberUserId || memberUserId.length === 0) {
             return res.status(422).json({ message: "Insufficient parameters supplied" });
         }
         try {

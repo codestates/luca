@@ -1,11 +1,12 @@
 import styled from "styled-components";
-import { useRef, useState } from "react";
+import { useRef, useStatem, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 // import { setIsLogin } from "../redux/slicer/loginSlice";
 // import { setUserInfo } from "../redux/slicer/userInfoSlice";
 import { setIsLogin, setUserInfo } from "../redux/rootSlice";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+
 
 // ============모달 props 사용법==========================
 
@@ -234,6 +235,7 @@ export function CreateProjectModal({ modalHandler }) {
   const nameRef = useRef();
   const descRef = useRef();
   const inviteRef = useRef();
+  const navigate = useNavigate();
   // const typeRef = useRef();
   const userInfo = useSelector((state) => state.user.userInfo);
 
@@ -244,21 +246,22 @@ export function CreateProjectModal({ modalHandler }) {
   };
 
   const createNewProject = () => {
-    console.log(userInfo)
-    // const newProjectReqData = {
-    //   userId: userInfo.id,
-    //   title: nameRef.current.value,
-    //   desc: descRef.current.value,
-    //   isTeam: type,
-    //   memberUserId: [1] // 임시로 데이터입니다.
-    // }
-    // axios.post(`${process.env.REACT_APP_SERVER_URL}/project`, newProjectReqData)
-    // .then((res) => {
-    //   console.log(res);
-    // })
-    // .catch((err) => {
-    //   console.log(err);
-    // })
+    // console.log(userInfo)
+    const newProjectReqData = {
+      userId: userInfo.data.id,
+      title: nameRef.current.value,
+      desc: descRef.current.value,
+      isTeam: type,
+      memberUserId: [1] // 임시 데이터입니다.
+    }
+    axios.post(`${process.env.REACT_APP_API_URL}/project`, newProjectReqData)
+    .then((res) => {
+      console.log(res);
+      window.location.replace("/") //임시로 새로고침을 해줍니다.
+    })
+    .catch((err) => {
+      console.log(err);
+    })
   }
 
   return (
@@ -313,7 +316,7 @@ export function CreateProjectModal({ modalHandler }) {
                 //   type
                 // );
                 createNewProject();
-                // modalHandler(false);
+                modalHandler(false);
               }}
             >
               생성
