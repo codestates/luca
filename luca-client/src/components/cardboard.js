@@ -228,7 +228,7 @@ export default function Cardboard() {
           onClick={adderOpenHandler}
         >
           <div>
-            <i class="fa-solid fa-circle-plus"></i>
+            <i className="fa-solid fa-circle-plus"></i>
           </div>
         </CardAdder>
         <Opener
@@ -237,9 +237,9 @@ export default function Cardboard() {
           isCardContOpen={isCardContOpen}
         >
           {isCardContOpen ? (
-            <i class="fa-solid fa-angle-right"></i>
+            <i className="fa-solid fa-angle-right"></i>
           ) : (
-            <i class="fa-solid fa-angle-left"></i>
+            <i className="fa-solid fa-angle-left"></i>
           )}
         </Opener>
       </CardContainer>

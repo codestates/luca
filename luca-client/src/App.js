@@ -61,8 +61,8 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/mypage" element={<Mypage />} />
         <Route path="/changepassword" element={<ChangePassword />} />
-        <Route path="/project" element={<Project />} />
-        {/* <Route path="/project/:id" element={<Project />} /> */}
+        <Route path="/project/" element={<Project />} />
+        {/* <Route path={`/project`} element={<Project />} /> */}
         <Route path="/auth/callback/kakao" element={<KakaoPage />} />
         <Route path="/auth/callback/naver" element={<NaverPage />} />
         <Route path="/auth/callback/google" element={<GooglePage />} />

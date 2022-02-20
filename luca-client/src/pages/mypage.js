@@ -4,6 +4,7 @@ import { Savealert } from "../components/modals";
 import { Navigator, Backdrop, Footer } from "../components/commons";
 import { useSelector, useDispatch } from "react-redux";
 import { setIsLogin, setUserInfo } from "../redux/rootSlice.js";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Container = styled.div`
@@ -101,6 +102,7 @@ const Button = styled.button`
 
 export default function Mypage() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const userInfo = useSelector((state) => state.user.userInfo);
   const [isEditOn, setIsEditOn] = useState(false);
   const editnameRef = useRef();
@@ -128,20 +130,22 @@ export default function Mypage() {
   };
 
   useEffect(() => {
-    // console.log(userInfo)
-    // axios.get(`${process.env.REACT_APP_API_URL}/profile`,{
-    //   'Content-Type': 'application/json',
-    //   withCredentials: true
-    // })
-    // .then((res) => {
-    //   console.log(res)
-    //   dispatch(setUserInfo(res.data.data));
-    // })
-    // .catch((err) => {
-    //   console.log(err.response.data.message)
-    //   dispatch(setUserInfo(err.response.data.message));
-    // })
-  }, [userInfo]);
+    console.log(userInfo);
+    axios
+      .get(`${process.env.REACT_APP_API_URL}/profile`, {
+        "Content-Type": "application/json",
+        withCredentials: true,
+      })
+      .then((res) => {
+        console.log(res);
+        dispatch(setUserInfo(res.data.data));
+      })
+      .catch((err) => {
+        console.log(err.response.data.message);
+        navigate("/");
+        //dispatch(setUserInfo(err.response.data.message));
+      });
+  }, []);
 
   return (
     <div>

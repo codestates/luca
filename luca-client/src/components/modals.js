@@ -105,11 +105,14 @@ const ModalView = styled.div`
         margin: 0.5em;
         // 탭으로 구현할 것
         border-radius: 10px;
+        background-color: ${(props) => (props.guestBlock ? "grey" : "white")};
+        cursor: ${(props) => (props.guestBlock ? "not-allowed" : "pointer")};
       }
 
       button.options:visited {
         // 버튼을 클릭했을때 시각적으로 구분할수 잇어야 할듯함
         /* border: solid red; */
+        color: blue;
         border-radius: 10px;
       }
     }
@@ -232,43 +235,93 @@ export function CreateProjectModal({ modalHandler }) {
   const nameRef = useRef();
   const descRef = useRef();
   const inviteRef = useRef();
-  // const typeRef = useRef();
   const dispatch = useDispatch();
   const userInfo = useSelector((state) => state.user.userInfo);
+  console.log("isGuest: ", userInfo.isGuest);
 
-  const [type, setType] = useState("");
+  const [isTeam, setIsTeam] = useState(false);
+  const [memberId, setMemberId] = useState([]);
+  const [memberEmail, setMemberEmail] = useState([]);
 
-  const handleType = (e) => {
-    setType(e);
+  const handleTeam = (e) => {
+    setMemberId([]);
+    setMemberEmail([]);
+    setIsTeam(e);
+  };
+
+  const findMemberHandler = async () => {
+    if (inviteRef.current.value === "") {
+      alert("내용을 입력해 주세요");
+    } else if (inviteRef.current.value === userInfo.email) {
+      alert("본인입니다");
+    } else {
+      const result = await axios
+        .post(
+          `${process.env.REACT_APP_API_URL}/project/member`,
+          {
+            email: inviteRef.current.value,
+          },
+          {
+            "Content-Type": "application/json",
+            withCredentials: true,
+          }
+        )
+        .catch((err) => {
+          // ====== 에러 핸들링 ======
+          console.log("err", err);
+        });
+      console.log(result);
+      if (result.data.message === "Found user") {
+        if (memberEmail.includes(result.data.data.email)) {
+          alert("이미 추가된 회원입니다");
+        } else {
+          setMemberId([...memberId, result.data.data.id]);
+          setMemberEmail([...memberEmail, result.data.data.email]);
+        }
+      } else if (result.data.message === "Not found user") {
+        alert("존재하지 않는 유저입니다");
+      }
+    }
   };
 
   const createNewProject = () => {
-    console.log(userInfo);
-    const newProjectReqData = {
-      userId: userInfo.id,
-      title: nameRef.current.value,
-      desc: descRef.current.value,
-      isTeam: type,
-      memberUserId: [1], // 임시로 데이터입니다.
-    };
-    axios
-      .post(`${process.env.REACT_APP_API_URL}/project`, newProjectReqData, {
-        "Content-Type": "application/json",
-        withCredentials: true,
-      })
-      .then(() => {
-        axios
-          .get(`${process.env.REACT_APP_API_URL}/project`, {
+    if (nameRef.current.value === "" || descRef.current.value === "") {
+      alert("내용을 채워주세요");
+    } else {
+      axios
+        .post(
+          `${process.env.REACT_APP_API_URL}/project`,
+          {
+            userId: userInfo.id,
+            title: nameRef.current.value,
+            desc: descRef.current.value,
+            isTeam: isTeam,
+            memberUserId: [userInfo.id, ...memberId],
+          },
+          {
             "Content-Type": "application/json",
             withCredentials: true,
-          })
-          .then((res) => {
-            dispatch(setProjectList(res.data.data));
-          });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+          }
+        )
+        .then(() => {
+          axios
+            .get(`${process.env.REACT_APP_API_URL}/project`, {
+              "Content-Type": "application/json",
+              withCredentials: true,
+            })
+            .then((res) => {
+              dispatch(setProjectList(res.data.data));
+            });
+        })
+        .catch((err) => {
+          // ====== 에러 핸들링 ======
+          if (err.response.status === 422) {
+            alert("내용을 채워주세요");
+          }
+          console.log(err);
+        });
+      modalHandler(false);
+    }
   };
 
   return (
@@ -280,19 +333,25 @@ export function CreateProjectModal({ modalHandler }) {
             <button
               className="options"
               onClick={() => {
-                handleType(false);
+                handleTeam(false);
               }}
             >
               개인
             </button>
-            <button
-              className="options"
-              onClick={() => {
-                handleType(true);
-              }}
-            >
-              팀
-            </button>
+            {!userInfo.isGuest ? (
+              <button
+                className="options"
+                onClick={() => {
+                  handleTeam(true);
+                }}
+              >
+                팀
+              </button>
+            ) : (
+              <button className="options" guestBlock={true}>
+                팀
+              </button>
+            )}
           </div>
           <div className="query">
             <div className="index">이름</div>
@@ -304,11 +363,21 @@ export function CreateProjectModal({ modalHandler }) {
             {/* <input onChange={(e)=>{newProjectHandler(e, "desc")}}/> */}
             <input ref={descRef} />
           </div>
-          <div className="query">
-            <div className="index">초대</div>
-            {/* <input onChange={(e)=>{newProjectHandler(e, "invite")}}/> */}
-            <input ref={inviteRef} />
-          </div>
+          {isTeam ? (
+            <div>
+              <div className="query">
+                <div className="index">초대</div>
+                {/* <input onChange={(e)=>{newProjectHandler(e, "invite")}}/> */}
+                <input ref={inviteRef} />
+                <button onClick={findMemberHandler}>추가</button>
+              </div>
+              <div>
+                {memberEmail.map((el) => {
+                  return <div>{el}</div>;
+                })}
+              </div>
+            </div>
+          ) : null}
         </div>
         <div className="modal-footer">
           <div className="buttons">
@@ -323,7 +392,6 @@ export function CreateProjectModal({ modalHandler }) {
                 //   type
                 // );
                 createNewProject();
-                modalHandler(false);
               }}
             >
               생성
