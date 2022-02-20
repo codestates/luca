@@ -1,7 +1,5 @@
-// import dotenv from "dotenv";
-// require('dotenv').config();
 import "./App.css";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import About from "./pages/about";
 import Main from "./pages/main";
 import Signup from "./pages/signup";
@@ -13,19 +11,14 @@ import NaverPage from "./pages/oauth/NaverPage";
 import GooglePage from "./pages/oauth/GooglePage";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-// import { setIsLogin } from "../src/redux/slicer/loginSlice";
-// import { setUserInfo } from "./redux/slicer/userInfoSlice";
 import { setIsLogin, setUserInfo } from "../src/redux/rootSlice";
 import axios from "axios";
-// import { rootSlice } from "./redux/rootSlice";
 import TestMain from './pages/testMain';
 import TestProject from './pages/testProject';
 
 function App() {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
-  // console.log("App userInfo: ", userInfo);
-  
+
   const isAuthenticated = () => {
     axios.get(`${process.env.REACT_APP_API_URL}/profile`, {
       'Content-Type': 'application/json', 
@@ -33,29 +26,34 @@ function App() {
     }).then((data) => {
       dispatch(setUserInfo(data.data.data));
       dispatch(setIsLogin(true));
-      navigate("/")
     }).catch((err) => {
       if(err.response.status === 401) {
         dispatch(setIsLogin(false));
-        dispatch(setUserInfo(null));
+        dispatch(setUserInfo({
+          id: "",
+          email: "",
+          name: "",
+          isGuest: "",
+          isSocial: "",
+          createdAt: "",
+          updatedAt: ""
+        }));
       }
-    })
+    });
   };
   
   useEffect(() => {
     isAuthenticated();
   }, []);
   
-  const userInfo = useSelector((state) => state.user.userInfo);
   const isLogin = useSelector((state) => state.user.isLogin);
-  // console.log(isLogin);
 
   return (
     <div>
       <Routes>
         <Route path="/" element={isLogin ? <Main /> : <About />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/mypage" element={<Mypage userInfo={userInfo} />} />
+        <Route path="/mypage" element={<Mypage />} />
         <Route path="/changepassword" element={<ChangePassword />} />
         <Route path="/project" element={<Project />} />
         <Route path='/auth/callback/kakao' element={<KakaoPage />} />

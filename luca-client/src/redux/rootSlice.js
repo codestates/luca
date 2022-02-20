@@ -23,7 +23,15 @@ export const rootSlice = createSlice({
     initialState: {
         projects: [],
         isLogin: false,
-        userInfo: null
+        userInfo: {
+            id: "",
+            email: "",
+            name: "",
+            isGuest: "",
+            isSocial: "",
+            createdAt: "",
+            updatedAt: ""
+        }
     },
 
     reducers: {

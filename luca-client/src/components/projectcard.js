@@ -76,48 +76,48 @@ const ProjectcardBody = styled.div`
   }
 `;
 
-function Projectcard({ index }) { //projects에서 해당 프로젝트를 구분하기 위해 메인페이지에서 projects의 인덱스를 내려주었습니다.
+function Projectcard({ projectInfo }) { //projects에서 해당 프로젝트를 구분하기 위해 메인페이지에서 projects의 인덱스를 내려주었습니다.
   const dispatch = useDispatch();
   const projects = useSelector((state) => state.user.projects);
   const titleRef = useRef();
   const descRef = useRef();
   // console.log(data.id)
   const [isClicked, setIsClicked] = useState(false);
-  const [cardData, setCardData] = useState({...projects[index]});
+  // const [cardData, setCardData] = useState({...projects[index]});
 
   const editProjectHandler = (title, desc) => {
-    // console.log(name.value);
-    // console.log(desc.value);
-    if (title.value === "" || desc.value === "") {
-      alert("빈칸을 채워주세요.");
-      return;
-    } else {
-      setCardData({...cardData, title: title.value, desc: desc.value}); //수정 하자마자 변경된 값을 보여주기 위해 react states를 사용합니다.
-      const editReqData = {projectId: projects[index].id, title: title.value, desc: desc.value}; //이후에 서버로 업데이트 요청을 합니다.
-      axios.patch(`${process.env.REACT_APP_API_URL}/project`, 
-        editReqData,
-        {
-        "Content-Type": "application/json",
-        withCredentials: true,
-      })
-      .then((res) => {
-        console.log('요청성공');
-      })
-      .catch((err) => {
-        console.log('에러');
-      })
-    }
+  //   // console.log(name.value);
+  //   // console.log(desc.value);
+  //   if (title.value === "" || desc.value === "") {
+  //     alert("빈칸을 채워주세요.");
+  //     return;
+  //   } else {
+  //     setCardData({...cardData, title: title.value, desc: desc.value}); //수정 하자마자 변경된 값을 보여주기 위해 react states를 사용합니다.
+  //     const editReqData = {projectId: projects[index].id, title: title.value, desc: desc.value}; //이후에 서버로 업데이트 요청을 합니다.
+  //     axios.patch(`${process.env.REACT_APP_API_URL}/project`, 
+  //       editReqData,
+  //       {
+  //       "Content-Type": "application/json",
+  //       withCredentials: true,
+  //     })
+  //     .then((res) => {
+  //       console.log('요청성공');
+  //     })
+  //     .catch((err) => {
+  //       console.log('에러');
+  //     })
+  //   }
   };
 
   return (
     <ProjectcardBody>
       <div className="projectcardhead">
         <div className="projectname">
-          <h2>{isClicked ? <input ref={titleRef} /> : cardData.title}</h2>
-          <div className="date">{cardData.updatedAt}</div>
+          <h2>{isClicked ? <input ref={titleRef} /> : projectInfo.title}</h2>
+          <div className="date">{projectInfo.updatedAt}</div>
         </div>
         <div className="projectfunc">
-          <div className="type">{cardData.isTeam ? "팀" : "개인"}</div>
+          <div className="type">{projectInfo.isTeam ? "팀" : "개인"}</div>
           <div
             className="modifybox"
             onClick={() => {
@@ -140,7 +140,7 @@ function Projectcard({ index }) { //projects에서 해당 프로젝트를 구분
       </div>
       <div className="projectcardbottom">
         <div className="desc">
-          {isClicked ? <input ref={descRef} /> : cardData.desc}
+          {isClicked ? <input ref={descRef} /> : projectInfo.desc}
         </div>
         <div className="projectinfo">
           5명의 참여자, 30개의 카드, 23개의 매칭
