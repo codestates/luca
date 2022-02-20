@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { setProjectList } from "../redux/rootSlice.js";
 import axios from "axios";
 import { compose } from '@reduxjs/toolkit';
+import Footer from '../components/footer';
 
 const Maincomponent = styled.div`
   margin-top: 10vh;
@@ -112,8 +113,8 @@ export function Main() {
           ? -1
           : parseInt(a.updatedAt.split("-").join("")) >
             parseInt(b.updatedAt.split("-").join(""))
-          ? 1
-          : 0;
+            ? 1
+            : 0;
       });
       dispatch(setProjectList(projectsClone));
       console.log("sortHandler projectClone");
@@ -125,8 +126,8 @@ export function Main() {
           ? -1
           : parseInt(a.createdAt.split("-").join("")) >
             parseInt(b.createdAt.split("-").join(""))
-          ? 1
-          : 0;
+            ? 1
+            : 0;
       });
       console.log("sortHandler projectClone");
       console.log(projectsClone);
@@ -184,6 +185,7 @@ export function Main() {
         ) : null}
       </Backdrop>
       <div className="footer"></div>
+      <Footer />
     </div>
   );
 }
