@@ -42,7 +42,7 @@ export const rootSlice = createSlice({
             state.userInfo = action.payload;
         },
         setProjectList: (state, action) => {
-            console.log(action.payload)
+            // console.log(action.payload)
             state.projects = action.payload;
         },
         updateProjectList: (state, action) => {

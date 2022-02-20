@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { setIsLogin, setUserInfo, setProjectList } from "../redux/rootSlice";
 import axios from "axios";
 
+
 // ============모달 props 사용법==========================
 
 // const [modal, SetModal] = useState(false);
@@ -142,7 +143,6 @@ const ModalView = styled.div`
 `;
 
 export function LoginModal({ modalHandler }) {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const isLogin = useSelector((state) => state.user.isLogin);
 
@@ -171,7 +171,6 @@ export function LoginModal({ modalHandler }) {
           dispatch(setIsLogin(true));
           dispatch(setUserInfo(res.data.data));
           modalHandler(false);
-          navigate("/")
         }
       })
       .catch((err) => {

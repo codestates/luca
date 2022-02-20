@@ -35,6 +35,14 @@ const ProjectcardBody = styled.div`
       display: flex;
       text-align: center;
       height: 100%;
+      > div.acceptbox {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        flex-direction: row;
+        width: 100px;
+        margin-right: 20px;
+      }
       > div.type {
         border: solid;
         height: 90%;
@@ -47,11 +55,15 @@ const ProjectcardBody = styled.div`
       > div.modifybox {
         border: solid;
         height: 90%;
-        width: 90px;
+        width: 100px;
         margin-left: 20px;
         display: flex;
         align-items: center;
-        justify-content: center;
+        justify-content: space-around;
+        
+        > div {
+          border: solid green;
+        }
       }
       > div.modifybox:hover {
         /* color: red; */
@@ -79,6 +91,7 @@ const ProjectcardBody = styled.div`
 function Projectcard({ projectInfo }) { //projects에서 해당 프로젝트를 구분하기 위해 메인페이지에서 projects의 인덱스를 내려주었습니다.
   const dispatch = useDispatch();
   const projects = useSelector((state) => state.user.projects);
+  const userInfo = useSelector((state) => state.user.userInfo);
   const titleRef = useRef();
   const descRef = useRef();
   // console.log(data.id)
@@ -109,6 +122,47 @@ function Projectcard({ projectInfo }) { //projects에서 해당 프로젝트를 
   //   }
   };
 
+  const deleteProjectHandler = () => {
+    axios.delete(`${process.env.REACT_APP_API_URL}/project/${projectInfo.id}`)
+    .then((res) => {
+      console.log(res)
+      window.location.reload(); // 임시로 새로고침 합니다.
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+  }
+
+  const handlePartyRequest = (el) => {
+    // console.log(userInfo.id, projects[index])
+    if(el === "accept"){
+      axios.patch(`${process.env.REACT_APP_API_URL}/project/accept`, {
+        userId: userInfo.Id,
+        projectId: projectInfo.id,
+        isAccept: true
+      })
+      .then((res) => {
+        console.log(res)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    }
+    else if(el === "refuse"){
+      axios.patch(`${process.env.REACT_APP_API_URL}/project/accept`, {
+        userId: userInfo.Id,
+        projectId: projectInfo.id,
+        isAccept: false
+      })
+      .then((res) => {
+        console.log(res)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    }
+  }
+
   return (
     <ProjectcardBody>
       <div className="projectcardhead">
@@ -117,6 +171,14 @@ function Projectcard({ projectInfo }) { //projects에서 해당 프로젝트를 
           <div className="date">{projectInfo.updatedAt}</div>
         </div>
         <div className="projectfunc">
+          {
+          projectInfo.isAccept === 1?
+          null:
+          <div className="acceptbox">
+            <div onClick={()=>{handlePartyRequest("accept")}}>수락</div>
+            <div onClick={()=>{handlePartyRequest("refuse")}}>거절</div>
+          </div>
+          }
           <div className="type">{projectInfo.isTeam ? "팀" : "개인"}</div>
           <div
             className="modifybox"
@@ -125,6 +187,7 @@ function Projectcard({ projectInfo }) { //projects에서 해당 프로젝트를 
             }}
           >
             {isClicked ? (
+              <>
               <div
                 onClick={() => {
                   editProjectHandler(titleRef.current, descRef.current);
@@ -132,6 +195,10 @@ function Projectcard({ projectInfo }) { //projects에서 해당 프로젝트를 
               >
                 확인
               </div>
+              <div onClick={deleteProjectHandler}>
+                삭제
+              </div>
+              </>
             ) : (
               <i className="fa-regular fa-pen-to-square"></i>
             )}
