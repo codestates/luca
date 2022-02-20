@@ -14,7 +14,7 @@ const Maincomponent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  > startbox {
+  > div.startbox {
     background-color: gray;
     width: 100%;
     height: 250px;
@@ -22,12 +22,12 @@ const Maincomponent = styled.div`
     align-items: center;
     flex-direction: column;
     justify-content: space-around;
-    > startinfo {
+    > div.startinfo {
       display: flex;
       align-items: center;
       flex-direction: column;
     }
-    > startbutton {
+    > div.startbutton {
       border: solid;
       border-radius: 20px;
       width: 200px;
@@ -36,14 +36,14 @@ const Maincomponent = styled.div`
       align-items: center;
       justify-content: center;
     }
-    > startbutton:hover {
+    > div.startbutton:hover {
       box-shadow: 0px 0px 10px black;
     }
-    > startbutton:active {
+    > div.startbutton:active {
       color: red;
     }
   }
-  > projectcontainer {
+  > div.projectcontainer {
     position: relative;
     background-color: silver;
     height: 100vh;
@@ -53,7 +53,7 @@ const Maincomponent = styled.div`
     /* > projectcontainer> * {
         width: 1300px;
     } */
-    > sortbox {
+    > div.sortbox {
       /* background-color: red; */
       width: 100%;
       height: 30px;
@@ -72,7 +72,7 @@ const Maincomponent = styled.div`
         color: red;
       } */
     }
-    > projectbox {
+    > div.projectbox {
       /* margin-top: 10px; */
     }
   }
@@ -107,47 +107,57 @@ export function Main() {
 
     if (e === "update") {
       projectsClone = projects.slice().sort((b, a) => {
-        return parseInt(a.updatedAt.split("-").join("")) < parseInt(b.updatedAt.split("-").join(""))
-          ? -1 : parseInt(a.updatedAt.split("-").join("")) > parseInt(b.updatedAt.split("-").join(""))
-            ? 1 : 0;
+        return parseInt(a.updatedAt.split("-").join("")) <
+          parseInt(b.updatedAt.split("-").join(""))
+          ? -1
+          : parseInt(a.updatedAt.split("-").join("")) >
+            parseInt(b.updatedAt.split("-").join(""))
+          ? 1
+          : 0;
       });
       dispatch(setProjectList(projectsClone));
-      console.log('sortHandler projectClone')
+      console.log("sortHandler projectClone");
       console.log(projectsClone);
-    }
-    else if (e === "create") {
+    } else if (e === "create") {
       projectsClone = projects.slice().sort((b, a) => {
-        return parseInt(a.createdAt.split("-").join("")) < parseInt(b.createdAt.split("-").join(""))
-          ? -1 : parseInt(a.createdAt.split("-").join("")) > parseInt(b.createdAt.split("-").join(""))
-            ? 1 : 0;
+        return parseInt(a.createdAt.split("-").join("")) <
+          parseInt(b.createdAt.split("-").join(""))
+          ? -1
+          : parseInt(a.createdAt.split("-").join("")) >
+            parseInt(b.createdAt.split("-").join(""))
+          ? 1
+          : 0;
       });
-      console.log('sortHandler projectClone')
-      console.log(projectsClone)
+      console.log("sortHandler projectClone");
+      console.log(projectsClone);
       dispatch(setProjectList(projectsClone));
     }
     setSortModal(!sortModal);
   };
 
   useEffect(async () => {
-    const result = await axios.get(`${process.env.REACT_APP_API_URL}/project`)
+    const result = await axios.get(`${process.env.REACT_APP_API_URL}/project`);
     dispatch(setProjectList(result.data.data));
   }, []);
 
   return (
     <div>
+      {/* {console.log(projects)} */}
       <Navigator />
       <Backdrop onClick={isClicked ? modalHandler : null}>
         <Maincomponent>
-          <startbox>
-            <startinfo>
+          <div className="startbox">
+            <div className="startinfo">
               <h2>Lorem ipsum</h2>
               img elements must have an alt prop, either with meaningful text,
               or an empty string for decorative images
-            </startinfo>
-            <startbutton onClick={modalHandler}>start</startbutton>
-          </startbox>
-          <projectcontainer>
-            <sortbox>
+            </div>
+            <div className="startbutton" onClick={modalHandler}>
+              start
+            </div>
+          </div>
+          <div className="projectcontainer">
+            <div className="sortbox">
               {sortModal ? (
                 <div>
                   <div onClick={sortHandler}>Sort</div>
@@ -156,14 +166,14 @@ export function Main() {
               ) : (
                 <div onClick={sortHandler}>Sort</div>
               )}
-            </sortbox>
+            </div>
             {sortModal ? <Sortmodal sortHandler={sortHandler} /> : null}
-            <projectbox>
-              {projects.map((el) => {
-                return <Projectcard projectInfo={el} key={el.id} />;
+            <div className="projectbox">
+              {projects.map((el, i) => {
+                return <Projectcard projectInfo={el} index={i} key={el.id} />;
               })}
-            </projectbox>
-          </projectcontainer>
+            </div>
+          </div>
         </Maincomponent>
 
         {isClicked ? (

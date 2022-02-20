@@ -137,7 +137,7 @@ export default function Canvas() {
       .force("y", d3.forceY());
 
     const svg = d3
-      .selectAll("page")
+      .selectAll(".page")
       .append("svg")
       .attr("viewBox", [-100, -50, 200, 100]);
 
@@ -228,7 +228,7 @@ export default function Canvas() {
       >
         {/* <svg ref={svgRef} >
       </svg> */}
-        <page></page>
+        <div className="page"></div>
       </MapContainer>
     </Frame>
   );
