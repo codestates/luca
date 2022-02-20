@@ -32,7 +32,7 @@ module.exports = {
 
     post: async (req, res) => {
         const { userId, title, desc, isTeam, memberUserId } = req.body;
-        if (!userId || !title || !desc || !isTeam || !memberUserId || memberUserId.length === 0) {
+        if (!userId || !title || !desc || isTeam === undefined || !memberUserId || memberUserId.length === 0) {
             return res.status(422).json({ message: "Insufficient parameters supplied" });
         }
         try {

@@ -1,10 +1,11 @@
 import styled from "styled-components";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setIsLogin } from "../redux/slicer/loginSlice";
-import { setUserInfo } from "../redux/slicer/userInfoSlice";
+// import { setIsLogin } from "../redux/slicer/loginSlice";
+// import { setUserInfo } from "../redux/slicer/userInfoSlice";
+import { setIsLogin, setUserInfo } from "../redux/rootSlice";
 import axios from "axios";
-const serverUrl = "http://localhost:4000";
+import { useNavigate } from "react-router-dom";
 
 // ============모달 props 사용법==========================
 
@@ -104,6 +105,12 @@ const ModalView = styled.div`
         font-size: 1.2em;
         margin: 0.5em;
         // 탭으로 구현할 것
+        border-radius: 10px;
+      }
+
+      button.options:visited { // 버튼을 클릭했을때 시각적으로 구분할수 잇어야 할듯함
+        /* border: solid red; */
+        border-radius: 10px;
       }
     }
 
@@ -136,8 +143,9 @@ const ModalView = styled.div`
 `;
 
 export function LoginModal({ modalHandler }) {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const isLogin = useSelector((state) => state.login.isLogin);
+  const isLogin = useSelector((state) => state.user.isLogin);
 
   const [loginInfo, setLoginInfo] = useState({
     email: "",
@@ -155,7 +163,7 @@ export function LoginModal({ modalHandler }) {
       return setErrorMessage("이메일과 비밀번호를 입력해주세요");
     }
     axios
-      .post('http://localhost:4000/user/login', loginInfo, {
+      .post(`${process.env.REACT_APP_API_URL}/user/login`, loginInfo, {
         "Content-Type": "application/json",
         withCredentials: true,
       })
@@ -164,11 +172,7 @@ export function LoginModal({ modalHandler }) {
           dispatch(setIsLogin(true));
           dispatch(setUserInfo(res.data.data));
           modalHandler(false);
-          window.localStorage.setItem(
-            "userInfo",
-            JSON.stringify(res.data.data)
-          );
-          window.location.replace("/");
+          navigate("/")
         }
       })
       .catch((err) => {
@@ -226,17 +230,37 @@ export function LoginModal({ modalHandler }) {
   );
 }
 
-export function CreateProjectModal({ modalHandler, newProjectHandler }) {
+export function CreateProjectModal({ modalHandler }) {
   const nameRef = useRef();
   const descRef = useRef();
   const inviteRef = useRef();
-  const typeRef = useRef();
+  // const typeRef = useRef();
+  const userInfo = useSelector((state) => state.user.userInfo);
 
   const [type, setType] = useState("");
 
   const handleType = (e) => {
     setType(e);
   };
+
+  const createNewProject = () => {
+    console.log(userInfo)
+    const newProjectReqData = {
+      userId: userInfo.id,
+      title: nameRef.current.value,
+      desc: descRef.current.value,
+      isTeam: type,
+      memberUserId: [1] // 임시로 데이터입니다.
+    }
+    axios.post(`${process.env.REACT_APP_API_URL}/project`, newProjectReqData)
+    .then((res) => {
+      console.log(res);
+
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+  }
 
   return (
     <ModalBackdrop onClick={() => modalHandler(false)}>
@@ -247,7 +271,7 @@ export function CreateProjectModal({ modalHandler, newProjectHandler }) {
             <button
               className="options"
               onClick={() => {
-                handleType("flase");
+                handleType(false);
               }}
             >
               개인
@@ -255,7 +279,7 @@ export function CreateProjectModal({ modalHandler, newProjectHandler }) {
             <button
               className="options"
               onClick={() => {
-                handleType("true");
+                handleType(true);
               }}
             >
               팀
@@ -283,12 +307,14 @@ export function CreateProjectModal({ modalHandler, newProjectHandler }) {
             <button
               className="confirm"
               onClick={() => {
-                newProjectHandler(
-                  nameRef.current,
-                  descRef.current,
-                  inviteRef.current,
-                  type
-                );
+                // newProjectHandler(
+                //   nameRef.current,
+                //   descRef.current,
+                //   inviteRef.current,
+                //   type
+                // );
+                createNewProject();
+                modalHandler(false);
               }}
             >
               생성

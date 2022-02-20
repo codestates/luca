@@ -4,7 +4,7 @@ import { Navigator, Backdrop, Container } from "../components/commons";
 import { CreateProjectModal, Sortmodal } from "../components/modals";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setProjectList } from "../redux/counterslice";
+import { setProjectList } from "../redux/rootSlice.js";
 import axios from "axios";
 import { compose } from '@reduxjs/toolkit';
 
@@ -79,69 +79,68 @@ const Maincomponent = styled.div`
 `;
 
 export function Main() {
-  let { projectList } = useSelector((state) => state.counterSlice);
+  let projects = useSelector((state) => state.user.projects);
   const dispatch = useDispatch();
   const [isClicked, setIsClicked] = useState(false);
-  const [newProject, setNewProject] = useState({});
+  // const [newProject, setNewProject] = useState({});
   const [sortModal, setSortModal] = useState(false);
 
   const modalHandler = () => {
-    console.log(projectList)
     setIsClicked(!isClicked);
   };
 
-  const newProjectHandler = (name, desc, invite, type) => {
-    setNewProject({
-      title: name,
-      desc: desc,
-      isTeam: type,
-    });
-    console.log(name.value);
-    console.log(desc.value);
-    console.log(invite.value);
-    console.log(type);
-    // axios.post()
-  };
+  // const newProjectHandler = (name, desc, invite, type) => {
+  //   setNewProject({
+  //     title: name,
+  //     desc: desc,
+  //     isTeam: type,
+  //   });
+  //   console.log(name.value);
+  //   console.log(desc.value);
+  //   console.log(invite.value);
+  //   console.log(type);
+  //   // axios.post()
+  // };
 
   const sortHandler = (e) => {
-    let projectsClone = projectList;
+    let projectsClone = projects;
 
     if (e === "update") {
-      projectsClone = projectList.slice().sort((a, b) => {
+      projectsClone = projects.slice().sort((a, b) => {
         return parseInt(a.updatedAt.split("-").join("")) < parseInt(b.updatedAt.split("-").join(""))
           ? -1 : parseInt(a.updatedAt.split("-").join("")) > parseInt(b.updatedAt.split("-").join(""))
             ? 1 : 0;
       });
       dispatch(setProjectList(projectsClone));
-      console.log('sortHandler projectClone')
-      console.log(projectsClone);
+      console.log('sortHandler-update')
+      console.log(projects);
     }
     else if (e === "create") {
-      projectsClone = projectList.slice().sort((a, b) => {
+      projectsClone = projects.slice().sort((a, b) => {
         return parseInt(a.createdAt.split("-").join("")) < parseInt(b.createdAt.split("-").join(""))
           ? -1 : parseInt(a.createdAt.split("-").join("")) > parseInt(b.createdAt.split("-").join(""))
             ? 1 : 0;
       });
-      console.log('sortHandler projectClone')
-      console.log(projectsClone)
       dispatch(setProjectList(projectsClone));
+      console.log('sortHandler-create')
+      console.log(projects)
     }
     setSortModal(!sortModal);
   };
 
-  useEffect(async () => {
-    console.log('useEffect projectList')
-    console.log(projectList)
-  }, [projectList]);
+  // useEffect(async () => {
+  //   console.log('useEffect')
+  //   console.log(projects)
+  // }, [projects]);
 
   useEffect(async () => {
-    const result = await axios.get('http://localhost:4000/project')
+    const result = await axios.get(`${process.env.REACT_APP_API_URL}/project`)
     dispatch(setProjectList(result.data.data));
   }, []);
 
   return (
     <div>
-      {/* <Navigator /> */}
+      <Navigator />
       <Backdrop onClick={isClicked ? modalHandler : null}>
         <Maincomponent>
           <startbox>
@@ -165,8 +164,8 @@ export function Main() {
             </sortbox>
             {sortModal ? <Sortmodal sortHandler={sortHandler} /> : null}
             <projectbox>
-              {projectList.map((el) => {
-                return <Projectcard data={el} />;
+              {projects.map((el) => {
+                return <Projectcard projectInfo={el} />;
               })}
             </projectbox>
           </projectcontainer>
@@ -175,7 +174,7 @@ export function Main() {
         {isClicked ? (
           <CreateProjectModal
             modalHandler={modalHandler}
-            newProjectHandler={newProjectHandler}
+          // newProjectHandler={newProjectHandler}
           />
         ) : null}
       </Backdrop>

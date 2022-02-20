@@ -16,28 +16,29 @@ import axios from 'axios';
 //     return data;
 // });
 
-export const counterSlice = createSlice({
+export const rootSlice = createSlice({
 
     name: 'user',
 
     initialState: {
-        projectList: [],
-        isLogin: "",
-        userinfo: null
+        projects: [],
+        isLogin: false,
+        userInfo: null
     },
 
     reducers: {
-        increament: (state) => {
-            state.test += 1;
-        },
-        checkLogin: (state, action) => {
+        setIsLogin: (state, action) => {
             state.isLogin = action.payload;
         },
-        getUserInfo: (state, action) => {
-            state.userinfo = action.payload;
+        setUserInfo: (state, action) => {
+            state.userInfo = action.payload;
         },
         setProjectList: (state, action) => {
-            state.projectList = action.payload;
+            // console.log(action.payload)
+            state.projects = action.payload;
+        },
+        updateProjectList: (state, action) => {
+            state.projects[action.payload.index] = action.payload.updateData;
         }
     },
 
@@ -57,6 +58,6 @@ export const counterSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { increament, checkLogin, getUserInfo, setProjectList } = counterSlice.actions
+export const { setIsLogin, setUserInfo, setProjectList, updateProjectList } = rootSlice.actions
 
-export default counterSlice.reducer
+export default rootSlice.reducer
