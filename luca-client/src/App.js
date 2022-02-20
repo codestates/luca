@@ -51,9 +51,9 @@ function App() {
         <Route path="/mypage" element={<Mypage userInfo={userInfo} />} />
         <Route path="/changepassword" element={<ChangePassword />} />
         <Route path="/project" element={<Project />} />
-        <Route path='/auth/callback/kakao' element={<KakaoPage />} />
-        <Route path='/auth/callback/naver' element={<NaverPage />} />
-        <Route path='/auth/callback/google' element={<GooglePage />} />
+        <Route path='/auth/callback/kakao' element={<KakaoPage userInfo={userInfo} />} />
+        <Route path='/auth/callback/naver' element={<NaverPage userInfo={userInfo} />} />
+        <Route path='/auth/callback/google' element={<GooglePage userInfo={userInfo} />} />
         <Route path='/test' element={<TestMain />} />
         <Route path='/test/project/1' element={<TestProject />} />
         <Route path='/test/project/2' element={<TestProject />} />

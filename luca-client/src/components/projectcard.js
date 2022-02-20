@@ -100,7 +100,7 @@ function Projectcard({ data }) {
       <div className="projectcardhead">
         <div className="projectname">
           <h2>{isClicked ? <input ref={nameRef} /> : cardData.title}</h2>
-          <div className="date">{cardData.updatedAt}</div>
+          <div className="date">{cardData.createdAt}</div>
         </div>
         <div className="projectfunc">
           <div className="type">{cardData.isTeam ? "팀" : "개인"}</div>

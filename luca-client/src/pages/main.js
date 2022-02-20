@@ -1,11 +1,12 @@
 import styled from "styled-components";
 import Projectcard from "../components/projectcard";
 import { Navigator, Backdrop, Container } from "../components/commons";
-import { CreateProjectModal, Sortmodal} from "../components/modals";
+import { CreateProjectModal, Sortmodal } from "../components/modals";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setProjectList } from "../redux/counterslice";
 import axios from "axios";
+import { compose } from '@reduxjs/toolkit';
 
 const Maincomponent = styled.div`
   margin-top: 10vh;
@@ -77,13 +78,13 @@ const Maincomponent = styled.div`
   }
 `;
 
-export function Main() {  
-  const { projectList } = useSelector((state) => state.counterSlice);
+export function Main() {
+  let { projectList } = useSelector((state) => state.counterSlice);
   const dispatch = useDispatch();
   const [isClicked, setIsClicked] = useState(false);
   const [newProject, setNewProject] = useState({});
   const [sortModal, setSortModal] = useState(false);
-  
+
   const modalHandler = () => {
     console.log(projectList)
     setIsClicked(!isClicked);
@@ -103,34 +104,44 @@ export function Main() {
   };
 
   const sortHandler = (e) => {
-    const projectsClone = [...projectList];
+    let projectsClone = projectList;
+
     if (e === "update") {
-      projectsClone = projectsClone.sort((a, b) => {
-        return (
-          b.updatedAt.split(".").join("") - a.updatedAt.split(".").join("")
-        );
+      projectsClone = projectList.slice().sort((a, b) => {
+        return parseInt(a.updatedAt.split("-").join("")) < parseInt(b.updatedAt.split("-").join(""))
+          ? -1 : parseInt(a.updatedAt.split("-").join("")) > parseInt(b.updatedAt.split("-").join(""))
+            ? 1 : 0;
       });
-      dispatch(setProjectList([...projectsClone]));
-      // setProjectList([...projectsClone]);
+      dispatch(setProjectList(projectsClone));
+      console.log('sortHandler projectClone')
       console.log(projectsClone);
-    } else if (e === "create") {
-      projectsClone.sort((a, b) => {
-        return (
-          b.createdAt.split(".").join("") - a.createdAt.split(".").join("")
-        );
+    }
+    else if (e === "create") {
+      projectsClone = projectList.slice().sort((a, b) => {
+        return parseInt(a.createdAt.split("-").join("")) < parseInt(b.createdAt.split("-").join(""))
+          ? -1 : parseInt(a.createdAt.split("-").join("")) > parseInt(b.createdAt.split("-").join(""))
+            ? 1 : 0;
       });
+      console.log('sortHandler projectClone')
+      console.log(projectsClone)
+      dispatch(setProjectList(projectsClone));
     }
     setSortModal(!sortModal);
   };
 
-  useEffect( async () => {
+  useEffect(async () => {
+    console.log('useEffect projectList')
+    console.log(projectList)
+  }, [projectList]);
+
+  useEffect(async () => {
     const result = await axios.get('http://localhost:4000/project')
     dispatch(setProjectList(result.data.data));
   }, []);
 
   return (
     <div>
-      <Navigator />
+      {/* <Navigator /> */}
       <Backdrop onClick={isClicked ? modalHandler : null}>
         <Maincomponent>
           <startbox>
@@ -145,11 +156,11 @@ export function Main() {
             <sortbox>
               {sortModal ? (
                 <div>
-                  <div onClick={sortHandler}>sort by update ▲</div>
+                  <div onClick={sortHandler}>sort</div>
                   {/* <Sortmodal sortHandler={sortHandler}/> */}
                 </div>
               ) : (
-                <div onClick={sortHandler}>sort by update ▼</div>
+                <div onClick={sortHandler}>sort</div>
               )}
             </sortbox>
             {sortModal ? <Sortmodal sortHandler={sortHandler} /> : null}
