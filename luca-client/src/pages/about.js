@@ -1,3 +1,4 @@
+import axios from "axios";
 import styled from "styled-components";
 import { Navigator } from "../components/commons";
 
@@ -68,6 +69,21 @@ const IntroContainer = styled.div`
   }
 `;
 
+const guestLoginHandler = () => {
+  axios.get(`${process.env.REACT_APP_API_URL}/user/guest`)
+  .then((res) => {
+    console.log(res)
+    window.location.reload();
+    // axios.get(`${process.env.REACT_APP_API_URL}/profile`)
+    // .then((res) => {
+    //   console.log(res)
+    // })
+  })
+  .catch((err) => {
+    console.log(err)
+  })
+}
+
 export default function About() {
   return (
     <div>
@@ -78,7 +94,7 @@ export default function About() {
             <div className="title">{lorem.title}</div>
             <div className="desc">{lorem.desc}</div>
             <div className="action">
-              <button>{lorem.button}</button>
+              <button onClick={guestLoginHandler}>{lorem.button}</button>
             </div>
           </div>
         </IntroContainer>

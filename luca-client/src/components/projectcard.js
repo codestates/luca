@@ -88,7 +88,7 @@ const ProjectcardBody = styled.div`
   }
 `;
 
-function Projectcard({ projectInfo }) { //projects에서 해당 프로젝트를 구분하기 위해 메인페이지에서 projects의 인덱스를 내려주었습니다.
+function Projectcard({ projectInfo, index }) { //projects에서 해당 프로젝트를 구분하기 위해 메인페이지에서 projects의 인덱스를 내려주었습니다.
   const dispatch = useDispatch();
   const projects = useSelector((state) => state.user.projects);
   const userInfo = useSelector((state) => state.user.userInfo);
@@ -99,27 +99,22 @@ function Projectcard({ projectInfo }) { //projects에서 해당 프로젝트를 
   // const [cardData, setCardData] = useState({...projects[index]});
 
   const editProjectHandler = (title, desc) => {
-  //   // console.log(name.value);
-  //   // console.log(desc.value);
-  //   if (title.value === "" || desc.value === "") {
-  //     alert("빈칸을 채워주세요.");
-  //     return;
-  //   } else {
-  //     setCardData({...cardData, title: title.value, desc: desc.value}); //수정 하자마자 변경된 값을 보여주기 위해 react states를 사용합니다.
-  //     const editReqData = {projectId: projects[index].id, title: title.value, desc: desc.value}; //이후에 서버로 업데이트 요청을 합니다.
-  //     axios.patch(`${process.env.REACT_APP_API_URL}/project`, 
-  //       editReqData,
-  //       {
-  //       "Content-Type": "application/json",
-  //       withCredentials: true,
-  //     })
-  //     .then((res) => {
-  //       console.log('요청성공');
-  //     })
-  //     .catch((err) => {
-  //       console.log('에러');
-  //     })
-  //   }
+    dispatch(updateProjectList({index: index, inputData: [title.value, desc.value]}));
+    axios.patch(`${process.env.REACT_APP_API_URL}/project`, {
+      projectId: projectInfo.id,
+      title: title.value,
+      desc: desc.value,
+    },
+    {
+      "Content-Type": "application/json",
+      withCredentials: true
+    })
+    .then((res) => {
+      console.log(res)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
   };
 
   const deleteProjectHandler = () => {
@@ -134,10 +129,10 @@ function Projectcard({ projectInfo }) { //projects에서 해당 프로젝트를 
   }
 
   const handlePartyRequest = (el) => {
-    // console.log(userInfo.id, projects[index])
+    // console.log(userInfo.id, userInfo)
     if(el === "accept"){
       axios.patch(`${process.env.REACT_APP_API_URL}/project/accept`, {
-        userId: userInfo.Id,
+        userId: userInfo.id,
         projectId: projectInfo.id,
         isAccept: true
       })
@@ -150,7 +145,7 @@ function Projectcard({ projectInfo }) { //projects에서 해당 프로젝트를 
     }
     else if(el === "refuse"){
       axios.patch(`${process.env.REACT_APP_API_URL}/project/accept`, {
-        userId: userInfo.Id,
+        userId: userInfo.id,
         projectId: projectInfo.id,
         isAccept: false
       })
@@ -165,6 +160,7 @@ function Projectcard({ projectInfo }) { //projects에서 해당 프로젝트를 
 
   return (
     <ProjectcardBody>
+      {console.log(userInfo)}
       <div className="projectcardhead">
         <div className="projectname">
           <h2>{isClicked ? <input ref={titleRef} /> : projectInfo.title}</h2>

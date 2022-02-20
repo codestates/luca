@@ -46,7 +46,8 @@ export const rootSlice = createSlice({
             state.projects = action.payload;
         },
         updateProjectList: (state, action) => {
-            state.projects[action.payload.index] = action.payload.updateData;
+            state.projects[action.payload.index].title = action.payload.inputData[0];
+            state.projects[action.payload.index].desc = action.payload.inputData[1];
         }
     },
 
