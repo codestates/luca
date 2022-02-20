@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 // import { setUserInfo } from "../redux/slicer/userInfoSlice";
 import { setIsLogin, setUserInfo } from "../redux/rootSlice";
 import axios from "axios";
-const serverUrl = "http://localhost:4000";
+import { useNavigate } from "react-router-dom";
 
 // ============모달 props 사용법==========================
 
@@ -143,6 +143,7 @@ const ModalView = styled.div`
 `;
 
 export function LoginModal({ modalHandler }) {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const isLogin = useSelector((state) => state.user.isLogin);
 
@@ -162,7 +163,7 @@ export function LoginModal({ modalHandler }) {
       return setErrorMessage("이메일과 비밀번호를 입력해주세요");
     }
     axios
-      .post('http://localhost:4000/user/login', loginInfo, {
+      .post(`${process.env.REACT_APP_API_URL}/user/login`, loginInfo, {
         "Content-Type": "application/json",
         withCredentials: true,
       })
@@ -171,11 +172,7 @@ export function LoginModal({ modalHandler }) {
           dispatch(setIsLogin(true));
           dispatch(setUserInfo(res.data.data));
           modalHandler(false);
-          window.localStorage.setItem(
-            "userInfo",
-            JSON.stringify(res.data.data)
-          );
-          window.location.replace("/");
+          navigate("/")
         }
       })
       .catch((err) => {
