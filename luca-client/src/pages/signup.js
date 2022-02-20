@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import googleIcon from '../asset/images/login_icon_google.svg';
 import kakaoIcon from '../asset/images/login_icon_kakao.svg';
 import naverIcon from '../asset/images/login_icon_naver.svg';
+import { color, device, radius, boxShadow } from '../styles';
 import axios from "axios";
 import {
   requestKakaoLogin,
@@ -23,6 +24,13 @@ const SignupPage = styled.div`
   /* justify-content: space-between; */
   height: 60vh;
   /* background-color: seashell; */
+  > div,title {
+    flex: 1 0 auto;
+    margin-bottom: 1em;
+    font-size: 2em;
+    font-weight: bold;
+    padding-top: 1em;
+  }
 `;
 const Registrybox = styled.div`
   width: 1080px;
@@ -47,39 +55,56 @@ const Registrybox = styled.div`
         font-size: 1.2rem;
       }
       > input {
-        margin-right: 20px;
-        width: 420px;
-        height: 30px;
+        background-color: ${color.white};
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        width: 400px;
+        height: 40px;
+        border-radius: ${radius};
+        box-shadow: ${boxShadow};
+        overflow: hidden;
       }
       > dummy {
         width: 90px;
       }
       > button {
         width: 90px;
-        height: 35px;
+        height: 52px;
+        font-weight: bold;
+        background-color: ${color.primaryLight};
+        border-radius: ${radius};
+        cursor: pointer;
+      }
+      > img {
+        width: 60px;
+        height: 60px;
+        margin: 0.5rem;
+        border-radius: 50%;
+        align-items: center;
+        cursor: pointer;
       }
     }
-    > submit {
-      margin-right: 240px;
-      width: 200px;
-      height: 30px;
-      border: solid;
-      display: flex;
-      justify-content: center;
+    > button.submit {
+        font-weight: bold;
+        background-color: ${color.primaryLight};;
+        color: ${color.white}
+        margin-right: 240px;
+        width: 200px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        border-radius: ${radius};
+        cursor: pointer;
     }
-  }
-  img {
-    width: 60px;
-    height: 60px;
-    margin: 0.5rem;
-    border-radius: 50%;
-    align-items: center;
   }
 `;
 const Input = styled.input`
-  margin-right: 20px;
-  width: 420px;
-  height: 30px;
+  width: 100%;
+  height: 40px;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid ${color.primaryBorder};
+  border-radius: ${radius};
 `;
 
 const InputForm = ({
@@ -88,11 +113,9 @@ const InputForm = ({
   placeholder,
   handleValue,
 }) => {
-
   const handleOnChange = (event) => {
     handleValue(event.target.value);
   };
-
   return (
     <Input
       value={value}
@@ -245,7 +268,7 @@ export default function Signup() {
       <Navigator />
       <Backdrop>
         <SignupPage>
-          <h2>회원가입</h2>
+          <div className='title'>회원가입</div>
           <Registrybox>
             <div>
               <div>
@@ -265,7 +288,7 @@ export default function Signup() {
                 <InvalidMessage>이메일 형식이 유효하지 않습니다.</InvalidMessage>
               )}
               {emailDuplicate !== "이미 존재하는 이메일입니다." ? null : (
-                <InvalidMessage>*{emailDuplicate}</InvalidMessage>
+                <InvalidMessage>{emailDuplicate}</InvalidMessage>
               )}
             </div>
 
@@ -343,8 +366,9 @@ export default function Signup() {
             </div>
 
             <div>
-              <submit onClick={SignupHandler}>회원가입</submit>
+              <button className='submit' onClick={SignupHandler}>회원가입</button>
             </div>
+
             <div>
               <div>
                 <img src={kakaoIcon} alt='카카오 아이콘' onClick={requestKakaoLogin}></img>

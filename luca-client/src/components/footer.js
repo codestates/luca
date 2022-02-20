@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import { color, device, contentWidth } from '../styles';
 
 const FooterContainer = styled.footer`
+  z-index: 999;
+  width: 100vw;
   background-color: ${color.white};
   border-top: 1px solid ${color.primaryDark};
   padding: 1rem;
@@ -16,7 +18,7 @@ const ContentContainer = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
   @media ${device.laptop} {
-    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     width: ${contentWidth};
     margin: 0 auto;
   }
@@ -82,10 +84,10 @@ const Footer = () => {
                     <p>About Luca</p>
                     <ul>
                         <li>
-                            <a href='https://github.com/codestates/luca/wiki'>Wiki</a>
+                            <a href='https://github.com/codestates/luca'>Repository</a>
                         </li>
                         <li>
-                            <a href='https://github.com/codestates/luca'>Repository</a>
+                            <a href='https://github.com/codestates/luca/wiki'>Wiki</a>
                         </li>
                     </ul>
                 </LinksContainer>

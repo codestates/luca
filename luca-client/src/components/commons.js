@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import { LoginModal } from "./modals";
 import axios from "axios";
-import {setIsLogin, setUserInfo} from "../redux/rootSlice.js";
+import { setIsLogin, setUserInfo } from "../redux/rootSlice.js";
 import { useNavigate } from "react-router-dom";
 
 const NavigatorContainer = styled.div`
@@ -111,22 +111,22 @@ function Navigator() {
 
   const logoutHandler = () => {
     axios.get(`${process.env.REACT_APP_API_URL}/user/logout`, {
-      'Content-Type': 'application/json', 
-      withCredentials: true 
+      'Content-Type': 'application/json',
+      withCredentials: true
     })
-    .then(() => {
-      dispatch(setIsLogin(false));
-      dispatch(setUserInfo({
-        id: "",
-        email: "",
-        name: "",
-        isGuest: "",
-        isSocial: "",
-        createdAt: "",
-        updatedAt: ""
-    }));
-      navigate("/")
-    });
+      .then(() => {
+        dispatch(setIsLogin(false));
+        dispatch(setUserInfo({
+          id: "",
+          email: "",
+          name: "",
+          isGuest: "",
+          isSocial: "",
+          createdAt: "",
+          updatedAt: ""
+        }));
+        navigate("/")
+      });
   };
 
   return (
@@ -184,7 +184,7 @@ const Backdrop = styled.div`
   height: auto;
   display: flex;
   justify-content: center;
-  background-color: grey;
+  background-color: #efffde;
 `;
 
 // const Container = styled.div`
