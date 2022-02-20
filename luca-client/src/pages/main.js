@@ -13,7 +13,7 @@ const Maincomponent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  > div.startbox {
+  > startbox {
     background-color: gray;
     width: 100%;
     height: 250px;
@@ -21,12 +21,12 @@ const Maincomponent = styled.div`
     align-items: center;
     flex-direction: column;
     justify-content: space-around;
-    > div.startinfo {
+    > startinfo {
       display: flex;
       align-items: center;
       flex-direction: column;
     }
-    > div.startbutton {
+    > startbutton {
       border: solid;
       border-radius: 20px;
       width: 200px;
@@ -35,22 +35,24 @@ const Maincomponent = styled.div`
       align-items: center;
       justify-content: center;
     }
-    > div.startbutton:hover {
+    > startbutton:hover {
       box-shadow: 0px 0px 10px black;
     }
-    > div.startbutton:active {
+    > startbutton:active {
       color: red;
     }
   }
-  > div.projectcontainer {
+  > projectcontainer {
     position: relative;
     background-color: silver;
     height: 100vh;
     width: 1300px;
     display: flex;
     flex-direction: column;
-
-    > div.sortbox {
+    /* > projectcontainer> * {
+        width: 1300px;
+    } */
+    > sortbox {
       /* background-color: red; */
       width: 100%;
       height: 30px;
@@ -69,7 +71,7 @@ const Maincomponent = styled.div`
         color: red;
       } */
     }
-    > div.projectbox {
+    > projectbox {
       /* margin-top: 10px; */
     }
   }
@@ -77,7 +79,6 @@ const Maincomponent = styled.div`
 
 export function Main() {
   const projects = useSelector((state) => state.user.projects);
-  console.log("~ProjectList :", projects);
   const dispatch = useDispatch();
   const [isClicked, setIsClicked] = useState(false);
   // const [newProject, setNewProject] = useState({});
@@ -140,21 +141,20 @@ export function Main() {
 
   return (
     <div>
+      {/* {console.log(projects)} */}
       <Navigator />
       <Backdrop onClick={isClicked ? modalHandler : null}>
         <Maincomponent>
-          <div className="startbox">
-            <div className="startinfo">
+          <startbox>
+            <startinfo>
               <h2>Lorem ipsum</h2>
               img elements must have an alt prop, either with meaningful text,
               or an empty string for decorative images
-            </div>
-            <div className="startbutton" onClick={modalHandler}>
-              start
-            </div>
-          </div>
-          <div className="projectcontainer">
-            <div className="sortbox">
+            </startinfo>
+            <startbutton onClick={modalHandler}>start</startbutton>
+          </startbox>
+          <projectcontainer>
+            <sortbox>
               {sortModal ? (
                 <div>
                   <div onClick={sortHandler}>Sort</div>
@@ -163,14 +163,14 @@ export function Main() {
               ) : (
                 <div onClick={sortHandler}>Sort</div>
               )}
-            </div>
+            </sortbox>
             {sortModal ? <Sortmodal sortHandler={sortHandler} /> : null}
-            <div className="projectbox">
-              {projects.map((project) => {
-                return <Projectcard projectInfo={project} key={project.id} />;
+            <projectbox>
+              {projects.map((el, i) => {
+                return <Projectcard projectInfo={el} index={i} key={el.id} />;
               })}
-            </div>
-          </div>
+            </projectbox>
+          </projectcontainer>
         </Maincomponent>
 
         {isClicked ? (
