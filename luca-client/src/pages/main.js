@@ -102,26 +102,32 @@ export function Main() {
   // };
 
   const sortHandler = (e) => {
-    // const projectsClone = [...projectList];
-    // if (e === "update") {
-    //   projectsClone.sort((a, b) => {
-    //     return (
-    //       b.updatedAt.split(".").join("") - a.updatedAt.split(".").join("")
-    //     );
-    //   });
-    //   setProjectList([...projectsClone]);
-    //   console.log(projectList);
-    // } else if (e === "create") {
-    //   projectsClone.sort((a, b) => {
-    //     return (
-    //       b.createdAt.split(".").join("") - a.createdAt.split(".").join("")
-    //     );
-    //   });
-    // }
-    // setSortModal(!sortModal);
+    let projectsClone = projects;
+
+    if (e === "update") {
+      projectsClone = projects.slice().sort((b, a) => {
+        return parseInt(a.updatedAt.split("-").join("")) < parseInt(b.updatedAt.split("-").join(""))
+          ? -1 : parseInt(a.updatedAt.split("-").join("")) > parseInt(b.updatedAt.split("-").join(""))
+            ? 1 : 0;
+      });
+      dispatch(setProjectList(projectsClone));
+      console.log('sortHandler projectClone')
+      console.log(projectsClone);
+    }
+    else if (e === "create") {
+      projectsClone = projects.slice().sort((b, a) => {
+        return parseInt(a.createdAt.split("-").join("")) < parseInt(b.createdAt.split("-").join(""))
+          ? -1 : parseInt(a.createdAt.split("-").join("")) > parseInt(b.createdAt.split("-").join(""))
+            ? 1 : 0;
+      });
+      console.log('sortHandler projectClone')
+      console.log(projectsClone)
+      dispatch(setProjectList(projectsClone));
+    }
+    setSortModal(!sortModal);
   };
 
-  useEffect( async () => {
+  useEffect(async () => {
     const result = await axios.get(`${process.env.REACT_APP_API_URL}/project`)
     dispatch(setProjectList(result.data.data));
   }, []);
@@ -143,17 +149,17 @@ export function Main() {
             <sortbox>
               {sortModal ? (
                 <div>
-                  <div onClick={sortHandler}>sort by update ▲</div>
+                  <div onClick={sortHandler}>Sort</div>
                   {/* <Sortmodal sortHandler={sortHandler}/> */}
                 </div>
               ) : (
-                <div onClick={sortHandler}>sort by update ▼</div>
+                <div onClick={sortHandler}>Sort</div>
               )}
             </sortbox>
             {sortModal ? <Sortmodal sortHandler={sortHandler} /> : null}
             <projectbox>
-              {projects.map((el, i) => {
-                return <Projectcard index={i} />;
+              {projects.map((el) => {
+                return <Projectcard projectInfo={el} key={el.id} />;
               })}
             </projectbox>
           </projectcontainer>
