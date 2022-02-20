@@ -6,7 +6,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { setIsLogin, setUserInfo, setProjectList } from "../redux/rootSlice";
 import axios from "axios";
 
-
 // ============모달 props 사용법==========================
 
 // const [modal, SetModal] = useState(false);
@@ -108,7 +107,8 @@ const ModalView = styled.div`
         border-radius: 10px;
       }
 
-      button.options:visited { // 버튼을 클릭했을때 시각적으로 구분할수 잇어야 할듯함
+      button.options:visited {
+        // 버튼을 클릭했을때 시각적으로 구분할수 잇어야 할듯함
         /* border: solid red; */
         border-radius: 10px;
       }
@@ -243,30 +243,33 @@ export function CreateProjectModal({ modalHandler }) {
   };
 
   const createNewProject = () => {
-    console.log(userInfo)
+    console.log(userInfo);
     const newProjectReqData = {
       userId: userInfo.id,
       title: nameRef.current.value,
       desc: descRef.current.value,
       isTeam: type,
-      memberUserId: [1] // 임시로 데이터입니다.
-    }
-    axios.post(`${process.env.REACT_APP_API_URL}/project`, newProjectReqData, {
-      'Content-Type': 'application/json', 
-      withCredentials: true 
-    })
-    .then(() => {
-      axios.get(`${process.env.REACT_APP_API_URL}/project`, {
-        'Content-Type': 'application/json', 
-        withCredentials: true 
-      }).then((res) => {
-        dispatch(setProjectList(res.data.data));
+      memberUserId: [1], // 임시로 데이터입니다.
+    };
+    axios
+      .post(`${process.env.REACT_APP_API_URL}/project`, newProjectReqData, {
+        "Content-Type": "application/json",
+        withCredentials: true,
       })
-    })
-    .catch((err) => {
-      console.log(err);
-    })
-  }
+      .then(() => {
+        axios
+          .get(`${process.env.REACT_APP_API_URL}/project`, {
+            "Content-Type": "application/json",
+            withCredentials: true,
+          })
+          .then((res) => {
+            dispatch(setProjectList(res.data.data));
+          });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <ModalBackdrop onClick={() => modalHandler(false)}>

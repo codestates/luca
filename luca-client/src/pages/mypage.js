@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { Savealert } from "../components/modals";
 import { Navigator, Backdrop, Footer } from "../components/commons";
 import { useSelector, useDispatch } from "react-redux";
-import {setIsLogin, setUserInfo} from "../redux/rootSlice.js";
+import { setIsLogin, setUserInfo } from "../redux/rootSlice.js";
 import axios from "axios";
 
 const Container = styled.div`
@@ -99,19 +99,39 @@ const Button = styled.button`
   }
 `;
 
-
 export default function Mypage() {
   const dispatch = useDispatch();
   const userInfo = useSelector((state) => state.user.userInfo);
-  // redux-thunk 비동기 처리 필요
   const [isEditOn, setIsEditOn] = useState(false);
+  const editnameRef = useRef();
 
-  // const { userInfo } = useSelector(state => state.user);
+  const handlerEditname = () => {
+    let newName = editnameRef.current.value;
+    if (newName !== "") {
+      axios
+        .patch(
+          `${process.env.REACT_APP_API_URL}/profile/name`,
+          { name: newName },
+          {
+            "Content-Type": "application/json",
+            withCredentials: true,
+          }
+        )
+        .then((res) => {
+          dispatch(setUserInfo({ ...userInfo, name: newName }));
+          setIsEditOn(false);
+        })
+        .catch((err) => {
+          alert("error");
+        });
+    }
+  };
+
   useEffect(() => {
     // console.log(userInfo)
     // axios.get(`${process.env.REACT_APP_API_URL}/profile`,{
-    //   'Content-Type': 'application/json', 
-    //   withCredentials: true 
+    //   'Content-Type': 'application/json',
+    //   withCredentials: true
     // })
     // .then((res) => {
     //   console.log(res)
@@ -121,8 +141,7 @@ export default function Mypage() {
     //   console.log(err.response.data.message)
     //   dispatch(setUserInfo(err.response.data.message));
     // })
-  }, [userInfo])
-
+  }, [userInfo]);
 
   return (
     <div>
@@ -134,10 +153,10 @@ export default function Mypage() {
             <Upper>
               <div className="name">
                 <div>Display name</div>
-                <input placeholder={userInfo.name} />
+                <input placeholder={userInfo.name} ref={editnameRef} />
               </div>
               <div className="edit">
-                <Button onClick={() => setIsEditOn(false)}>저장</Button>
+                <Button onClick={handlerEditname}>저장</Button>
                 <Button warn={true}>회원탈퇴</Button>
               </div>
             </Upper>

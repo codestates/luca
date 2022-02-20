@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import Projectcard from "../components/projectcard";
 import { Navigator, Backdrop, Container } from "../components/commons";
-import { CreateProjectModal, Sortmodal} from "../components/modals";
+import { CreateProjectModal, Sortmodal } from "../components/modals";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setProjectList } from "../redux/rootSlice.js";
@@ -13,7 +13,7 @@ const Maincomponent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  > startbox {
+  > div.startbox {
     background-color: gray;
     width: 100%;
     height: 250px;
@@ -21,12 +21,12 @@ const Maincomponent = styled.div`
     align-items: center;
     flex-direction: column;
     justify-content: space-around;
-    > startinfo {
+    > div.startinfo {
       display: flex;
       align-items: center;
       flex-direction: column;
     }
-    > startbutton {
+    > div.startbutton {
       border: solid;
       border-radius: 20px;
       width: 200px;
@@ -35,24 +35,22 @@ const Maincomponent = styled.div`
       align-items: center;
       justify-content: center;
     }
-    > startbutton:hover {
+    > div.startbutton:hover {
       box-shadow: 0px 0px 10px black;
     }
-    > startbutton:active {
+    > div.startbutton:active {
       color: red;
     }
   }
-  > projectcontainer {
+  > div.projectcontainer {
     position: relative;
     background-color: silver;
     height: 100vh;
     width: 1300px;
     display: flex;
     flex-direction: column;
-    /* > projectcontainer> * {
-        width: 1300px;
-    } */
-    > sortbox {
+
+    > div.sortbox {
       /* background-color: red; */
       width: 100%;
       height: 30px;
@@ -71,7 +69,7 @@ const Maincomponent = styled.div`
         color: red;
       } */
     }
-    > projectbox {
+    > div.projectbox {
       /* margin-top: 10px; */
     }
   }
@@ -79,11 +77,12 @@ const Maincomponent = styled.div`
 
 export function Main() {
   const projects = useSelector((state) => state.user.projects);
+  console.log("~ProjectList :", projects);
   const dispatch = useDispatch();
   const [isClicked, setIsClicked] = useState(false);
   // const [newProject, setNewProject] = useState({});
   const [sortModal, setSortModal] = useState(false);
-  
+
   const modalHandler = () => {
     setIsClicked(!isClicked);
   };
@@ -106,29 +105,36 @@ export function Main() {
 
     if (e === "update") {
       projectsClone = projects.slice().sort((b, a) => {
-        return parseInt(a.updatedAt.split("-").join("")) < parseInt(b.updatedAt.split("-").join(""))
-          ? -1 : parseInt(a.updatedAt.split("-").join("")) > parseInt(b.updatedAt.split("-").join(""))
-            ? 1 : 0;
+        return parseInt(a.updatedAt.split("-").join("")) <
+          parseInt(b.updatedAt.split("-").join(""))
+          ? -1
+          : parseInt(a.updatedAt.split("-").join("")) >
+            parseInt(b.updatedAt.split("-").join(""))
+          ? 1
+          : 0;
       });
       dispatch(setProjectList(projectsClone));
-      console.log('sortHandler projectClone')
+      console.log("sortHandler projectClone");
       console.log(projectsClone);
-    }
-    else if (e === "create") {
+    } else if (e === "create") {
       projectsClone = projects.slice().sort((b, a) => {
-        return parseInt(a.createdAt.split("-").join("")) < parseInt(b.createdAt.split("-").join(""))
-          ? -1 : parseInt(a.createdAt.split("-").join("")) > parseInt(b.createdAt.split("-").join(""))
-            ? 1 : 0;
+        return parseInt(a.createdAt.split("-").join("")) <
+          parseInt(b.createdAt.split("-").join(""))
+          ? -1
+          : parseInt(a.createdAt.split("-").join("")) >
+            parseInt(b.createdAt.split("-").join(""))
+          ? 1
+          : 0;
       });
-      console.log('sortHandler projectClone')
-      console.log(projectsClone)
+      console.log("sortHandler projectClone");
+      console.log(projectsClone);
       dispatch(setProjectList(projectsClone));
     }
     setSortModal(!sortModal);
   };
 
   useEffect(async () => {
-    const result = await axios.get(`${process.env.REACT_APP_API_URL}/project`)
+    const result = await axios.get(`${process.env.REACT_APP_API_URL}/project`);
     dispatch(setProjectList(result.data.data));
   }, []);
 
@@ -137,16 +143,18 @@ export function Main() {
       <Navigator />
       <Backdrop onClick={isClicked ? modalHandler : null}>
         <Maincomponent>
-          <startbox>
-            <startinfo>
+          <div className="startbox">
+            <div className="startinfo">
               <h2>Lorem ipsum</h2>
               img elements must have an alt prop, either with meaningful text,
               or an empty string for decorative images
-            </startinfo>
-            <startbutton onClick={modalHandler}>start</startbutton>
-          </startbox>
-          <projectcontainer>
-            <sortbox>
+            </div>
+            <div className="startbutton" onClick={modalHandler}>
+              start
+            </div>
+          </div>
+          <div className="projectcontainer">
+            <div className="sortbox">
               {sortModal ? (
                 <div>
                   <div onClick={sortHandler}>Sort</div>
@@ -155,14 +163,14 @@ export function Main() {
               ) : (
                 <div onClick={sortHandler}>Sort</div>
               )}
-            </sortbox>
+            </div>
             {sortModal ? <Sortmodal sortHandler={sortHandler} /> : null}
-            <projectbox>
-              {projects.map((el) => {
-                return <Projectcard projectInfo={el} key={el.id} />;
+            <div className="projectbox">
+              {projects.map((project) => {
+                return <Projectcard projectInfo={project} key={project.id} />;
               })}
-            </projectbox>
-          </projectcontainer>
+            </div>
+          </div>
         </Maincomponent>
 
         {isClicked ? (
