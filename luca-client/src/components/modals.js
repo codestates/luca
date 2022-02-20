@@ -3,9 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 // import { setIsLogin } from "../redux/slicer/loginSlice";
 // import { setUserInfo } from "../redux/slicer/userInfoSlice";
-import { setIsLogin, setUserInfo } from "../redux/rootSlice";
+import { setIsLogin, setUserInfo, setProjectList } from "../redux/rootSlice";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 // ============모달 props 사용법==========================
 
@@ -143,7 +142,6 @@ const ModalView = styled.div`
 `;
 
 export function LoginModal({ modalHandler }) {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const isLogin = useSelector((state) => state.user.isLogin);
 
@@ -172,7 +170,6 @@ export function LoginModal({ modalHandler }) {
           dispatch(setIsLogin(true));
           dispatch(setUserInfo(res.data.data));
           modalHandler(false);
-          navigate("/")
         }
       })
       .catch((err) => {
@@ -235,6 +232,7 @@ export function CreateProjectModal({ modalHandler }) {
   const descRef = useRef();
   const inviteRef = useRef();
   // const typeRef = useRef();
+  const dispatch = useDispatch();
   const userInfo = useSelector((state) => state.user.userInfo);
 
   const [type, setType] = useState("");
@@ -252,14 +250,21 @@ export function CreateProjectModal({ modalHandler }) {
       isTeam: type,
       memberUserId: [1] // 임시로 데이터입니다.
     }
-    axios.post(`${process.env.REACT_APP_API_URL}/project`, newProjectReqData)
-    .then((res) => {
-      console.log(res);
-
+    axios.post(`${process.env.REACT_APP_API_URL}/project`, newProjectReqData, {
+      'Content-Type': 'application/json',
+      withCredentials: true
     })
-    .catch((err) => {
-      console.log(err);
-    })
+      .then(() => {
+        axios.get(`${process.env.REACT_APP_API_URL}/project`, {
+          'Content-Type': 'application/json',
+          withCredentials: true
+        }).then((res) => {
+          dispatch(setProjectList(res.data.data));
+        })
+      })
+      .catch((err) => {
+        console.log(err);
+      })
   }
 
   return (

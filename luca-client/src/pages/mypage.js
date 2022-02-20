@@ -3,10 +3,8 @@ import styled from "styled-components";
 import { Savealert } from "../components/modals";
 import { Navigator, Backdrop, Footer } from "../components/commons";
 import { useSelector, useDispatch } from "react-redux";
-// import { getUserProjects } from "../redux/counterslice.js";
 import {setIsLogin, setUserInfo} from "../redux/rootSlice.js";
 import axios from "axios";
-//import { useSelector, useDispatch } from "react-redux";
 
 const Container = styled.div`
   min-width: 90vw;
@@ -103,28 +101,27 @@ const Button = styled.button`
 
 
 export default function Mypage() {
-  // const dispatch = useDispatch();
-  // const userInfo = useSelector((state) => state.userInfo.userInfo);
-  // redux-thunk 비동기 처리 필요
-  // 현재 localstorage 사용해 가져옴
-  const [isEditOn, setIsEditOn] = useState(false);
-  const userInfo = JSON.parse(window.localStorage.userInfo);
-
   const dispatch = useDispatch();
-  // const { userInfo } = useSelector(state => state.user);
-  useEffect(async() => {
-    await axios.get(`${process.env.REACT_APP_API_URL}/profile`)
-    .then((res) => {
-      console.log(res)
-      dispatch(setUserInfo(res.data));
-    })
-    .catch((err) => {
-      console.log(err.response.data.message)
-      dispatch(setUserInfo(err.response.data.message));
-    })
+  const userInfo = useSelector((state) => state.user.userInfo);
+  // redux-thunk 비동기 처리 필요
+  const [isEditOn, setIsEditOn] = useState(false);
 
-    console.log(userInfo)
-  }, [])
+  // const { userInfo } = useSelector(state => state.user);
+  useEffect(() => {
+    // console.log(userInfo)
+    // axios.get(`${process.env.REACT_APP_API_URL}/profile`,{
+    //   'Content-Type': 'application/json', 
+    //   withCredentials: true 
+    // })
+    // .then((res) => {
+    //   console.log(res)
+    //   dispatch(setUserInfo(res.data.data));
+    // })
+    // .catch((err) => {
+    //   console.log(err.response.data.message)
+    //   dispatch(setUserInfo(err.response.data.message));
+    // })
+  }, [userInfo])
 
 
   return (

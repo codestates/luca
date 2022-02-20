@@ -1,9 +1,9 @@
 const { users, cards, projects, users_projects } = require('../models');
+const Sequelize = require("sequelize");
 const { isAuthorized } = require('./token');
 
 module.exports = {
     get: async (req, res) => {
-        console.log(res.cookies)
         try {
             const verifyInfo = isAuthorized(req);
             if (verifyInfo === 'not found') {
@@ -19,6 +19,8 @@ module.exports = {
                             attributes: []
                         }
                     ],
+                    order: [['createdAt', 'DESC']],
+                    attributes: ['id', 'title', 'desc', 'isTeam', 'admin', 'createdAt', 'updatedAt', [Sequelize.col('users_projects.isAccept'), 'isAccept']],
                     where: {
                         '$users_projects.userId$': verifyInfo.id
                     }
@@ -140,8 +142,7 @@ module.exports = {
                     })
                     return res.status(200).json({ message: "Refuse" })
                 }
-            } catch (error) {
-                console.log(error)
+            } catch (err) {
                 res.status(500).json({ message: "Internal server error" });
             }
         }

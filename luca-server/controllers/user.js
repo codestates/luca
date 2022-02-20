@@ -39,7 +39,6 @@ module.exports = {
 
   logout: (req, res) => {
     const accessToken = req.cookies.jwt;
-    console.log("=====> logout cookies", req.cookies);
 
     try {
       if (!accessToken) {
