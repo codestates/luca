@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { useState, useEffect, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
+import { setProjectList, updateProjectList } from "../redux/rootSlice";
 
 const ProjectcardBody = styled.div`
   background-color: seashell;
@@ -74,32 +76,44 @@ const ProjectcardBody = styled.div`
   }
 `;
 
-function Projectcard({ data }) {
-  const nameRef = useRef();
+function Projectcard({ index }) { //projects에서 해당 프로젝트를 구분하기 위해 메인페이지에서 projects의 인덱스를 내려주었습니다.
+  const dispatch = useDispatch();
+  const projects = useSelector((state) => state.user.projects);
+  const titleRef = useRef();
   const descRef = useRef();
-
+  // console.log(data.id)
   const [isClicked, setIsClicked] = useState(false);
-  const [cardData, setCardData] = useState(data);
+  const [cardData, setCardData] = useState({...projects[index]});
 
-  const editProjectHandler = (name, desc) => {
+  const editProjectHandler = (title, desc) => {
     // console.log(name.value);
     // console.log(desc.value);
-    if (name.value === "" || desc.value === "") {
+    if (title.value === "" || desc.value === "") {
       alert("빈칸을 채워주세요.");
       return;
     } else {
-      setCardData({ ...data, title: name.value, desc: desc.value });
-      console.log(data);
-      // 엑시오스 요청 post
+      setCardData({...cardData, title: title.value, desc: desc.value}); //수정 하자마자 변경된 값을 보여주기 위해 react states를 사용합니다.
+      const editReqData = {projectId: projects[index].id, title: title.value, desc: desc.value}; //이후에 서버로 업데이트 요청을 합니다.
+      axios.patch(`${process.env.REACT_APP_API_URL}/project`, 
+        editReqData,
+        {
+        "Content-Type": "application/json",
+        withCredentials: true,
+      })
+      .then((res) => {
+        console.log('요청성공');
+      })
+      .catch((err) => {
+        console.log('에러');
+      })
     }
-    // axios.post("url", data)
   };
 
   return (
     <ProjectcardBody>
       <div className="projectcardhead">
         <div className="projectname">
-          <h2>{isClicked ? <input ref={nameRef} /> : cardData.title}</h2>
+          <h2>{isClicked ? <input ref={titleRef} /> : cardData.title}</h2>
           <div className="date">{cardData.updatedAt}</div>
         </div>
         <div className="projectfunc">
@@ -113,7 +127,7 @@ function Projectcard({ data }) {
             {isClicked ? (
               <div
                 onClick={() => {
-                  editProjectHandler(nameRef.current, descRef.current);
+                  editProjectHandler(titleRef.current, descRef.current);
                 }}
               >
                 확인
