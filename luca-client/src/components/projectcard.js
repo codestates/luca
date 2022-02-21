@@ -177,12 +177,12 @@ function Projectcard({ projectInfo, index }) {
     <ProjectcardBody>
       {console.log(userInfo)}
       <div className="projectcardhead">
-        {/* <Link to={`/project/${projectInfo.id}`}> */}
-        <div className="projectname">
-          <h2>{isClicked ? <input ref={titleRef} /> : projectInfo.title}</h2>
-          <div className="date">{projectInfo.updatedAt}</div>
-        </div>
-        {/* </Link> */}
+        <Link to={`/project/${projectInfo.id}`}>
+          <div className="projectname">
+            <h2>{isClicked ? <input ref={titleRef} /> : projectInfo.title}</h2>
+            <div className="date">{projectInfo.updatedAt}</div>
+          </div>
+        </Link>
         <div className="projectfunc">
           {projectInfo.isAccept === 1 ? null : (
             <div className="acceptbox">
