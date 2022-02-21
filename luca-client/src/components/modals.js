@@ -5,7 +5,15 @@ import { useSelector, useDispatch } from "react-redux";
 // import { setUserInfo } from "../redux/slicer/userInfoSlice";
 import { setIsLogin, setUserInfo, setProjectList } from "../redux/rootSlice";
 import axios from "axios";
-
+import googleIcon from '../asset/images/login_icon_google.svg';
+import kakaoIcon from '../asset/images/login_icon_kakao.svg';
+import naverIcon from '../asset/images/login_icon_naver.svg';
+import { color, device, radius, boxShadow } from '../styles';
+import {
+  requestKakaoLogin,
+  requestNaverLogin,
+  requestGoogleLogin,
+} from "../api";
 // ============모달 props 사용법==========================
 
 // const [modal, SetModal] = useState(false);
@@ -58,7 +66,7 @@ const ModalView = styled.div`
   //min-height: 400px;
   margin: auto;
   padding: 3em;
-  background-color: white;
+  background-color:white;
   display: flex;
   flex-direction: column;
   border-radius: 1em;
@@ -83,15 +91,12 @@ const ModalView = styled.div`
         font-size: 1.2em;
       }
       > input {
-        width: 70%;
-        margin: 0 3em 0 1em;
-        font-size: 1.2rem;
-        outline: none;
-        border-top-width: 0;
-        border-left-width: 0;
-        border-right-width: 0;
-        border-bottom-width: 0.5px;
-        border-color: rgba(0, 0, 0, 0.1);
+        width: 100%;
+        height: 40px;
+        padding: 0.5rem;
+        font-size: 1rem;
+        border: 1px solid ${color.primaryBorder};
+        border-radius: ${radius};
       }
 
       > input:focus {
@@ -139,9 +144,18 @@ const ModalView = styled.div`
       }
       > button.confirm {
         font-weight: bold;
-        background-color: lightyellow;
+        background-color: ${color.primaryLight};
+        cursor: pointer;
       }
     }
+    img {
+    width: 60px;
+    height: 60px;
+    margin: 0.5rem;
+    border-radius: 50%;
+    align-items: center;
+    cursor: pointer;
+  }
   }
 `;
 
@@ -187,12 +201,13 @@ export function LoginModal({ modalHandler }) {
   return (
     <ModalBackdrop onClick={() => modalHandler(false)}>
       <ModalView onClick={(e) => e.stopPropagation()}>
-        <div className="modal-title">{isLogin + "입니다."}</div>
+        <div className="modal-title">로그인</div>
         <div className="modal-body">
           <div className="query">
-            <div className="index">이메일</div>
+            {/* <div className="index">이메일</div> */}
             <input
               onChange={(e) => handleInputValue(e, "email")}
+              placeholder="이메일"
               onKeyPress={(e) => {
                 if (e.key === "Enter") {
                   return LoginHandler();
@@ -201,9 +216,10 @@ export function LoginModal({ modalHandler }) {
             />
           </div>
           <div className="query">
-            <div className="index">비밀번호</div>
+            {/* <div className="index">비밀번호</div> */}
             <input
               onChange={(e) => handleInputValue(e, "password")}
+              placeholder="비밀번호"
               onKeyPress={(e) => {
                 if (e.key === "Enter") {
                   return LoginHandler();
@@ -220,10 +236,14 @@ export function LoginModal({ modalHandler }) {
         </div>
         <div className="modal-footer">
           <div className="buttons">
-            <button>소셜 로그인</button>
             <button className="confirm" onClick={LoginHandler}>
               로그인
             </button>
+          </div>
+          <div>
+            <img src={kakaoIcon} alt='카카오 아이콘' onClick={requestKakaoLogin}></img>
+            <img src={googleIcon} alt='카카오 아이콘' onClick={requestGoogleLogin}></img>
+            <img src={naverIcon} alt='카카오 아이콘' onClick={requestNaverLogin}></img>
           </div>
         </div>
       </ModalView>

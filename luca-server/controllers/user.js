@@ -180,7 +180,7 @@ module.exports = {
           delete userInfo.dataValues.password;
           if (passwordCheck) {
             const accessToken = generateAccessToken(userInfo);
-            sendAccessToken(res, accessToken, 200, { data: userInfo, message: "Login success"});
+            sendAccessToken(res, accessToken, 200, { data: userInfo, message: "Login success" });
           } else {
             return res.status(400).json({ message: "Wrong password" });
           }
