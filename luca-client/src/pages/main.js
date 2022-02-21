@@ -13,8 +13,9 @@ const Maincomponent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  > startbox {
+  > div.startbox {
     background-color: gray;
+    border-radius: 0px 0px 20px 20px;
     width: 100%;
     height: 250px;
     display: flex;
@@ -138,14 +139,14 @@ export function Main() {
       <Navigator />
       <Backdrop onClick={isClicked ? modalHandler : null}>
         <Maincomponent>
-          <startbox>
+          <div className="startbox">
             <startinfo>
               <h2>Lorem ipsum</h2>
               img elements must have an alt prop, either with meaningful text,
               or an empty string for decorative images
             </startinfo>
             <startbutton onClick={modalHandler}>start</startbutton>
-          </startbox>
+          </div>
           <projectcontainer>
             <sortbox>
               {sortModal ? (

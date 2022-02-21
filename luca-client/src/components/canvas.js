@@ -54,65 +54,65 @@ export default function Canvas() {
   const canvasRef = useRef();
   const svgRef = useRef();
 
-  const [viewRatio, setViewRatio] = useState(1);
-  const [screen, setScreen] = useState({
-    top: 0,
-    left: 0,
-  });
-  const mapConRef = useRef();
+  // const [viewRatio, setViewRatio] = useState(1);
+  // const [screen, setScreen] = useState({
+  //   top: 0,
+  //   left: 0,
+  // });
+  // const mapConRef = useRef();
 
-  useEffect(() => {
-    //console.log(mapConRef.current.offsetWidth);
-  }, []);
+  // useEffect(() => {
+  //   //console.log(mapConRef.current.offsetWidth);
+  // }, []);
 
-  const wheelHandler = (e) => {
-    if (viewRatio >= 0.2) {
-      setViewRatio(viewRatio + 0.001 * e.deltaY);
-    } else {
-      setViewRatio(0.2);
-    }
-    //console.log("viewRatio: ", viewRatio);
-    //console.log("mapConRef: ", mapConRef.current.offsetWidth);
-  };
+  // const wheelHandler = (e) => {
+  //   if (viewRatio >= 0.2) {
+  //     setViewRatio(viewRatio + 0.001 * e.deltaY);
+  //   } else {
+  //     setViewRatio(0.2);
+  //   }
+  //   //console.log("viewRatio: ", viewRatio);
+  //   //console.log("mapConRef: ", mapConRef.current.offsetWidth);
+  // };
 
-  let posX,
-    posY = 100;
+  // let posX,
+  //   posY = 100;
 
-  const panScreenStart = (e) => {
-    const img = new Image();
-    e.dataTransfer.setDragImage(img, 0, 0);
-    posX = e.clientX;
-    posY = e.clientY;
-  };
+  // const panScreenStart = (e) => {
+  //   const img = new Image();
+  //   e.dataTransfer.setDragImage(img, 0, 0);
+  //   posX = e.clientX;
+  //   posY = e.clientY;
+  // };
 
-  const panScreen = (e) => {
-    const limitX = e.target.offsetLeft + (e.clientX - posX) <= 0;
-    const limitY = e.target.offsetTop + (e.clientY - posY) <= 0;
+  // const panScreen = (e) => {
+  //   const limitX = e.target.offsetLeft + (e.clientX - posX) <= 0;
+  //   const limitY = e.target.offsetTop + (e.clientY - posY) <= 0;
 
-    e.target.style.left = limitX
-      ? `${e.target.offsetLeft + (e.clientX - posX)}px`
-      : "0px";
-    e.target.style.top = limitY
-      ? `${e.target.offsetTop + (e.clientY - posY)}px`
-      : "0px";
+  //   e.target.style.left = limitX
+  //     ? `${e.target.offsetLeft + (e.clientX - posX)}px`
+  //     : "0px";
+  //   e.target.style.top = limitY
+  //     ? `${e.target.offsetTop + (e.clientY - posY)}px`
+  //     : "0px";
 
-    posX = limitX ? e.clientX : 0;
-    posY = limitY ? e.clientY : 0;
-  };
+  //   posX = limitX ? e.clientX : 0;
+  //   posY = limitY ? e.clientY : 0;
+  // };
 
-  const panScreenEnd = (e) => {
-    const limitX = e.target.offsetLeft + (e.clientX - posX) <= 0;
-    const limitY = e.target.offsetTop + (e.clientY - posY) <= 0;
+  // const panScreenEnd = (e) => {
+  //   const limitX = e.target.offsetLeft + (e.clientX - posX) <= 0;
+  //   const limitY = e.target.offsetTop + (e.clientY - posY) <= 0;
 
-    e.target.style.left = limitX
-      ? `${e.target.offsetLeft + (e.clientX - posX)}px`
-      : "0px";
-    e.target.style.top = limitY
-      ? `${e.target.offsetTop + (e.clientY - posY)}px`
-      : "0px";
+  //   e.target.style.left = limitX
+  //     ? `${e.target.offsetLeft + (e.clientX - posX)}px`
+  //     : "0px";
+  //   e.target.style.top = limitY
+  //     ? `${e.target.offsetTop + (e.clientY - posY)}px`
+  //     : "0px";
 
-    setScreen({ top: e.target.style.top, left: e.target.style.left });
-  };
+  //   setScreen({ top: e.target.style.top, left: e.target.style.left });
+  // };
 
   // const root = d3.hierarchy(data);
 
@@ -139,7 +139,10 @@ export default function Canvas() {
     const svg = d3
       .selectAll("page")
       .append("svg")
-      .attr("viewBox", [-100, -50, 200, 100]);
+      .attr("viewbox", [-300, -165, 600, 330]);
+      // .attr("viewPort", [-100, -200, 200, 400]);
+    // svg.attr("width", "100%");
+    // svg.attr("height", "100%");
 
     const link = svg
       .append("g")
