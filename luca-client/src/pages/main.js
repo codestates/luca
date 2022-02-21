@@ -6,6 +6,8 @@ import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setProjectList } from "../redux/rootSlice.js";
 import axios from "axios";
+import { compose } from '@reduxjs/toolkit';
+import Footer from '../components/footer';
 
 const Maincomponent = styled.div`
   margin-top: 10vh;
@@ -78,7 +80,7 @@ const Maincomponent = styled.div`
 `;
 
 export function Main() {
-  const projects = useSelector((state) => state.user.projects);
+  let projects = useSelector((state) => state.user.projects);
   const dispatch = useDispatch();
   const [isClicked, setIsClicked] = useState(false);
   // const [newProject, setNewProject] = useState({});
@@ -111,8 +113,8 @@ export function Main() {
           ? -1
           : parseInt(a.updatedAt.split("-").join("")) >
             parseInt(b.updatedAt.split("-").join(""))
-          ? 1
-          : 0;
+            ? 1
+            : 0;
       });
       dispatch(setProjectList(projectsClone));
       console.log("sortHandler projectClone");
@@ -124,8 +126,8 @@ export function Main() {
           ? -1
           : parseInt(a.createdAt.split("-").join("")) >
             parseInt(b.createdAt.split("-").join(""))
-          ? 1
-          : 0;
+            ? 1
+            : 0;
       });
       console.log("sortHandler projectClone");
       console.log(projectsClone);
@@ -178,11 +180,12 @@ export function Main() {
         {isClicked ? (
           <CreateProjectModal
             modalHandler={modalHandler}
-            // newProjectHandler={newProjectHandler}
+          // newProjectHandler={newProjectHandler}
           />
         ) : null}
       </Backdrop>
       <div className="footer"></div>
+      <Footer />
     </div>
   );
 }
