@@ -22,8 +22,8 @@ export default function Project() {
   // 처음 입장할 때만 소켓 연결해준다.
   useEffect(() => {
     setSocketIO(socket);
-    socket.emit("Enter_Room", roomName);
-    socket.on("Enter_Room", (data, count) => {
+    socket.emit("enterRoom", roomName);
+    socket.on("enterRoom", (data, count) => {
       console.log(`Number of participants: ${count}`);
       console.log("SOCKETIO connect EVENT: ", data, " client connect");
     });

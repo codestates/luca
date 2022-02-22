@@ -146,7 +146,11 @@ const ModalView = styled.div`
         font-weight: bold;
         background-color: ${color.primaryLight};
         cursor: pointer;
+<<<<<<< HEAD
       } 
+=======
+      }
+>>>>>>> d5439bcf7cba017d1a649e857f4de7efc03e2f79
     }
     img {
     width: 60px;

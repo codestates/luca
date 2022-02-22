@@ -1,38 +1,34 @@
 import { Navigator } from "../components/commons";
 import Canvas from "../components/canvas";
 import Cardboard from "../components/cardboard";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useEffect, useCallback } from "react";
 import io from "socket.io-client";
 import { useSelector, useDispatch } from "react-redux";
-import { setCardInfo } from '../redux/rootSlice';
-import Timer from '../components/timer/Timer';
+import { setCardList } from '../redux/rootSlice';
+import Timer from '../components/timer';
 
 export default function Project() {
   const dispatch = useDispatch();
-  const curProjectId = window.location.href.split("/".reverse()[0])
-  let roomName = `project${curProjectId}`
-  let userId = useSelector((state) => state.user.userInfo.id);
-  let cardInfo = useSelector((state) => state.user.cardInfo);
+  const curProjectId = window.location.href.split("/").reverse()[0]
+  const roomName = `${curProjectId}`
+  const userId = useSelector((state) => state.user.userInfo.id);
 
   const socket = io.connect(`${process.env.REACT_APP_API_URL}`)
   const disconnectSocket = useCallback(() => {
-    socket.on("bye", () => {
-      console.log('bye')
-    })
     socket.disconnect();
   }, [socket]);
 
   // 처음 입장할 때만 소켓 연결해준다.
   useEffect(() => {
     console.log(roomName)
-    socket.emit("Enter_Room", roomName);
-    socket.on("Enter_Room", (data, count) => {
+    socket.emit("enterRoom", roomName);
+    socket.on("enterRoom", (data, count) => {
       // console.log(`Number of participants: ${count}`);
       console.log("SOCKETIO connect EVENT: ", data, " client connect");
     });
-    socket.emit("getCard", roomName);
-    socket.on("getCard", (data) => {
-      dispatch(setCardInfo(data));
+    socket.emit("initData", roomName);
+    socket.on("initData", (data) => {
+      dispatch(setCardList(data));
       console.log(data)
     })
   }, []);
@@ -45,31 +41,34 @@ export default function Project() {
   }, []);
 
   // 카드를 추가한다.
-  const addCard = () => {
-    socket.emit("addCard", userId, "data", roomName);
-    socket.on("addCard", (data) => {
-      dispatch(setCardInfo(data));
-      console.log(data);
-    });
+  const createCard = () => {
+    socket.emit("createCard", userId, "data", roomName);
   }
 
   // 카드를 삭제한다.
   const deleteCard = () => {
-    // const inputData = document.getElementById("data").value;
     socket.emit("deleteCard", 30, roomName);
-    socket.on("deleteCard", (data) => {
-      // dispatch(setCardInfo(data));
+  }
+
+  // 배열이 업데이트될 때마다 계속해서 추가로 리스너가 등록되는 것을 방지하기 위해 useEffect 사용)
+  useEffect(() => {
+    socket.on("createCard", (data) => {
+      dispatch(setCardList(data));
       console.log(data);
     });
-  }
+    socket.on("deleteCard", (data) => {
+      dispatch(setCardList(data));
+      console.log(data);
+    });
+  }, [])
 
   return (
     <div>
-      {/* <Navigator /> */}
+      <Navigator />
       <Timer />
       <Canvas />
       <Cardboard />
-      <button onClick={() => { addCard() }}>Add</button>
+      <button onClick={() => { createCard() }}>create</button>
       <button onClick={() => { deleteCard() }}>Delete</button>
     </div>
   );
