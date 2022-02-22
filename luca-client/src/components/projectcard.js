@@ -181,7 +181,11 @@ function Projectcard({ projectInfo, index }) {
     <ProjectcardBody>
       {console.log(userInfo)}
       <div className="projectcardhead">
+<<<<<<< HEAD
         <Link to={"/project"} onClick={() => curProjectHandler(projectInfo.id)}>
+=======
+        <Link to={`/project/${projectInfo.id}`}>
+>>>>>>> d5439bcf7cba017d1a649e857f4de7efc03e2f79
           <div className="projectname">
             <h2>{isClicked ? <input ref={titleRef} /> : projectInfo.title}</h2>
             <div className="date">{projectInfo.updatedAt}</div>
