@@ -1,6 +1,7 @@
 import { useState } from "react/cjs/react.development";
 import styled from "styled-components";
-
+import { useSelector } from "react-redux";
+import { setCardList } from "../redux/rootSlice";
 // 현재 <CardContainer>, <Opener>, <CardAdder> 에 각각 다른 animation이 적용되어 있습니다.
 // <CardContainer>는 width 를, <Opener>, <CardAdder> 는 right 값을 변화시키는 keyframes 입니다.
 // 1. 절대위치가 아닌, <CardContainer>에 flex 박스를 적용해 컴포넌트를 다시 구성하거나
@@ -198,7 +199,8 @@ const CardAdder = styled.div`
   }
 `;
 
-export default function Cardboard() {
+export default function Cardboard({ addCardHandler }) {
+  const cardList = useSelector((state) => state.user.cardList);
   const [isCardContOpen, setIsCardContOpen] = useState(null); // default animation state
   const [isAdderOpen, setIsAdderOpen] = useState(null); // default animation state
 
@@ -207,6 +209,7 @@ export default function Cardboard() {
   };
 
   const adderOpenHandler = () => {
+    addCardHandler();
     setIsAdderOpen(!isAdderOpen);
   };
 
@@ -216,11 +219,11 @@ export default function Cardboard() {
   return (
     <div>
       <CardContainer isCardContOpen={isCardContOpen}>
-        <Card>1</Card>
-        <Card>2</Card>
-        <Card>3</Card>
-        <Card>4</Card>
-        <Card>5</Card>
+        {cardList.map((el) => {
+          return (
+            <Card key={el.id}>{el.content}</Card>
+          )
+        })}
         {/* <Card>상위 4개 limit로 .map</Card> */}
         <CardAdder
           isCardContOpen={isCardContOpen}

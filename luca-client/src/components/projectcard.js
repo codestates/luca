@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-import { setProjectList, updateProjectList } from "../redux/rootSlice";
+import { setProjectList, updateProjectList, setCurProjectId } from "../redux/rootSlice";
 import { Link } from "react-router-dom";
 
 const ProjectcardBody = styled.div`
@@ -173,16 +173,20 @@ function Projectcard({ projectInfo, index }) {
     }
   };
 
+  const curProjectHandler = (id) => {
+    dispatch(setCurProjectId(id));
+  }
+
   return (
     <ProjectcardBody>
       {console.log(userInfo)}
       <div className="projectcardhead">
-        {/* <Link to={`/project/${projectInfo.id}`}> */}
-        <div className="projectname">
-          <h2>{isClicked ? <input ref={titleRef} /> : projectInfo.title}</h2>
-          <div className="date">{projectInfo.updatedAt}</div>
-        </div>
-        {/* </Link> */}
+        <Link to={"/project"} onClick={() => curProjectHandler(projectInfo.id)}>
+          <div className="projectname">
+            <h2>{isClicked ? <input ref={titleRef} /> : projectInfo.title}</h2>
+            <div className="date">{projectInfo.updatedAt}</div>
+          </div>
+        </Link>
         <div className="projectfunc">
           {projectInfo.isAccept === 1 ? null : (
             <div className="acceptbox">

@@ -1,14 +1,23 @@
+const { cards } = require("../models");
+
 module.exports = {
-    connect: (req, res) => {
-        res.send('ok');
+    connect: () => {
+        return '';
     },
-    disconnect: (req, res) => {
-        res.send('ok');
+    disconnect: () => {
+        return '';
     },
-    alone: (req, res) => {
-        res.send('ok');
+    alone: () => {
+        return '';
     },
-    get: (req, res) => {
-        res.send('ok');
-    },
+    get: async (projectId) => {
+        const result = await cards.findAll({
+            where: {
+                storage: "mindmap",
+                projectId: projectId
+            },
+            raw: true
+        })
+        return result;
+    }
 };
