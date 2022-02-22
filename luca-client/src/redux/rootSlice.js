@@ -22,7 +22,10 @@ export const rootSlice = createSlice({
 
     initialState: {
         projects: [],
+        projectId: 0,
+        time: 0,
         isLogin: false,
+        cardInfo: [],
         userInfo: {
             id: "",
             email: "",
@@ -40,6 +43,16 @@ export const rootSlice = createSlice({
         },
         setUserInfo: (state, action) => {
             state.userInfo = action.payload;
+        },
+        setCardInfo: (state, action) => {
+            state.cardInfo = action.payload;
+        },
+        setTime: (state, action) => {
+            state.time = action.payload;
+        },
+        setProjectId: (state, action) => {
+            console.log(action.payload)
+            state.projectId = action.payload;
         },
         setProjectList: (state, action) => {
             // console.log(action.payload)
@@ -67,6 +80,6 @@ export const rootSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { setIsLogin, setUserInfo, setProjectList, updateProjectList } = rootSlice.actions
+export const { setIsLogin, setUserInfo, setProjectList, updateProjectList, setProjectId, setCardInfo, setTime } = rootSlice.actions
 
 export default rootSlice.reducer

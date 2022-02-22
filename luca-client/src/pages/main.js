@@ -117,8 +117,8 @@ export function Main() {
             : 0;
       });
       dispatch(setProjectList(projectsClone));
-      console.log("sortHandler projectClone");
-      console.log(projectsClone);
+      // console.log("sortHandler projectClone");
+      // console.log(projectsClone);
     } else if (e === "create") {
       projectsClone = projects.slice().sort((b, a) => {
         return parseInt(a.createdAt.split("-").join("")) <
@@ -129,8 +129,8 @@ export function Main() {
             ? 1
             : 0;
       });
-      console.log("sortHandler projectClone");
-      console.log(projectsClone);
+      // console.log("sortHandler projectClone");
+      // console.log(projectsClone);
       dispatch(setProjectList(projectsClone));
     }
     setSortModal(!sortModal);

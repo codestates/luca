@@ -210,8 +210,8 @@ export default function Cardboard() {
     setIsAdderOpen(!isAdderOpen);
   };
 
-  console.log("isCardContOpen: ", isCardContOpen);
-  console.log("isAdderOpen: ", isAdderOpen);
+  // console.log("isCardContOpen: ", isCardContOpen);
+  // console.log("isAdderOpen: ", isAdderOpen);
 
   return (
     <div>

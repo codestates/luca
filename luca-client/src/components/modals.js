@@ -146,7 +146,7 @@ const ModalView = styled.div`
         font-weight: bold;
         background-color: ${color.primaryLight};
         cursor: pointer;
-      }
+      } 
     }
     img {
     width: 60px;
@@ -374,21 +374,18 @@ export function CreateProjectModal({ modalHandler }) {
             )}
           </div>
           <div className="query">
-            <div className="index">이름</div>
             {/* <input onChange={(e)=>{newProjectHandler(e, "name")}}/> */}
-            <input ref={nameRef} />
+            <input ref={nameRef} placeholder="이름" />
           </div>
           <div className="query">
-            <div className="index">설명</div>
             {/* <input onChange={(e)=>{newProjectHandler(e, "desc")}}/> */}
-            <input ref={descRef} />
+            <input ref={descRef} placeholder="설명" />
           </div>
           {isTeam ? (
             <div>
               <div className="query">
-                <div className="index">초대</div>
                 {/* <input onChange={(e)=>{newProjectHandler(e, "invite")}}/> */}
-                <input ref={inviteRef} />
+                <input ref={inviteRef} placeholder="초대" />
                 <button onClick={findMemberHandler}>추가</button>
               </div>
               <div>

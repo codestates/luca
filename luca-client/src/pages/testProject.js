@@ -3,16 +3,16 @@ import io, { Socket } from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 
 export default function Project() {
-    const navigate = useNavigate();
-    const [socketIo, setSocketIO] = useState();
-    const roomName = window.location.pathname.substring(14);
-    const socket = io.connect(`${process.env.REACT_APP_API_URL}`)
-    const disconnectSocket = useCallback(() => {
-        socket.on("bye", () => {
-            console.log('bye')
-        })
-        socket.disconnect();
-    }, [socket]);
+  const navigate = useNavigate();
+  const [socketIo, setSocketIO] = useState();
+  const roomName = window.location.pathname.substring(14);
+  const socket = io.connect(`${process.env.REACT_APP_API_URL}`)
+  const disconnectSocket = useCallback(() => {
+    socket.on("bye", () => {
+      console.log('bye')
+    })
+    socket.disconnect();
+  }, [socket]);
 
   const goToBack = async () => {
     socketIo.disconnect();

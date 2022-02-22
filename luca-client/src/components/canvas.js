@@ -199,7 +199,7 @@ export default function Canvas() {
     //     return d.target.rule;
     // });
 
-    console.log(nodes);
+    // console.log(nodes);
 
     simulation.on("tick", () => {
       link
@@ -212,7 +212,7 @@ export default function Canvas() {
 
       content.attr("cx", (d) => d.x + 10).attr("cy", (d) => d.y);
     });
-  }, [root]);
+  });
 
   return (
     <Frame>
