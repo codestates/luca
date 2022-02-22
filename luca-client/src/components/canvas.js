@@ -220,7 +220,7 @@ export default function Canvas() {
 
       content.attr("cx", (d) => d.x + 10).attr("cy", (d) => d.y);
     });
-  }, [root]);
+  });
 
   return (
     <Frame>

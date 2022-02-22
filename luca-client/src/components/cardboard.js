@@ -10,14 +10,14 @@ const CardContainer = styled.div`
   z-index: 800;
   position: fixed;
   top: 13vh;
-  right: 3vh;
+  right: 2vh;
   width: 18vh;
-  height: 84vh;
+  height: 68vh;
   background-color: white;
-  border-radius: 0 1vh 1vh 0;
+  border-radius: 0vh 1vh 1vh 0vh;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  flex-flow: column wrap;
+  align-content: baseline;
   box-shadow: 0vh 0vh 1vh rgba(0, 0, 0, 0.5);
 
   animation-name: ${(props) => {
@@ -38,29 +38,35 @@ const CardContainer = styled.div`
   @keyframes containerIn {
     from {
       width: 18vh;
+      overflow: scroll;
     }
     to {
-      width: 100vh;
+      width: 108vh;
+      overflow: scroll;
     }
   }
 
   @keyframes containerOut {
     from {
-      width: 100vh;
+      width: 108vh;
+      overflow: hidden;
+      //scroll-snap-type: x proximity;
     }
     to {
       width: 18vh;
+      overflow: hidden;
+      //scroll-snap-type: x proximity;
     }
   }
 `;
 
 const Opener = styled.div`
-  z-index: 800;
+  z-index: 850;
   position: fixed;
   top: 13vh;
-  right: 21vh;
+  right: 20vh;
   width: 2.5vh;
-  height: 84vh;
+  height: 68vh;
   background-color: lightgrey;
   border-radius: 1vh 0 0 1vh;
   box-shadow: 0vh 0vh 1vh rgba(0, 0, 0, 0.5);
@@ -89,42 +95,43 @@ const Opener = styled.div`
 
   @keyframes openerIn {
     from {
-      right: 21vh;
+      right: 20vh;
     }
     to {
-      right: 103vh;
+      right: 110vh;
     }
   }
 
   @keyframes openerOut {
     from {
-      right: 103vh;
+      right: 110vh;
     }
     to {
-      right: 21vh;
+      right: 20vh;
     }
   }
 `;
 
 const Card = styled.div`
-  z-index: 900;
-  width: 15vh;
-  height: 15vh;
-  margin: 1.5vh 1.5vh 0 1.5vh;
-  background-color: cyan;
-  box-shadow: 0vh 0.5vh 1vh 0.1vh rgba(0, 0, 0, 0.5);
+  z-index: 800;
+  width: 11vh;
+  height: 11vh;
+  margin: 1.4vh 1.5vh 0vh 1.5vh;
+  padding: 2vh;
+  background-color: lightyellow;
+  box-shadow: 0vh 0.5vh 1vh 0vh rgba(0, 0, 0, 0.3);
 `;
 
 const CardAdder = styled.div`
   z-index: 900;
   position: fixed;
-  bottom: 4.5vh;
-  right: 26vh;
+  bottom: 2.5vh;
+  right: 3.5vh;
   width: 15vh;
   height: 15vh;
   background-color: white;
   border-radius: 1vh;
-  box-shadow: 0vh 0.5vh 1vh 0.1vh rgba(0, 0, 0, 0.5);
+  box-shadow: 0vh 0vh 1vh rgba(0, 0, 0, 0.5);
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -157,39 +164,21 @@ const CardAdder = styled.div`
   animation-fill-mode: forwards;
   animation-play-state: running;
 
-  @keyframes adderSlideIn {
-    from {
-      right: 25vh;
-    }
-    to {
-      right: 107vh;
-    }
-  }
-
-  @keyframes adderSlideOut {
-    from {
-      right: 107vh;
-    }
-    to {
-      right: 25vh;
-    }
-  }
-
   @keyframes adderOpen {
     from {
       width: 15vh;
       height: 15vh;
     }
     to {
-      width: 32vh;
-      height: 32vh;
+      width: 33vh;
+      height: 33vh;
     }
   }
 
   @keyframes adderClose {
     from {
-      width: 32vh;
-      height: 32vh;
+      width: 33vh;
+      height: 33vh;
     }
     to {
       width: 15vh;
@@ -229,7 +218,32 @@ export default function Cardboard() {
         <Card>3</Card>
         <Card>4</Card>
         <Card>5</Card>
-        {/* <Card>상위 4개 limit로 .map</Card> */}
+        <Card>6</Card>
+        <Card>7</Card>
+        <Card>8</Card>
+        <Card>9</Card>
+        <Card>10</Card>
+        <Card>1</Card>
+        <Card>2</Card>
+        <Card>3</Card>
+        <Card>4</Card>
+        <Card>5</Card>
+        <Card>6</Card>
+        <Card>7</Card>
+        <Card>8</Card>
+        <Card>9</Card>
+        <Card>10</Card>
+        <Card>1</Card>
+        <Card>2</Card>
+        <Card>3</Card>
+        <Card>4</Card>
+        <Card>5</Card>
+        <Card>6</Card>
+        <Card>7</Card>
+        <Card>8</Card>
+        <Card>9</Card>
+        <Card>10</Card>
+        {/* <Card>상위 4개 limit로 할 필요 없음 .map</Card> */}
         <CardAdder
           isCardContOpen={isCardContOpen}
           isAdderOpen={isAdderOpen}
@@ -239,6 +253,7 @@ export default function Cardboard() {
             <i className="fa-solid fa-circle-plus"></i>
           </div>
         </CardAdder>
+
         <Opener
           className="opener"
           onClick={sliderHandler}
