@@ -1,16 +1,13 @@
-import React from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import styled from "styled-components";
 
 const Container = styled.div`
-  top: 10vh;
-  height: 90vh;
-  width: 90vw;
+  height: 100vh;
+  width: 100vw;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   align-content: flex-start;
-  border: solid red 1px;
 `;
 const Box = styled.div`
   width: 50px;
@@ -30,14 +27,45 @@ const Toolbox = styled.div`
   }
 `;
 export default function Canvas2() {
+  const onClick = () => {
+    alert("onClick : open popup");
+  };
+  const onContextMenu = (e) => {
+    e.preventDefault();
+    alert("onContextMenu : show info");
+  };
+
   const renderBoxes = () => {
     let i;
     let arr = [];
     for (i = 0; i < 30; i++) {
-      arr.push(<Box key={"b" + i} />);
-      arr.push(<Box key={"r" + i} backColor="red" />);
-      arr.push(<Box key={"y" + i} backColor="yellow" />);
-      arr.push(<Box key={"g" + i} backColor="gray" />);
+      arr.push(
+        <Box key={"b" + i} onClick={onClick} onContextMenu={onContextMenu} />
+      );
+      arr.push(
+        <Box
+          key={"r" + i}
+          onClick={onClick}
+          onContextMenu={onContextMenu}
+          backColor="red"
+        />
+      );
+      arr.push(
+        <Box
+          key={"y" + i}
+          onClick={onClick}
+          onContextMenu={onContextMenu}
+          backColor="yellow"
+        />
+      );
+      arr.push(
+        <Box
+          key={"g" + i}
+          onClick={onClick}
+          onContextMenu={onContextMenu}
+          backColor="gray"
+        />
+      );
     }
     return arr;
   };
@@ -47,16 +75,18 @@ export default function Canvas2() {
       defaultPositionX={200}
       defaultPositionY={100}
     >
-      <>
-        <Toolbox>
-          <button>+</button>
-          <button>-</button>
-          <button>x</button>
-        </Toolbox>
-        <TransformComponent>
-          <Container>{renderBoxes()}</Container>
-        </TransformComponent>
-      </>
+      {({ zoomIn, zoomOut, resetTransform, positionX, positionY, ...rest }) => (
+        <>
+          <Toolbox>
+            <button onClick={zoomIn}>+</button>
+            <button onClick={zoomOut}>-</button>
+            <button onClick={resetTransform}>x</button>
+          </Toolbox>
+          <TransformComponent>
+            <Container>{renderBoxes()}</Container>
+          </TransformComponent>
+        </>
+      )}
     </TransformWrapper>
   );
 }

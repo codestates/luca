@@ -9,7 +9,7 @@ export default function Project() {
 
   return (
     <div>
-      <Navigator />
+      {/* <Navigator /> */}
       <Canvas3 />
       <Cardboard />
     </div>

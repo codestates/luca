@@ -5,6 +5,7 @@ import styled from "styled-components";
 // <CardContainer>는 width 를, <Opener>, <CardAdder> 는 right 값을 변화시키는 keyframes 입니다.
 // 1. 절대위치가 아닌, <CardContainer>에 flex 박스를 적용해 컴포넌트를 다시 구성하거나
 // 2. animation 속성과 keyframes 속성을 묶어 함수형으로 작성하는 방식으로 리팩토링 할 수 있을 것입니다.
+// -> 현재 독립된 animation 으로 구현
 
 const CardContainer = styled.div`
   z-index: 800;
@@ -19,6 +20,7 @@ const CardContainer = styled.div`
   flex-flow: column wrap;
   align-content: baseline;
   box-shadow: 0vh 0vh 1vh rgba(0, 0, 0, 0.5);
+  overflow: hidden;
 
   animation-name: ${(props) => {
     if (props.isCardContOpen !== null && props.isCardContOpen === true) {
@@ -49,12 +51,12 @@ const CardContainer = styled.div`
   @keyframes containerOut {
     from {
       width: 108vh;
-      overflow: hidden;
+      //overflow: hidden;
       //scroll-snap-type: x proximity;
     }
     to {
       width: 18vh;
-      overflow: hidden;
+      //overflow: hidden;
       //scroll-snap-type: x proximity;
     }
   }
@@ -194,7 +196,7 @@ export default function Cardboard() {
   // 1. (전체 라우팅 구조와 엔드포인트를 바꾸거나 (ex. /main/project/12) ) / 2. 선택한 프로젝트의 id 를 react-redux state 로 관리해 넘겨주는 방법.
   // 1 은 시간 리스크가 너무 크고, 2 는 비동기 처리를 위해 리팩토링 규모가 너무 커집니다.
   // 따라서 라우팅 된 endpoint로 들어와서, endpoint에서 porjectIdRef 를 추출해 axios 요청을 보내는 방식으로 작성했습니다.
-  console.log("ProjectID Cardboard: ", porjectIdRef);
+  //console.log("ProjectID Cardboard: ", porjectIdRef);
 
   const [isCardContOpen, setIsCardContOpen] = useState(null); // default animation state
   const [isAdderOpen, setIsAdderOpen] = useState(null); // default animation state
@@ -207,8 +209,28 @@ export default function Cardboard() {
     setIsAdderOpen(!isAdderOpen);
   };
 
-  console.log("isCardContOpen: ", isCardContOpen);
-  console.log("isAdderOpen: ", isAdderOpen);
+  //console.log("isCardContOpen: ", isCardContOpen);
+  //console.log("isAdderOpen: ", isAdderOpen);
+
+  let dummyCardlist = [
+    { content: "lorem ipsum" },
+    { content: "dolor sit amet" },
+    { content: "consectetur adipiscing elit" },
+    { content: "sed do eiusmod tempor" },
+    { content: "incididunt ut labore et dolore" },
+    { content: "magna aliqua" },
+    { content: "ut enim ad minim veniam" },
+    { content: "quis nostrud exercitation ullamco" },
+    { content: "laboris nisi ut aliquip ex ea commodo consequat" },
+    { content: "duis aute irure dolor in reprehenderit" },
+    { content: "excepteur sint" },
+    { content: "occaecat cupidatat" },
+    { content: "non proident" },
+    { content: "sunt in culpa qui" },
+    { content: "officia deserunt" },
+    { content: "mollit anim id" },
+    { content: "est laborum" },
+  ];
 
   return (
     <div>
