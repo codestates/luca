@@ -146,13 +146,6 @@ const CardAdder = styled.div`
   }
 
   animation-name: ${(props) => {
-    // if (props.isCardContOpen !== null) {
-    //   if (props.isCardContOpen === true) {
-    //     return "adderSlideIn";
-    //   } else {
-    //     return "adderSlideOut";
-    //   }
-    // }
     if (props.isAdderOpen !== null) {
       if (props.isAdderOpen === true) {
         return "adderOpen";
@@ -189,14 +182,14 @@ const CardAdder = styled.div`
   }
 `;
 
-export default function Cardboard() {
-  let porjectIdRef = window.location.href.split("/").reverse()[0]; // porjectIdRef === '12'(string)
+export default function Cardboard({ cardData }) {
+  let projectIdRef = window.location.href.split("/").reverse()[0]; // projectIdRef === '12'(string)
   // Route flow 는 App > /project 이고, Link flow 는 App > Main > Projectcard > /project 로 서로 달라서
   // Projectcard 에서 선택한 projectId 를 <Project> 컴포넌트에 전달하기가 어렵습니다.
   // 1. (전체 라우팅 구조와 엔드포인트를 바꾸거나 (ex. /main/project/12) ) / 2. 선택한 프로젝트의 id 를 react-redux state 로 관리해 넘겨주는 방법.
   // 1 은 시간 리스크가 너무 크고, 2 는 비동기 처리를 위해 리팩토링 규모가 너무 커집니다.
   // 따라서 라우팅 된 endpoint로 들어와서, endpoint에서 porjectIdRef 를 추출해 axios 요청을 보내는 방식으로 작성했습니다.
-  //console.log("ProjectID Cardboard: ", porjectIdRef);
+  // console.log("ProjectID Cardboard: ", porjectIdRef);
 
   const [isCardContOpen, setIsCardContOpen] = useState(null); // default animation state
   const [isAdderOpen, setIsAdderOpen] = useState(null); // default animation state
@@ -209,39 +202,21 @@ export default function Cardboard() {
     setIsAdderOpen(!isAdderOpen);
   };
 
-  const cardDragStart = () => {
-    console.log("drag start!");
+  const cardDragStart = (e) => {
+    console.log("drag start! card id: ", e.target.id);
   };
-  const cardDragEnd = () => {
-    console.log("drag end!");
+  const cardDragEnd = (e) => {
+    console.log("drag end! card id: ", e.target.id);
+    // canvas 에 드롭 이벤트가 발생했다면, card data 에서 일치하는 card id 를 찾아 삭제해야합니다.
   };
-
-  let dummyCardlist = [
-    { content: "lorem ipsum" },
-    { content: "dolor sit amet" },
-    { content: "consectetur adipiscing elit" },
-    { content: "sed do eiusmod tempor" },
-    { content: "incididunt ut labore et dolore" },
-    { content: "magna aliqua" },
-    { content: "ut enim ad minim veniam" },
-    { content: "quis nostrud exercitation ullamco" },
-    { content: "laboris nisi ut aliquip ex ea commodo consequat" },
-    { content: "duis aute irure dolor in reprehenderit" },
-    { content: "excepteur sint" },
-    { content: "occaecat cupidatat" },
-    { content: "non proident" },
-    { content: "sunt in culpa qui" },
-    { content: "officia deserunt" },
-    { content: "mollit anim id" },
-    { content: "est laborum" },
-  ];
 
   return (
     <div>
       <CardContainer isCardContOpen={isCardContOpen}>
-        {dummyCardlist.map((card, i) => (
+        {cardData.map((card, i) => (
           <Card
-            key={i}
+            key={card.id}
+            id={card.id}
             draggable
             onDragStart={cardDragStart}
             onDragEnd={cardDragEnd}
@@ -250,7 +225,7 @@ export default function Cardboard() {
           </Card>
         ))}
         {/* <Card>상위 4개 limit로 할 필요 없음 .map</Card> */}
-        {/* websocket 으로 카드 데이터 받을때는 key={ card.id} 로 매핑할 것 */}
+        {/* websocket 으로 카드 데이터 받을때는 key={card.id} 로 매핑할 것 */}
         <CardAdder
           isCardContOpen={isCardContOpen}
           isAdderOpen={isAdderOpen}

@@ -2,19 +2,33 @@ import { useEffect, useRef } from "react/cjs/react.development";
 import { select, hierarchy, tree, linkRadial, cluster, selectAll } from "d3";
 
 const rawData = {
+  id: 0,
   name: "Ymir",
   children: [
     {
+      id: 1,
       name: "Eren",
-      children: [{ name: "Armin" }, { name: "Erwin" }, { name: "Annie" }],
+      children: [
+        { id: 4, name: "Armin" },
+        { id: 5, name: "Erwin" },
+        { id: 6, name: "Annie" },
+      ],
     },
-    { name: "Mikasa" },
+    { id: 2, name: "Mikasa" },
     {
+      id: 3,
       name: "Reiner",
       children: [
-        { name: "Historia" },
-        { name: "Bertoldt" },
-        { name: "Sasha", children: [{ name: "Zeke" }, { name: "Grisha" }] },
+        { id: 7, name: "Historia" },
+        { id: 8, name: "Bertoldt" },
+        {
+          id: 9,
+          name: "Sasha",
+          children: [
+            { id: 10, name: "Zeke" },
+            { id: 11, name: "Grisha" },
+          ],
+        },
       ],
     },
   ],

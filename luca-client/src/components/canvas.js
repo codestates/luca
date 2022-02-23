@@ -4,7 +4,7 @@
 // import { root, nodes, links } from "./d3coodinator/getDescendants";
 
 // export default function Canvas() {
-//   let porjectIdRef = window.location.href.split("/").reverse()[0]; // porjectIdRef === '12'(string)
+//   let projectIdRef = window.location.href.split("/").reverse()[0]; // porjectIdRef === '12'(string)
 //   // Route flow 는 App > /project 이고, Link flow 는 App > Main > Projectcard > /project 로 서로 달라서
 //   // Projectcard 에서 선택한 projectId 를 <Project> 컴포넌트에 전달하기가 어렵습니다.
 //   // 1. (전체 라우팅 구조와 엔드포인트를 바꾸거나 (ex. /main/project/12) ) / 2. 선택한 프로젝트의 id 를 react-redux state 로 관리해 넘겨주는 방법.
