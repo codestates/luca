@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import { useState } from "react/cjs/react.development";
 import styled from "styled-components";
 import {
   links,
@@ -71,12 +72,17 @@ console.log("radialLinkes: ", radialLinkes);
 export default function Canvas3() {
   // console.log("nodes: ", nodes);
   // console.log("links: ", links);
+  const [disabled, setDisabled] = useState(false);
+  const blockHandler = () => {
+    setDisabled(!disabled);
+  };
 
   return (
     <TransformWrapper
-      initialScale={1.4}
-      initialPositionX={-150}
-      initialPositionY={-150}
+      initialScale={1}
+      initialPositionX={0}
+      initialPositionY={0}
+      disabled={disabled}
     >
       {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
         <>
@@ -96,7 +102,7 @@ export default function Canvas3() {
             <button>
               <i className="fa-solid fa-border-all"></i>
             </button>
-            <button>
+            <button onClick={blockHandler}>
               <i className="fa-solid fa-border-none"></i>
             </button>
           </Controller>
@@ -109,17 +115,33 @@ export default function Canvas3() {
                   order={i}
                   coordY={node.y}
                   coordX={node.x}
-                  onClick={(e) => {
-                    alert(node.data.name);
+                  //onClick={blockHandler}
+
+                  // onDragEnter={(e) => {
+                  //   e.preventDefault();
+                  //   e.stopPropagation();
+                  //   console.log("node onDragEnter");
+                  // }}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log("node dragover");
+                  }}
+                  // 추가한 이벤트. onDrop을 위해선 반드시 필요함
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log("dropped on node");
                   }}
                 >
                   {node.data.name}
                 </Exbox>
               ))}
               <svg width={"100vw"} height={"100vh"}>
-                {radialLinkes.map((link) => {
+                {radialLinkes.map((link, i) => {
                   return (
                     <line
+                      key={i}
                       x1={link.source.x}
                       y1={link.source.y}
                       x2={link.target.x}

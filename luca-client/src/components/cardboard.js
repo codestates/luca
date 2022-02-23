@@ -209,8 +209,12 @@ export default function Cardboard() {
     setIsAdderOpen(!isAdderOpen);
   };
 
-  //console.log("isCardContOpen: ", isCardContOpen);
-  //console.log("isAdderOpen: ", isAdderOpen);
+  const cardDragStart = () => {
+    console.log("drag start!");
+  };
+  const cardDragEnd = () => {
+    console.log("drag end!");
+  };
 
   let dummyCardlist = [
     { content: "lorem ipsum" },
@@ -235,37 +239,18 @@ export default function Cardboard() {
   return (
     <div>
       <CardContainer isCardContOpen={isCardContOpen}>
-        <Card>1</Card>
-        <Card>2</Card>
-        <Card>3</Card>
-        <Card>4</Card>
-        <Card>5</Card>
-        <Card>6</Card>
-        <Card>7</Card>
-        <Card>8</Card>
-        <Card>9</Card>
-        <Card>10</Card>
-        <Card>1</Card>
-        <Card>2</Card>
-        <Card>3</Card>
-        <Card>4</Card>
-        <Card>5</Card>
-        <Card>6</Card>
-        <Card>7</Card>
-        <Card>8</Card>
-        <Card>9</Card>
-        <Card>10</Card>
-        <Card>1</Card>
-        <Card>2</Card>
-        <Card>3</Card>
-        <Card>4</Card>
-        <Card>5</Card>
-        <Card>6</Card>
-        <Card>7</Card>
-        <Card>8</Card>
-        <Card>9</Card>
-        <Card>10</Card>
+        {dummyCardlist.map((card, i) => (
+          <Card
+            key={i}
+            draggable
+            onDragStart={cardDragStart}
+            onDragEnd={cardDragEnd}
+          >
+            {card.content}
+          </Card>
+        ))}
         {/* <Card>상위 4개 limit로 할 필요 없음 .map</Card> */}
+        {/* websocket 으로 카드 데이터 받을때는 key={ card.id} 로 매핑할 것 */}
         <CardAdder
           isCardContOpen={isCardContOpen}
           isAdderOpen={isAdderOpen}
