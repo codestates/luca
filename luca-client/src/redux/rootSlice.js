@@ -30,9 +30,6 @@ export const rootSlice = createSlice({
         isBlock: false,
         cardList: [],
         mindmapTree: {},
-        time : 0,
-        timerOn: false,
-        settings: false,
         userInfo: {
             id: "",
             email: "",
@@ -68,18 +65,6 @@ export const rootSlice = createSlice({
             // console.log(action.payload)
             state.isBlock = action.payload;
         },
-        setTime: (state, action) => {
-            // console.log(action.payload)
-            state.time = action.payload;
-        },
-        setTimeOn: (state, action) => {
-            // console.log(action.payload)
-            state.timerOn = action.payload;
-        },        
-        setSetting: (state, action) => {
-            // console.log(action.payload)
-            state.settings = action.payload;
-        },                
         updateProjectList: (state, action) => {
             state.projects[action.payload.index].title = action.payload.inputData[0];
             state.projects[action.payload.index].desc = action.payload.inputData[1];

@@ -206,6 +206,8 @@ export default function Cardboard({ createCard, deleteCard, setDragItemId, mouse
 
   const cardDragStart = (e) => {
     setDragItemId(e.target.id);
+    // setIsAdderOpen(false)
+    // setIsCardContOpen(false)
     mouseDown(e.target.id);
     console.log("drag start! card id: ", e.target.id);
   };

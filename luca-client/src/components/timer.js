@@ -1,10 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
+import io from "socket.io-client";
 
 const TimerContainer = styled.div`
-            display: flex;
-            justify-content: left;
-            text-align: center;
+    display: flex;
+    justify-content: left;
+    text-align: center;
+    /* border-radius: 4px;
+    background-color: white;
+    border: solid lightgrey 1px; */
+    color: rgb(160, 160, 160);
     > div {
         > h3 {
             margin: 0;
@@ -14,15 +19,15 @@ const TimerContainer = styled.div`
         }
     }
     button.start {
-        font-family: "Raleway", serif !important;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        font-size: 1.5rem;
-        margin: 0px;
-        color: #ff7f50;
-        background: none;
-        border: none;
-        cursor: pointer;
+        flex: 1 0 auto;
+        margin: 4px 4px 0 4px;
+        width: 40px;
+        height: 40px;
+        border-radius: 4px;
+        background-color: white;
+        border: solid lightgrey 1px;
+        color: rgb(160, 160, 160);
+        font-size: 1.2rem;
     }
 
     button.playPause {
@@ -31,21 +36,9 @@ const TimerContainer = styled.div`
         -moz-osx-font-smoothing: grayscale;
         font-size: 1rem;
         margin: 0px;
-        color: #fc7878;
+        color: rgb(160, 160, 160);
         background: none;
         border: none;
-        cursor: pointer;
-    }
-    button.start {
-        font-family: "Raleway", serif !important;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        font-size: 1.5rem;
-        margin: 0px;
-        color: #ff7f50;
-        background: none;
-        border: none;
-        cursor: pointer;
     }
     button.upDown {
         font-family: "Raleway", serif !important;
@@ -53,43 +46,60 @@ const TimerContainer = styled.div`
         -moz-osx-font-smoothing: grayscale;
         font-size: 1rem;
         margin: 0px;
-        color: #ffb07e;
+        color: rgb(160, 160, 160);
         background: none;
         border: none;
-        cursor: pointer;
+    }
+    button.start:hover {
+        background-color: rgb(160, 160, 160);
+        color: white;
     }
     button.upDown:hover {
-        color: #c74949;
-        cursor: pointer;
+        color: orange;
     }
 
     button.playPause:hover {
-        color: #e61313;
+        color: red;
     }
 
     button:active {
-  /* box-shadow: 0 5px rgb(24, 14, 31); */
         transform: translateY(2px);
     }`
     ;
 
 const Timer = () => {
+    const curProjectId = window.location.href.split("/").reverse()[0]
+    const socket = io.connect(`${process.env.REACT_APP_API_URL}`)
+    const roomName = `${curProjectId}`
     const [time, setTime] = useState(0);
     const [timerOn, setTimeOn] = useState(false);
     const [settings, setSettings] = useState(false);
 
-    const increaseTime = () => {
-        setTime(time + 300);
-    };
-
-    const decreaseTime = () => {
-        setTime(time - 300);
-    };
-
-    const reset = () => {
+    const increaseTime = () => socket.emit("increaseTime", time, roomName); 
+    const decreaseTime = () => socket.emit("decreaseTime", time, roomName);
+    const clickTimer = () => socket.emit("clickTimer", true, roomName)
+    const startTimer = () => socket.emit("startTimer", true, roomName)
+    const pauseTimer = () => socket.emit("pauseTimer", false, roomName)
+    const resetTimer = () => {
         setTime(0);
-        setSettings(false);
+        socket.emit("resetTimer", false, roomName);
     };
+
+    useEffect(() => {
+        socket.emit("enterRoom", roomName);
+    }, []);
+    
+    useEffect(() => {
+        socket.on("clickTimer", (data) => {setSettings(data)})
+        socket.on("increaseTime", (data) => {setTime(data + 300);})
+        socket.on("decreaseTime", (data) => {setTime(data - 300);})
+        socket.on("startTimer", (data) => {setTimeOn(data)})
+        socket.on("pauseTimer", (data) => {setTimeOn(data)})
+        socket.on("resetTimer", (data) => {
+            setSettings(data);
+            setTime(0);
+        })
+    }, [])
 
     useEffect(() => {
         let interval = null;
@@ -109,7 +119,7 @@ const Timer = () => {
     if (timerOn) {
         if (time <= 0) {
             setTimeOn(false);
-            reset();
+            resetTimer();
         }
     }
 
@@ -125,7 +135,7 @@ const Timer = () => {
 
                 <div>
                     {!settings && (
-                        <button className='start' onClick={() => setSettings(true)}><i class="fa-solid fa-clock"></i></button>
+                        <button className='start' onClick={() => clickTimer()}><i class="fa-solid fa-clock"></i></button>
                     )}
                 </div>
 
@@ -139,9 +149,9 @@ const Timer = () => {
                 </div>
 
                 <div>
-                    {!timerOn && settings && time >= 5 && <button className='playPause' onClick={() => setTimeOn(true)}><i className="fa-solid fa-play"></i></button>}
-                    {timerOn && <button className='playPause' onClick={() => setTimeOn(false)}><i className="fa-solid fa-pause"></i></button>}
-                    {!timerOn && time > 0 && <button className='playPause' onClick={() => reset()}><i className="fa-solid fa-circle-stop"></i></button>}
+                    {!timerOn && settings && time >= 5 && <button className='playPause' onClick={() => startTimer()}><i className="fa-solid fa-play"></i></button>}
+                    {timerOn && <button className='playPause' onClick={() => pauseTimer()}><i className="fa-solid fa-pause"></i></button>}
+                    {!timerOn && time > 0 && <button className='playPause' onClick={() => resetTimer()}><i className="fa-solid fa-circle-stop"></i></button>}
                 </div>
             </div>
         </TimerContainer>
