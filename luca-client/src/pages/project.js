@@ -13,10 +13,11 @@ const socket = io.connect(`${process.env.REACT_APP_API_URL}`)
 
 export default function Project() {
   const curProjectId = window.location.href.split("/").reverse()[0]
-  // window.location.href(`http://${process.env.REACT_APP_API_URL}/project/${curProjectId}`);
   // const navigate = useNavigate();
   // navigate(`http://${process.env.REACT_APP_API_URL}/project/${curProjectId}`);
   const dispatch = useDispatch();
+
+  const [dragItemId, setDragItemId] = useState(null);
 
   const roomName = `${curProjectId}`
   const userId = useSelector((state) => state.user.userInfo.id);
@@ -38,6 +39,7 @@ export default function Project() {
     socket.emit("initData", roomName);
 
     socket.on("initData", (cardInfo, mindmapInfo) => {
+      console.log('==a==')
       dispatch(setCardList(cardInfo));
       dispatch(setMindmapTree(mindmapInfo));
     })
@@ -71,7 +73,7 @@ export default function Project() {
   }
 
   const addMindmapHandler = (id) => {
-    socket.emit("addMindmap", {cardId: id, parentId: 575}, roomName);
+    socket.emit("addMindmap", {cardId: dragItemId, parentId: id}, roomName);
   }
 
   // 배열이 업데이트될 때마다 계속해서 추가로 리스너가 등록되는 것을 방지하기 위해 useEffect 사용)
@@ -101,38 +103,13 @@ export default function Project() {
       dispatch(setMindmapTree(mindmapInfo))
     });
   }, [])
-  // //const projects = useSelector((state) => state.user.projects);
-  // let dummyCardlist = [
-  //   { id: 0, content: "lorem ipsum" },
-  //   { id: 1, content: "dolor sit amet" },
-  //   { id: 2, content: "consectetur adipiscing elit" },
-  //   { id: 3, content: "sed do eiusmod tempor" },
-  //   { id: 4, content: "incididunt ut labore et dolore" },
-  //   { id: 5, content: "magna aliqua" },
-  //   { id: 6, content: "ut enim ad minim veniam" },
-  //   { id: 7, content: "quis nostrud exercitation ullamco" },
-  //   { id: 8, content: "laboris nisi ut aliquip ex ea commodo consequat" },
-  //   { id: 9, content: "duis aute irure dolor in reprehenderit" },
-  //   { id: 10, content: "excepteur sint" },
-  //   { id: 11, content: "occaecat cupidatat" },
-  //   { id: 12, content: "non proident" },
-  //   { id: 13, content: "sunt in culpa qui" },
-  //   { id: 14, content: "officia deserunt" },
-  //   { id: 15, content: "mollit anim id" },
-  //   { id: 16, content: "est laborum" },
-  // ];
 
   return (
     <div>
       {/* <Navigator /> */}
-      {/* <Timer />
-      <Canvas />
-      <Cardboard createCard={createCard} deleteCard={deleteCard} addMindmapHandler={addMindmapHandler}/>
-      <button onClick={() => { createCard() }}>create</button>
-      <button onClick={() => { deleteCard() }}>Delete</button>
-      <button onMouseDown={() => mouseDown()} onMouseUp={() => mouseUp()}>block</button> */}
-      <Canvas3 />
-      <Cardboard cardData={dummyCardlist} />
+      {/* <Timer /> */}
+      <Canvas3 addMindmapHandler={addMindmapHandler} />
+      <Cardboard createCard={createCard} deleteCard={deleteCard} addMindmapHandler={addMindmapHandler} setDragItemId={setDragItemId} mouseDown={mouseDown} mouseUp={mouseUp} />
     </div>
   );
 }

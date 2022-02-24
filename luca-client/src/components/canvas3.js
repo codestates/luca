@@ -3,6 +3,8 @@ import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { useState } from "react/cjs/react.development";
 import styled from "styled-components";
 import { radialNodes, radialLinkes } from "./d3coodinator/getDescendants";
+import { select, hierarchy, tree, linkRadial, cluster, selectAll } from "d3";
+import { useSelector } from "react-redux";
 
 const Container = styled.div`
   width: 99vw;
@@ -45,8 +47,8 @@ const Controller = styled.div`
 const Exbox = styled.div`
   position: fixed;
   padding: 1em;
-  background-color: ${(props) => (props.id === 0 ? "lightyellow" : "white")};
-  border-radius: ${(props) => (props.id === 0 ? "2em" : "0.2em")};
+  background-color: ${(props) => (props.parent === 0 ? "lightyellow" : "white")};
+  border-radius: ${(props) => (props.parent === 0 ? "2em" : "0.2em")};
   top: ${(props) => {
     return String(props.coordY) + "px";
   }};
@@ -55,8 +57,8 @@ const Exbox = styled.div`
   }};
   transform: translate(-50%, -50%);
   text-align: center;
-  font-size: ${(props) => (props.id === 0 ? "1.2em" : "1em")};
-  font-weight: ${(props) => (props.id === 0 ? "700" : "normal")};
+  font-size: ${(props) => (props.parent === 0 ? "1.2em" : "1em")};
+  font-weight: ${(props) => (props.parent === 0 ? "700" : "normal")};
   box-shadow: 0vh 0vh 1vh rgba(0, 0, 0, 0.3);
   color: rgb(50, 50, 50);
 `;
@@ -65,14 +67,48 @@ console.log("radialNodes: ", radialNodes);
 console.log("radialLinkes: ", radialLinkes);
 //console.log("links: ", links);
 
-export default function Canvas3() {
-  let projectIdRef = window.location.href.split("/").reverse()[0]; // projectIdRef === '12'(string)
-  // Route flow 는 App > /project 이고, Link flow 는 App > Main > Projectcard > /project 로 서로 달라서
-  // Projectcard 에서 선택한 projectId 를 <Project> 컴포넌트에 전달하기가 어렵습니다.
-  // 1. (전체 라우팅 구조와 엔드포인트를 바꾸거나 (ex. /main/project/12) ) / 2. 선택한 프로젝트의 id 를 react-redux state 로 관리해 넘겨주는 방법.
-  // 1 은 시간 리스크가 너무 크고, 2 는 비동기 처리를 위해 리팩토링 규모가 너무 커집니다.
-  // 따라서 라우팅 된 endpoint로 들어와서, endpoint에서 porjectIdRef 를 추출해 axios 요청을 보내는 방식으로 작성했습니다.
-  // console.log("ProjectID Cardboard: ", porjectIdRef);
+export default function Canvas3({ addMindmapHandler }) {
+let projectIdRef = window.location.href.split("/").reverse()[0]; // projectIdRef === '12'(string)
+
+const rawData = useSelector((state) => state.user.mindmapTree);
+
+const root = hierarchy(rawData);
+const treeLayout = cluster()
+  .size([360, window.innerHeight * 0.4])
+  .separation((a, b) => (a.parent === b.parent ? 1 : 1) / a.depth);
+treeLayout(root);
+
+let nodes = root.descendants();
+
+let radialNodes = nodes.map((node) => {
+  let angle = ((node.x - 90) / 180) * Math.PI;
+  let radius = node.y;
+  return {
+    ...node,
+    x: radius * Math.cos(angle) + window.innerWidth / 2 - 100,
+    y: radius * Math.sin(angle) + window.innerHeight / 2,
+  };
+});
+
+let links = root.links();
+
+function transformer(x, y) {
+  let angle = ((x - 90) / 180) * Math.PI;
+  let radius = y;
+  return {
+    x: radius * Math.cos(angle) + window.innerWidth / 2 - 100,
+    y: radius * Math.sin(angle) + window.innerHeight / 2,
+  };
+}
+
+let radialLinkes = links.map((path) => {
+  return {
+    source: transformer(path.source.x, path.source.y),
+    target: transformer(path.target.x, path.target.y),
+  };
+});
+
+  
 
   const [disabled, setDisabled] = useState(false);
   // 화면이 pan 되지 않으면서 마인드맵의 노드를 drag하기 위해 필요합니다.
@@ -86,6 +122,7 @@ export default function Canvas3() {
     e.preventDefault();
     e.stopPropagation();
     // console.log("dropped on node", e.target.id);
+    addMindmapHandler(e.target.id);
     console.log("dropped on node! node id: ", e.target.id);
     // 노드에 드롭 시 노드 id를 가져왔습니다. 이제 mindmap 데이터에서 노드 id를 찾아 자식노드로 추가해줘야합니다.
   };
@@ -124,7 +161,8 @@ export default function Canvas3() {
             <Container>
               {radialNodes.map((node, i) => (
                 <Exbox
-                  key={i}
+                  key={node.data.id}
+                  parent={node.data.parent}
                   id={node.data.id}
                   coordY={node.y}
                   coordX={node.x}
@@ -137,7 +175,7 @@ export default function Canvas3() {
                   // onDragOver -> onDrop
                   onDrop={dropHandler}
                 >
-                  {node.data.name}
+                  {node.data.content}
                 </Exbox>
               ))}
               <svg width={"100vw"} height={"100vh"}>
