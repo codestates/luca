@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react/cjs/react.development";
+import { useEffect, useRef } from "react";
 import { select, hierarchy, tree, linkRadial, cluster, selectAll } from "d3";
 
 const rawData = {
