@@ -17,6 +17,7 @@ const Maincomponent = styled.div`
   align-items: center;
   > div.startbox {
     background-color: gray;
+    border-radius: 0px 0px 20px 20px;
     width: 100%;
     height: 250px;
     display: flex;

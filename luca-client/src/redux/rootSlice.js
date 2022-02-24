@@ -38,7 +38,8 @@ export const rootSlice = createSlice({
             isSocial: "",
             createdAt: "",
             updatedAt: ""
-        }
+        },
+        cardData: null
     },
 
     reducers: {

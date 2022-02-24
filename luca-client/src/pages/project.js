@@ -8,9 +8,10 @@ import io from "socket.io-client";
 import { useSelector, useDispatch } from "react-redux";
 import { setCardList, setMindmapTree, setBlockData } from '../redux/rootSlice';
 import { useNavigate } from "react-router-dom";
+// import Timer from '../components/timer';
 
 export default function Project() {
-const socket = io.connect(`${process.env.REACT_APP_API_URL}`)
+  const socket = io.connect(`${process.env.REACT_APP_API_URL}`)
   const curProjectId = window.location.href.split("/").reverse()[0]
   // const navigate = useNavigate();
   // navigate(`http://${process.env.REACT_APP_API_URL}/project/${curProjectId}`);
