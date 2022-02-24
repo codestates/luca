@@ -8,8 +8,7 @@ import io from "socket.io-client";
 import { useSelector, useDispatch } from "react-redux";
 import { setCardList, setMindmapTree, setBlockData } from '../redux/rootSlice';
 import { useNavigate } from "react-router-dom";
-import Timer from '../components/timer';
-// const socket = io.connect(`${process.env.REACT_APP_API_URL}`)
+// import Timer from '../components/timer';
 
 export default function Project() {
   const socket = io.connect(`${process.env.REACT_APP_API_URL}`)
@@ -30,7 +29,6 @@ export default function Project() {
 
   // 처음 입장할 때만 소켓 연결해준다.
   useEffect(() => {
-    console.log(roomName)
     socket.emit("enterRoom", roomName);
     socket.on("enterRoom", (data, count) => {
       // console.log(`Number of participants: ${count}`);
@@ -40,7 +38,6 @@ export default function Project() {
     socket.emit("initData", roomName);
 
     socket.on("initData", (cardInfo, mindmapInfo) => {
-      console.log('==a==')
       dispatch(setCardList(cardInfo));
       dispatch(setMindmapTree(mindmapInfo));
     })
@@ -119,7 +116,6 @@ export default function Project() {
   return (
     <div>
       {/* <Navigator /> */}
-      <Timer />
       <Canvas3 addMindmapHandler={addMindmapHandler} />
       <Cardboard createCard={createCard} deleteCard={deleteCard} addMindmapHandler={addMindmapHandler} setDragItemId={setDragItemId} mouseDown={mouseDown} mouseUp={mouseUp} />
     </div>

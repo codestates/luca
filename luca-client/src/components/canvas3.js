@@ -1,10 +1,11 @@
 import { useEffect } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { useState } from "react/cjs/react.development";
+import { useState } from "react";
 import styled from "styled-components";
 import { radialNodes, radialLinkes } from "./d3coodinator/getDescendants";
 import { select, hierarchy, tree, linkRadial, cluster, selectAll } from "d3";
 import { useSelector } from "react-redux";
+import Timer from './timer';
 
 const Container = styled.div`
   width: 99vw;
@@ -41,6 +42,9 @@ const Controller = styled.div`
   > button:hover {
     background-color: rgb(160, 160, 160);
     color: white;
+  }
+  > button:active {
+    transform: translateY(2px);
   }
 `;
 
@@ -155,6 +159,7 @@ let radialLinkes = links.map((path) => {
             <button onClick={blockHandler}>
               <i className="fa-solid fa-border-none"></i>
             </button>
+            <Timer />
           </Controller>
 
           <TransformComponent>

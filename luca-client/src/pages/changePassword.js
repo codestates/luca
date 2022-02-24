@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from 'react-router-dom';
 import { Navigator, Backdrop } from "../components/commons";
+
 
 export default function ChangePassword() {
   const Container = styled.div`
@@ -56,6 +58,8 @@ export default function ChangePassword() {
             width: 310px;
             height: 30px;
             font-size: 20px;
+            border-radius: 10px;
+            border: solid 2px darkorange;
           }
           > div {
             margin-right: 20px;
@@ -91,19 +95,25 @@ export default function ChangePassword() {
         }
       }
       > buttons {
+        width: 100%;
+        display: flex;
+        justify-content: center;
         > div {
-          margin-right: 110px;
+          margin-right: 50px;
+          margin-left: 50px;
           width: 90px;
-          border: solid gray;
+          /* border: solid gray; */
           height: 30px;
           display: flex;
           align-items: center;
           justify-content: center;
           margin-bottom: 70px;
           border-radius: 20px;
+          box-shadow: 0vh 0.5vh 1vh 0.1vh rgba(0, 0, 0, 0.2);
         }
         > div:hover {
-          background-color: gray;
+          background-color: orange;
+          color: white;
         }
         > div:active {
           color: silver;
@@ -112,6 +122,7 @@ export default function ChangePassword() {
     }
   `;
 
+  const navigate = useNavigate();
   const curPwRef = useRef();
   const newPwRef = useRef();
   const newPwCheckRef = useRef();
@@ -145,6 +156,10 @@ export default function ChangePassword() {
       setNewPwCheckAlert("비밀번호가 일치하지 않습니다.");
     }
   };
+  const CancleHandler = () => {
+    // navigator("/mypage")
+    navigate("/mypage");
+  }
 
   return (
     <div>
@@ -190,12 +205,15 @@ export default function ChangePassword() {
                 ) : null}
               </confirm>
               <buttons>
-                <div>취소</div>
+                <div
+                  onClick={CancleHandler}
+                >취소</div>
                 <div
                   onClick={() => {
                     checkCurPw();
                     newPw();
                     checkNewPw();
+                    // navigate("/mypage");
                   }}
                 >
                   저장

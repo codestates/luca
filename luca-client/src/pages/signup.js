@@ -16,14 +16,12 @@ import {
 } from "../api";
 
 const SignupPage = styled.div`
-  /* border: solid; */
   margin-top: 10vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* justify-content: space-between; */
   height: 60vh;
-  /* background-color: seashell; */
+  width: 100%;
   > div,title {
     flex: 1 0 auto;
     margin-bottom: 1em;
@@ -33,23 +31,29 @@ const SignupPage = styled.div`
   }
 `;
 const Registrybox = styled.div`
-  width: 1080px;
-  /* width: 80%; */
+  width: 80%;
   height: 90%;
-  border: solid red;
+  border: solid gray;
+  border-radius: 30px;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  align-items: flex-end;
   > div {
     width: auto;
-    margin-right: 220px;
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+    > div.emailbox {
+      margin-left: 100px;
+    }
+    > div.oauthbox {
+      height: 90px;
+      display: flex;
+      align-items: center;
+    }
     > div {
       display: flex;
       flex-direction: row;
+      justify-content: center;
+      width: 100%;
       > div {
         margin-right: 20px;
         font-size: 1.2rem;
@@ -74,6 +78,7 @@ const Registrybox = styled.div`
         background-color: ${color.primaryLight};
         border-radius: ${radius};
         cursor: pointer;
+        margin-left: 10px;
       }
       > img {
         width: 60px;
@@ -83,12 +88,18 @@ const Registrybox = styled.div`
         align-items: center;
         cursor: pointer;
       }
+      > img:hover {
+        border: solid 3px orange;
+      }
+      > img:active {
+        border: solid 3px darkorange;
+      }
     }
     > button.submit {
         font-weight: bold;
         background-color: ${color.primaryLight};
         color: ${color.white};
-        margin-right: 240px;
+        /* margin-right: 240px; */
         width: 200px;
         height: 40px;
         display: flex;
@@ -130,6 +141,12 @@ const InvalidMessage = styled.p`
   font-size: 0.875rem;
   color: red;
 `;
+const OauthIcon = styled.div`
+  /* display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%; */
+`
 
 export default function Signup() {
   const dispatch = useDispatch();
@@ -271,7 +288,7 @@ export default function Signup() {
           <div className='title'>회원가입</div>
           <Registrybox>
             <div>
-              <div>
+              <div className="emailbox">
                 <InputForm
                   value={email}
                   placeholder='이메일'
@@ -366,11 +383,13 @@ export default function Signup() {
             </div>
 
             <div>
+              <div>
               <button className='submit' onClick={SignupHandler}>회원가입</button>
+              </div>
             </div>
 
             <div>
-              <div>
+              <div className="oauthbox">
                 <img src={kakaoIcon} alt='카카오 아이콘' onClick={requestKakaoLogin}></img>
                 <img src={googleIcon} alt='카카오 아이콘' onClick={requestGoogleLogin}></img>
                 <img src={naverIcon} alt='카카오 아이콘' onClick={requestNaverLogin}></img>
