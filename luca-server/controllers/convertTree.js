@@ -16,7 +16,6 @@ module.exports ={
     
         while (arrayList.length > 0) {
             arrayList.some(function (card, index) {
-                console.log(card, index)
                 if (card.parent === rootId) {
                     return rootNodes.push(arrayList.splice(index, 1)[0]);
                 }

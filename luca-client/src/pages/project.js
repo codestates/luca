@@ -75,6 +75,10 @@ export default function Project() {
     socket.emit("addMindmap", {cardId: dragItemId, parentId: id}, roomName);
   }
 
+  const deleteMindmapHandler = (id) => {
+    socket.emit("deleteMindmap", { cardId: id }, roomName);
+  }
+
   // 배열이 업데이트될 때마다 계속해서 추가로 리스너가 등록되는 것을 방지하기 위해 useEffect 사용)
   useEffect(() => {
     socket.on("createCard", (data) => {
@@ -99,6 +103,11 @@ export default function Project() {
     });
 
     socket.on("addMindmap", (cardInfo, mindmapInfo) => {
+      dispatch(setCardList(cardInfo))
+      dispatch(setMindmapTree(mindmapInfo))
+    });
+
+    socket.on("deleteMindmap", (cardInfo, mindmapInfo) => {
       dispatch(setCardList(cardInfo))
       dispatch(setMindmapTree(mindmapInfo))
     });

@@ -45,6 +45,7 @@ const Controller = styled.div`
   }
   > button:active {
     transform: translateY(2px);
+  }
 `;
 
 const Exbox = styled.div`

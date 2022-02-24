@@ -7,5 +7,6 @@ export DATABASE_USER=$(aws ssm get-parameters --region ap-northeast-2 --names DA
 export DATABASE_PASSWORD=$(aws ssm get-parameters --region ap-northeast-2 --names DATABASE_PASSWORD --query Parameters[0].Value | sed 's/"//g')
 export DATABASE_PORT=$(aws ssm get-parameters --region ap-northeast-2 --names DATABASE_PORT --query Parameters[0].Value | sed 's/"//g')
 export SERVER_PORT=$(aws ssm get-parameters --region ap-northeast-2 --names SERVER_PORT --query Parameters[0].Value | sed 's/"//g')
+export SERVER_DOMAIN==$(aws ssm get-parameters --region ap-northeast-2 --names SERVER_DOMAIN --query Parameters[0].Value | sed 's/"//g')
 
 authbind --deep pm2 start server.js
