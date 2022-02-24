@@ -1,4 +1,5 @@
 const { cards } = require("../models");
+const { treeModel } = require("./convertTree");
 
 module.exports = {
     add: async (data) => {
@@ -21,7 +22,6 @@ module.exports = {
             },
             raw: true
         })
-        console.log(result)
         await cards.update(
             {
                 parent: null,
@@ -41,7 +41,8 @@ module.exports = {
             },
             raw: true
         })
-        return result;
+        const mindmapTree = treeModel(result, 0);
+        return mindmapTree[0];
     }
 };
 

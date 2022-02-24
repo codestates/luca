@@ -1,6 +1,7 @@
-import { useState } from "react/cjs/react.development";
+import { useEffect, useState } from "react/cjs/react.development";
 import styled from "styled-components";
-
+import { useSelector } from "react-redux";
+import { setCardList } from "../redux/rootSlice";
 // 현재 <CardContainer>, <Opener>, <CardAdder> 에 각각 다른 animation이 적용되어 있습니다.
 // <CardContainer>는 width 를, <Opener>, <CardAdder> 는 right 값을 변화시키는 keyframes 입니다.
 // 1. 절대위치가 아닌, <CardContainer>에 flex 박스를 적용해 컴포넌트를 다시 구성하거나
@@ -198,8 +199,12 @@ const CardAdder = styled.div`
   }
 `;
 
-export default function Cardboard() {
-  let porjectIdRef = window.location.href.split("/").reverse()[0]; // porjectIdRef === '12'(string)
+export default function Cardboard({ createCard, deleteCard, addMindmapHandler }) {
+  const userInfo = useSelector((state) => state.user.userInfo);
+  const cardList = useSelector((state) => state.user.cardList);
+  const isblock = useSelector((state) => state.user.isblock);
+  let porjectIdRef = window.location.href.split("/").reverse()[0];
+  // porjectIdRef === '12'(string)
   // Route flow 는 App > /project 이고, Link flow 는 App > Main > Projectcard > /project 로 서로 달라서
   // Projectcard 에서 선택한 projectId 를 <Project> 컴포넌트에 전달하기가 어렵습니다.
   // 1. (전체 라우팅 구조와 엔드포인트를 바꾸거나 (ex. /main/project/12) ) / 2. 선택한 프로젝트의 id 를 react-redux state 로 관리해 넘겨주는 방법.
@@ -215,6 +220,7 @@ export default function Cardboard() {
   };
 
   const adderOpenHandler = () => {
+    createCard();
     setIsAdderOpen(!isAdderOpen);
   };
 
@@ -224,11 +230,16 @@ export default function Cardboard() {
   return (
     <div>
       <CardContainer isCardContOpen={isCardContOpen}>
-        <Card>1</Card>
-        <Card>2</Card>
-        <Card>3</Card>
-        <Card>4</Card>
-        <Card>5</Card>
+        {cardList.map((el) => {
+           return (
+             <div>
+               <Card key={el.id}>{el.content}</Card>
+               {(el.userId === userInfo.id ? <button onClick={() => deleteCard(el.id)}>X</button> : null)}
+               <button onClick={() => addMindmapHandler(el.id)} >AM</button>
+               {(isblock ? <button >B</button> : null)}
+             </div>
+           )
+        })}
         {/* <Card>상위 4개 limit로 .map</Card> */}
         <CardAdder
           isCardContOpen={isCardContOpen}

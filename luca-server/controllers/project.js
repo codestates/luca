@@ -34,12 +34,20 @@ module.exports = {
     },
 
     post: async (req, res) => {
-        const { userId, title, desc, isTeam, memberUserId } = req.body;
+        const { userId, title, desc, isTeam, memberUserId, keyword } = req.body;
         if (!userId || !title || !desc || isTeam === undefined || !memberUserId || memberUserId.length === 0) {
             return res.status(422).json({ message: "Insufficient parameters supplied" });
         }
         try {
             const result = await projects.create({ admin: userId, title, desc, isTeam });
+            await cards.create(
+                {
+                    userId: userId,
+                    projectId: result.id,
+                    content: keyword,
+                    parent: 0,
+                    storage: "mindmap"
+                });
             await memberUserId.map(function (el) {
                 if (el === Number(userId)) {
                     users_projects.create({
