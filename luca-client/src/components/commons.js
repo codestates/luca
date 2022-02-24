@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 const NavigatorContainer = styled.div`
   z-index: 999;
-  position: fixed;
+  /* position: fixed; */
   top: 0;
   width: 100vw;
   min-height: 10vh;

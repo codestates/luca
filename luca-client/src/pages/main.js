@@ -108,7 +108,7 @@ export function Main() {
     let projectsClone = projects;
 
     if (e === "update") {
-      projectsClone = projects.slice().sort((b, a) => {
+      projectsClone = projects.slice().sort((a, b) => {
         return parseInt(a.updatedAt.split("-").join("")) <
           parseInt(b.updatedAt.split("-").join(""))
           ? -1
@@ -118,10 +118,10 @@ export function Main() {
             : 0;
       });
       dispatch(setProjectList(projectsClone));
-      console.log("sortHandler projectClone");
-      console.log(projectsClone);
+      // console.log("sortHandler projectClone");
+      // console.log(projectsClone);
     } else if (e === "create") {
-      projectsClone = projects.slice().sort((b, a) => {
+      projectsClone = projects.slice().sort((a, b) => {
         return parseInt(a.createdAt.split("-").join("")) <
           parseInt(b.createdAt.split("-").join(""))
           ? -1
@@ -130,8 +130,8 @@ export function Main() {
             ? 1
             : 0;
       });
-      console.log("sortHandler projectClone");
-      console.log(projectsClone);
+      // console.log("sortHandler projectClone");
+      // console.log(projectsClone);
       dispatch(setProjectList(projectsClone));
     }
     setSortModal(!sortModal);

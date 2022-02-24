@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-import { setProjectList, updateProjectList } from "../redux/rootSlice";
+import { setProjectList, updateProjectList, setProjectId } from "../redux/rootSlice";
 import { Link } from "react-router-dom";
 
 const ProjectcardBody = styled.div`
@@ -111,23 +111,32 @@ function Projectcard({ projectInfo, index }) {
   // const [cardData, setCardData] = useState({...projects[index]});
 
   const editProjectHandler = (title, desc) => {
-    if(title.value || desc.value) {
-      dispatch(updateProjectList({index: index, inputData: [title.value, desc.value]}));
-      axios.patch(`${process.env.REACT_APP_API_URL}/project`, {
-        projectId: projectInfo.id,
-        title: title.value,
-        desc: desc.value,
-      },
-      {
-        "Content-Type": "application/json",
-        withCredentials: true
-      })
-      .then((res) => {
-        console.log(res)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
+    if (title.value || desc.value) {
+      dispatch(
+        updateProjectList({
+          index: index,
+          inputData: [title.value, desc.value],
+        })
+      );
+      axios
+        .patch(
+          `${process.env.REACT_APP_API_URL}/project`,
+          {
+            projectId: projectInfo.id,
+            title: title.value,
+            desc: desc.value,
+          },
+          {
+            "Content-Type": "application/json",
+            withCredentials: true,
+          }
+        )
+        .then((res) => {
+          // console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   };
 
@@ -135,7 +144,7 @@ function Projectcard({ projectInfo, index }) {
     axios
       .delete(`${process.env.REACT_APP_API_URL}/project/${projectInfo.id}`)
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         window.location.reload(); // 임시로 새로고침 합니다.
       })
       .catch((err) => {
@@ -153,7 +162,7 @@ function Projectcard({ projectInfo, index }) {
           isAccept: true,
         })
         .then((res) => {
-          console.log(res);
+          // console.log(res);
         })
         .catch((err) => {
           console.log(err);
@@ -166,7 +175,7 @@ function Projectcard({ projectInfo, index }) {
           isAccept: false,
         })
         .then((res) => {
-          console.log(res);
+          // console.log(res);
         })
         .catch((err) => {
           console.log(err);
@@ -176,7 +185,7 @@ function Projectcard({ projectInfo, index }) {
 
   return (
     <ProjectcardBody>
-      {console.log(userInfo)}
+      {/* {console.log(userInfo)} */}
       <div className="projectcardhead">
         <Link to={`/project/${projectInfo.id}`}>
           <div className="projectname">
