@@ -118,7 +118,7 @@ export default function Project() {
   return (
     <div>
       {/* <Navigator /> */}
-      <Timer />
+      {/* <Timer /> */}
       <Canvas3 addMindmapHandler={addMindmapHandler} />
       <Cardboard
         createCard={createCard}

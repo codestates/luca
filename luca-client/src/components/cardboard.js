@@ -183,7 +183,13 @@ const CardAdder = styled.div`
   }
 `;
 
-export default function Cardboard({ createCard, deleteCard, setDragItemId, mouseUp, mouseDown }) {
+export default function Cardboard({
+  createCard,
+  deleteCard,
+  setDragItemId,
+  mouseUp,
+  mouseDown,
+}) {
   // let projectIdRef = window.location.href.split("/").reverse()[0];
   const cardList = useSelector((state) => state.user.cardList);
   const userInfo = useSelector((state) => state.user.userInfo);
@@ -197,10 +203,10 @@ export default function Cardboard({ createCard, deleteCard, setDragItemId, mouse
   };
 
   const adderOpenHandler = () => {
-    console.log(cardList)
+    console.log(cardList);
     setIsAdderOpen(!isAdderOpen);
-    if (isAdderOpen){
-      createCard()
+    if (isAdderOpen) {
+      createCard();
     }
   };
 
@@ -219,7 +225,7 @@ export default function Cardboard({ createCard, deleteCard, setDragItemId, mouse
     <div>
       <CardContainer isCardContOpen={isCardContOpen}>
         {cardList.map((card, i) => {
-          return ( blockData.isBlock && card.id === blockData.cardId ? (
+          return blockData.isBlock && card.id === blockData.cardId ? (
             <div>
               <Card
                 key={card.id}
@@ -230,9 +236,12 @@ export default function Cardboard({ createCard, deleteCard, setDragItemId, mouse
               >
                 {card.content}
               </Card>
-              {(card.userId === userInfo.id ? <button onClick={() => deleteCard(card.id)}>X</button> : null)}
+              {card.userId === userInfo.id ? (
+                <button onClick={() => deleteCard(card.id)}>X</button>
+              ) : null}
               <button>Block</button>
-            </div>) : (
+            </div>
+          ) : (
             <div>
               <Card
                 key={card.id}
@@ -243,11 +252,11 @@ export default function Cardboard({ createCard, deleteCard, setDragItemId, mouse
               >
                 {card.content}
               </Card>
-              {(card.userId === userInfo.id ? <button onClick={() => deleteCard(card.id)}>X</button> : null)}
-            </div>) )
-          
- 
-
+              {card.userId === userInfo.id ? (
+                <button onClick={() => deleteCard(card.id)}>X</button>
+              ) : null}
+            </div>
+          );
         })}
         {/* <Card>상위 4개 limit로 할 필요 없음 .map</Card> */}
         {/* websocket 으로 카드 데이터 받을때는 key={card.id} 로 매핑할 것 */}

@@ -44,6 +44,10 @@ const Controller = styled.div`
   }
 `;
 
+const ExCont = styled.div`
+  overflow: -moz-hidden-unscrollable;
+`;
+
 const Exbox = styled.div`
   position: fixed;
   padding: 1em;
@@ -71,7 +75,7 @@ export default function Canvas3({ addMindmapHandler }) {
 
   const root = hierarchy(rawData);
   const treeLayout = tree()
-    .size([360, window.innerHeight * 0.7])
+    .size([360, window.innerHeight * 0.3])
     .separation((a, b) => (a.parent === b.parent ? 1 : 1) / a.depth);
   treeLayout(root);
 
@@ -157,42 +161,61 @@ export default function Canvas3({ addMindmapHandler }) {
           </Controller>
 
           <TransformComponent>
-            <Container>
-              {radialNodes.map((node, i) => (
-                <Exbox
-                  key={i}
-                  parent={node.data.parent}
-                  id={node.data.id}
-                  coordY={node.y}
-                  coordX={node.x}
-                  //onClick={blockHandler}
-                  onDragOver={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log(`- dragover in node (id: ${e.target.id}) -`);
-                  }}
-                  // onDragOver -> onDrop
-                  onDrop={dropHandler}
-                >
-                  {node.data.content}
-                </Exbox>
-              ))}
-              <svg width={"100vw"} height={"100vh"}>
-                {radialLinkes.map((link, i) => {
-                  return (
-                    <line
-                      key={i}
-                      x1={link.source.x}
-                      y1={link.source.y}
-                      x2={link.target.x}
-                      y2={link.target.y}
-                      stroke="lightgrey"
-                      strokeWidth="2"
-                    />
-                  );
-                })}
-              </svg>
-            </Container>
+            <ExCont>
+              <img src="https://picsum.photos/300/300?random=1" />
+              <img src="https://picsum.photos/300/300?random=2" />
+              <img src="https://picsum.photos/300/300?random=3" />
+              <img src="https://picsum.photos/300/300?random=4" />
+              <img src="https://picsum.photos/300/300?random=5" />
+              <img src="https://picsum.photos/300/300?random=6" />
+              <img src="https://picsum.photos/300/300?random=7" />
+              <img src="https://picsum.photos/300/300?random=8" />
+              <img src="https://picsum.photos/300/300?random=1" />
+              <img src="https://picsum.photos/300/300?random=2" />
+              <img src="https://picsum.photos/300/300?random=3" />
+              <img src="https://picsum.photos/300/300?random=4" />
+              <img src="https://picsum.photos/300/300?random=5" />
+              <img src="https://picsum.photos/300/300?random=6" />
+              <img src="https://picsum.photos/300/300?random=7" />
+              <img src="https://picsum.photos/300/300?random=8" />
+              {/* 흰 배경 컴포넌트(scaleable)를 깔고 그 위에 mindmap 렌더하도록 canvas 수정 */}
+            </ExCont>
+            {/* <Container> */}
+            {/* {radialNodes.map((node, i) => (
+              <Exbox
+                key={i}
+                parent={node.data.parent}
+                id={node.data.id}
+                coordY={node.y}
+                coordX={node.x}
+                //onClick={blockHandler}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log(`- dragover in node (id: ${e.target.id}) -`);
+                }}
+                // onDragOver -> onDrop
+                onDrop={dropHandler}
+              >
+                {node.data.content}
+              </Exbox>
+            ))}
+            <svg width={"100vw"} height={"100vh"}>
+              {radialLinkes.map((link, i) => {
+                return (
+                  <line
+                    key={i}
+                    x1={link.source.x}
+                    y1={link.source.y}
+                    x2={link.target.x}
+                    y2={link.target.y}
+                    stroke="lightgrey"
+                    strokeWidth="2"
+                  />
+                );
+              })}
+            </svg> */}
+            {/* </Container> */}
           </TransformComponent>
         </>
       )}
