@@ -61,8 +61,8 @@ module.exports = {
                         // domain: process.env.SERVER_DOMAIN,
                         path: '/',
                         maxAge: 24 * 6 * 60 * 10000,
-                        sameSite: 'none',
-                        // httpOnly: true,
+                        httpOnly: true,
+                        // sameSite: 'none',
                         // secure: true,
                       }).status(200).json({ mssage: 'Delete profile success' });
                 }
