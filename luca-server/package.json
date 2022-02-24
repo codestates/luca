@@ -26,10 +26,14 @@
     "qs": "^6.10.3",
     "sequelize": "^6.3.5",
     "session": "^0.1.0",
-    "socket.io": "^4.4.1"
+    "socket.io": "^4.4.1",
+    "typesafe-actions": "^5.1.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.15",
     "sequelize-cli": "^6.2.0"
+  },
+  "optionalDependencies": {
+    "fsevents": "*"
   }
 }
