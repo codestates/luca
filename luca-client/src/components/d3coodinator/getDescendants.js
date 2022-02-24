@@ -1,60 +1,34 @@
 import { useEffect, useRef } from "react/cjs/react.development";
-// import { select, hierarchy, tree, linkVertical } from "d3";
-import styled from "styled-components";
-import * as d3 from "d3";
+import { select, hierarchy, tree, linkRadial, cluster, selectAll } from "d3";
 
-const data = {
-  id: "4",
+const rawData = {
+  id: 0,
   name: "Ymir",
   children: [
     {
-      id: "4",
+      id: 1,
       name: "Eren",
-      children: [{ name: "Armin" }, { name: "Erwin" }],
-    },
-    { name: "Mikasa" },
-    {
-      name: "Levi",
       children: [
-        { name: "Falco" },
-        { name: "Ani" },
+        { id: 4, name: "Armin" },
+        { id: 5, name: "Erwin" },
+        { id: 6, name: "Annie" },
+      ],
+    },
+    { id: 2, name: "Mikasa" },
+    {
+      id: 3,
+      name: "Reiner",
+      children: [
+        { id: 7, name: "Historia" },
+        { id: 8, name: "Bertoldt" },
         {
+          id: 9,
+          name: "Sasha",
           children: [
-            { name: "Armin" },
-            { name: "Erwin" },
-            { name: "Armin" },
-            { name: "Erwin" },
-            { name: "Armin" },
-            { name: "Erwin" },
-            {
-              children: [
-                { name: "Armin" },
-                { name: "Erwin" },
-                { name: "Bertoldt" },
-                { name: "Historia" },
-                { name: "Armin" },
-                {
-                  children: [
-                    { name: "Armin" },
-                    { name: "Erwin" },
-                    { name: "Bertoldt" },
-                    { name: "Historia" },
-                    { name: "Armin" },
-                    {
-                      children: [
-                        { name: "Armin" },
-                        { name: "Erwin" },
-                        { name: "Bertoldt" },
-                        { name: "Historia" },
-                        { name: "Armin" }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
+            { id: 10, name: "Zeke" },
+            { id: 11, name: "Grisha" },
+          ],
+        },
       ],
     },
     {
@@ -70,24 +44,55 @@ const data = {
 // (mapConRef.current.offsetWidth) 를 기준 dimensions로
 // descendants 와 links 를 리턴하는 함수형태로 리팩토링할 것
 
-const dimensions = [600, 600];
+// const dimensions = [window.innerWidth * 0.8, window.innerHeight * 0.8];
+const dimensions = [window.innerWidth * 0.4, window.innerHeight * 0.4];
+// d3 좌표가 펼쳐질 공간의 너비와 높이입니다.
 
-const rawData = d3.hierarchy(data);
+const root = hierarchy(rawData);
+// 트리구조 자료를 받아 Node로 변환합니다
 
-const treeLayout = d3.cluster()
-    .size([2 * Math.PI, 200])
-    .separation((a, b) => (a.parent == b.parent ? 1 : 2) / a.depth)
+const treeLayout = cluster()
+  // cluster() -> Dendogram / tree() -> Depth diagram
+  .size([360, window.innerHeight * 0.4])
+  //.size(dimensions)
+  .separation((a, b) => (a.parent === b.parent ? 1 : 1) / a.depth);
+//.size([2 * Math.PI, (window.innerHeight * 0.8) / 2])
 
-const root = treeLayout(rawData);
+treeLayout(root);
+//console.log("treeLayout: ", treeLayout(root));
 
-// 모든 노드 배열
 let nodes = root.descendants();
 
-// 모든 링크 배열
+let radialNodes = nodes.map((node) => {
+  let angle = ((node.x - 90) / 180) * Math.PI;
+  let radius = node.y;
+  return {
+    ...node,
+    x: radius * Math.cos(angle) + window.innerWidth / 2 - 100,
+    y: radius * Math.sin(angle) + window.innerHeight / 2,
+  };
+});
+
 let links = root.links();
 
-// 링크가 렌더된 컴포넌트
-// const LinkagesContainer = styled.div
+function transformer(x, y) {
+  let angle = ((x - 90) / 180) * Math.PI;
+  let radius = y;
+  return {
+    x: radius * Math.cos(angle) + window.innerWidth / 2 - 100,
+    y: radius * Math.sin(angle) + window.innerHeight / 2,
+  };
+}
 
+let radialLinkes = links.map((path) => {
+  return {
+    source: transformer(path.source.x, path.source.y),
+    target: transformer(path.target.x, path.target.y),
+  };
+});
 
-export { root, nodes, links };
+//console.log("nodes: ", nodes);
+//console.log("links: ", links);
+//console.log("transformed: ", radialTransformed);
+
+export { root, nodes, radialNodes, radialLinkes, links, rawData };
