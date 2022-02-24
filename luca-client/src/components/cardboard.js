@@ -187,7 +187,7 @@ export default function Cardboard({ createCard, deleteCard, setDragItemId, mouse
   // let projectIdRef = window.location.href.split("/").reverse()[0];
   const cardList = useSelector((state) => state.user.cardList);
   const userInfo = useSelector((state) => state.user.userInfo);
-  const isBlock = useSelector((state) => state.user.isblock);
+  const blockData = useSelector((state) => state.user.blockData);
 
   const [isCardContOpen, setIsCardContOpen] = useState(null); // default animation state
   const [isAdderOpen, setIsAdderOpen] = useState(null); // default animation state
@@ -204,11 +204,11 @@ export default function Cardboard({ createCard, deleteCard, setDragItemId, mouse
 
   const cardDragStart = (e) => {
     setDragItemId(e.target.id);
-    mouseDown();
+    mouseDown(e.target.id);
     console.log("drag start! card id: ", e.target.id);
   };
   const cardDragEnd = (e) => {
-    mouseUp();
+    mouseUp(e.target.id);
     console.log("drag end! card id: ", e.target.id);
     // canvas 에 드롭 이벤트가 발생했다면, card data 에서 일치하는 card id 를 찾아 삭제해야합니다.
   };
@@ -217,7 +217,7 @@ export default function Cardboard({ createCard, deleteCard, setDragItemId, mouse
     <div>
       <CardContainer isCardContOpen={isCardContOpen}>
         {cardList.map((card, i) => {
-          return ( isBlock ? (
+          return ( blockData.isBlock && card.id === blockData.cardId ? (
             <div>
               <Card
                 key={card.id}
