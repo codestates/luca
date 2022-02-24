@@ -31,7 +31,8 @@ export const rootSlice = createSlice({
             isSocial: "",
             createdAt: "",
             updatedAt: ""
-        }
+        },
+        cardData: null
     },
 
     reducers: {
@@ -48,6 +49,9 @@ export const rootSlice = createSlice({
         updateProjectList: (state, action) => {
             state.projects[action.payload.index].title = action.payload.inputData[0];
             state.projects[action.payload.index].desc = action.payload.inputData[1];
+        },
+        setCardData: (state, action) => {
+            state.cardData = action.payload;
         }
     },
 
@@ -67,6 +71,12 @@ export const rootSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { setIsLogin, setUserInfo, setProjectList, updateProjectList } = rootSlice.actions
+export const { 
+    setIsLogin,
+    setUserInfo, 
+    setProjectList, 
+    updateProjectList,
+    setCardData
+} = rootSlice.actions
 
 export default rootSlice.reducer
