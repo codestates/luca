@@ -21,7 +21,7 @@ export const rootSlice = createSlice({
     name: 'user',
 
     initialState: {
-        isblock: false,
+        blockData: {},
         cardList: [],
         mindmapTree: {},
         projects: [],
@@ -90,8 +90,8 @@ export const rootSlice = createSlice({
         setMindmapTree: (state, action) => {
             state.mindmapTree = action.payload;
         },
-        setIsBlock: (state, action) => {
-            state.isblock = action.payload;
+        setBlockData: (state, action) => {
+            state.blockData = action.payload;
         },
     },
 
@@ -118,7 +118,7 @@ export const {
     updateProjectList,
     setCardList,
     setMindmapTree,
-    setIsBlock
+    setBlockData
 } = rootSlice.actions
 
 export default rootSlice.reducer

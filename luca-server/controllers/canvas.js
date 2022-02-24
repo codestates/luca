@@ -49,16 +49,16 @@ const socketCanvas = async (socket) => {
         socket.broadcast.to(roomName).emit("addMindmap", cardInfo, mindmapInfo);
     })
 
-    socket.on("editBlockStart", async (roomName) => {
+    socket.on("editBlockStart", async (data, roomName) => {
         socket.join(roomName);
-
-        socket.broadcast.to(roomName).emit("editBlockStart", {isBlock: true});
+        console.log(data)
+        socket.broadcast.to(roomName).emit("editBlockStart", data);
     })
 
-    socket.on("editBlockEnd", async (roomName) => {
+    socket.on("editBlockEnd", async (data, roomName) => {
         socket.join(roomName);
-
-        socket.broadcast.to(roomName).emit("editBlockEnd", {isBlock: false});
+        console.log(data)
+        socket.broadcast.to(roomName).emit("editBlockEnd", data);
     })
 }
 
