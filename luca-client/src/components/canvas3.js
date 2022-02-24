@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { useState } from "react/cjs/react.development";
 import styled from "styled-components";
-import { radialNodes, radialLinkes } from "./d3coodinator/getDescendants";
+//import { radialNodes, radialLinkes } from "./d3coodinator/getDescendants";
 import { select, hierarchy, tree, linkRadial, cluster, selectAll } from "d3";
 import { useSelector } from "react-redux";
 
@@ -47,7 +47,8 @@ const Controller = styled.div`
 const Exbox = styled.div`
   position: fixed;
   padding: 1em;
-  background-color: ${(props) => (props.parent === 0 ? "lightyellow" : "white")};
+  background-color: ${(props) =>
+    props.parent === 0 ? "lightyellow" : "white"};
   border-radius: ${(props) => (props.parent === 0 ? "2em" : "0.2em")};
   top: ${(props) => {
     return String(props.coordY) + "px";
@@ -63,52 +64,50 @@ const Exbox = styled.div`
   color: rgb(50, 50, 50);
 `;
 
-console.log("radialNodes: ", radialNodes);
-console.log("radialLinkes: ", radialLinkes);
-//console.log("links: ", links);
-
 export default function Canvas3({ addMindmapHandler }) {
-let projectIdRef = window.location.href.split("/").reverse()[0]; // projectIdRef === '12'(string)
+  let projectIdRef = window.location.href.split("/").reverse()[0]; // projectIdRef === '12'(string)
 
-const rawData = useSelector((state) => state.user.mindmapTree);
+  const rawData = useSelector((state) => state.user.mindmapTree);
 
-const root = hierarchy(rawData);
-const treeLayout = cluster()
-  .size([360, window.innerHeight * 0.4])
-  .separation((a, b) => (a.parent === b.parent ? 1 : 1) / a.depth);
-treeLayout(root);
+  const root = hierarchy(rawData);
+  const treeLayout = tree()
+    .size([360, window.innerHeight * 0.7])
+    .separation((a, b) => (a.parent === b.parent ? 1 : 1) / a.depth);
+  treeLayout(root);
 
-let nodes = root.descendants();
+  let nodes = root.descendants();
 
-let radialNodes = nodes.map((node) => {
-  let angle = ((node.x - 90) / 180) * Math.PI;
-  let radius = node.y;
-  return {
-    ...node,
-    x: radius * Math.cos(angle) + window.innerWidth / 2 - 100,
-    y: radius * Math.sin(angle) + window.innerHeight / 2,
-  };
-});
+  let radialNodes = nodes.map((node) => {
+    let angle = ((node.x - 90) / 180) * Math.PI;
+    let radius = node.y;
+    return {
+      ...node,
+      x: radius * Math.cos(angle) + window.innerWidth / 2 - 100,
+      y: radius * Math.sin(angle) + window.innerHeight / 2,
+    };
+  });
 
-let links = root.links();
+  let links = root.links();
 
-function transformer(x, y) {
-  let angle = ((x - 90) / 180) * Math.PI;
-  let radius = y;
-  return {
-    x: radius * Math.cos(angle) + window.innerWidth / 2 - 100,
-    y: radius * Math.sin(angle) + window.innerHeight / 2,
-  };
-}
+  function transformer(x, y) {
+    let angle = ((x - 90) / 180) * Math.PI;
+    let radius = y;
+    return {
+      x: radius * Math.cos(angle) + window.innerWidth / 2 - 100,
+      y: radius * Math.sin(angle) + window.innerHeight / 2,
+    };
+  }
 
-let radialLinkes = links.map((path) => {
-  return {
-    source: transformer(path.source.x, path.source.y),
-    target: transformer(path.target.x, path.target.y),
-  };
-});
+  let radialLinkes = links.map((path) => {
+    return {
+      source: transformer(path.source.x, path.source.y),
+      target: transformer(path.target.x, path.target.y),
+    };
+  });
 
-  
+  //console.log("radialNodes: ", radialNodes);
+  //console.log("radialLinkes: ", radialLinkes);
+  //console.log("links: ", links);
 
   const [disabled, setDisabled] = useState(false);
   // 화면이 pan 되지 않으면서 마인드맵의 노드를 drag하기 위해 필요합니다.
@@ -161,7 +160,7 @@ let radialLinkes = links.map((path) => {
             <Container>
               {radialNodes.map((node, i) => (
                 <Exbox
-                  key={node.data.id}
+                  key={i}
                   parent={node.data.parent}
                   id={node.data.id}
                   coordY={node.y}
