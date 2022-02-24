@@ -3,16 +3,16 @@ import io, { Socket } from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 
 export default function Project() {
-    const navigate = useNavigate();
-    const [socketIo, setSocketIO] = useState();
-    const roomName = window.location.pathname.substring(14);
-    const socket = io.connect(`${process.env.REACT_APP_API_URL}`)
-    const disconnectSocket = useCallback(() => {
-        socket.on("bye", () => {
-            console.log('bye')
-        })
-        socket.disconnect();
-    }, [socket]);
+  const navigate = useNavigate();
+  const [socketIo, setSocketIO] = useState();
+  const roomName = window.location.pathname.substring(14);
+  const socket = io.connect(`${process.env.REACT_APP_API_URL}`)
+  const disconnectSocket = useCallback(() => {
+    socket.on("bye", () => {
+      console.log('bye')
+    })
+    socket.disconnect();
+  }, [socket]);
 
   const goToBack = async () => {
     socketIo.disconnect();
@@ -22,8 +22,8 @@ export default function Project() {
   // 처음 입장할 때만 소켓 연결해준다.
   useEffect(() => {
     setSocketIO(socket);
-    socket.emit("Enter_Room", roomName);
-    socket.on("Enter_Room", (data, count) => {
+    socket.emit("enterRoom", roomName);
+    socket.on("enterRoom", (data, count) => {
       console.log(`Number of participants: ${count}`);
       console.log("SOCKETIO connect EVENT: ", data, " client connect");
     });

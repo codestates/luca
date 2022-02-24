@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from 'react-router-dom';
 // import { setIsLogin } from "../redux/slicer/loginSlice";
 // import { setUserInfo } from "../redux/slicer/userInfoSlice";
 import { setIsLogin, setUserInfo, setProjectList } from "../redux/rootSlice";
@@ -161,6 +162,7 @@ const ModalView = styled.div`
 
 export function LoginModal({ modalHandler }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const isLogin = useSelector((state) => state.user.isLogin);
 
   const [loginInfo, setLoginInfo] = useState({
@@ -188,6 +190,7 @@ export function LoginModal({ modalHandler }) {
           dispatch(setIsLogin(true));
           dispatch(setUserInfo(res.data.data));
           modalHandler(false);
+          navigate("/")
         }
       })
       .catch((err) => {
@@ -376,26 +379,22 @@ export function CreateProjectModal({ modalHandler }) {
             )}
           </div>
           <div className="query">
-            <div className="index">이름</div>
             {/* <input onChange={(e)=>{newProjectHandler(e, "name")}}/> */}
-            <input ref={nameRef} />
+            <input ref={nameRef} placeholder="이름" />
           </div>
           <div className="query">
-            <div className="index">설명</div>
             {/* <input onChange={(e)=>{newProjectHandler(e, "desc")}}/> */}
-            <input ref={descRef} />
+            <input ref={descRef} placeholder="설명" />
           </div>
           <div className="query">
-            <div className="index">키워드</div>
             {/* <input onChange={(e)=>{newProjectHandler(e, "desc")}}/> */}
-            <input ref={keywordRef} />
+            <input ref={keywordRef} placeholder="키워드" />
           </div>
           {isTeam ? (
             <div>
               <div className="query">
-                <div className="index">초대</div>
                 {/* <input onChange={(e)=>{newProjectHandler(e, "invite")}}/> */}
-                <input ref={inviteRef} />
+                <input ref={inviteRef} placeholder="초대" />
                 <button onClick={findMemberHandler}>추가</button>
               </div>
               <div>

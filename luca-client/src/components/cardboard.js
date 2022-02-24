@@ -198,8 +198,10 @@ export default function Cardboard({ createCard, deleteCard, setDragItemId, mouse
 
   const adderOpenHandler = () => {
     console.log(cardList)
-    createCard();
     setIsAdderOpen(!isAdderOpen);
+    if (isAdderOpen){
+      createCard()
+    }
   };
 
   const cardDragStart = (e) => {

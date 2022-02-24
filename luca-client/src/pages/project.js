@@ -8,10 +8,11 @@ import io from "socket.io-client";
 import { useSelector, useDispatch } from "react-redux";
 import { setCardList, setMindmapTree, setBlockData } from '../redux/rootSlice';
 import { useNavigate } from "react-router-dom";
-// import Timer from '../components/timer';
-const socket = io.connect(`${process.env.REACT_APP_API_URL}`)
+import Timer from '../components/timer';
+// const socket = io.connect(`${process.env.REACT_APP_API_URL}`)
 
 export default function Project() {
+const socket = io.connect(`${process.env.REACT_APP_API_URL}`)
   const curProjectId = window.location.href.split("/").reverse()[0]
   // const navigate = useNavigate();
   // navigate(`http://${process.env.REACT_APP_API_URL}/project/${curProjectId}`);
@@ -48,6 +49,7 @@ export default function Project() {
   useEffect(() => {
     return () => {
       disconnectSocket();
+      // window.location.reload();
     };
   }, []);
 
@@ -82,7 +84,6 @@ export default function Project() {
       dispatch(setCardList(data));
       console.log(data);
     });
-
     socket.on("deleteCard", (data) => {
       dispatch(setCardList(data));
       console.log(data);
@@ -109,7 +110,7 @@ export default function Project() {
   return (
     <div>
       {/* <Navigator /> */}
-      {/* <Timer /> */}
+      <Timer />
       <Canvas3 addMindmapHandler={addMindmapHandler} />
       <Cardboard createCard={createCard} deleteCard={deleteCard} addMindmapHandler={addMindmapHandler} setDragItemId={setDragItemId} mouseDown={mouseDown} mouseUp={mouseUp} />
     </div>
