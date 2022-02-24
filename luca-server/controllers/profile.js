@@ -58,10 +58,13 @@ module.exports = {
                     })
 
                     res.clearCookie('jwt', {
-                        httpOnly: true,
-                        secure: true,
-                        sameSite: 'None',
-                    }).status(200).json({ mssage: 'Delete profile success' });
+                        domain: process.env.Server_Domain,
+                        path: '/',
+                        maxAge: 24 * 6 * 60 * 10000,
+                        sameSite: 'none',
+                        // httpOnly: true,
+                        // secure: true,
+                      }).status(200).json({ mssage: 'Delete profile success' });
                 }
             }
         } catch (err) {

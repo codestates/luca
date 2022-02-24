@@ -11,7 +11,7 @@ module.exports = {
   sendAccessToken: (res, accessToken, statusCode, data) => {
     return res
       .cookie("jwt", accessToken, {
-        domain: "localhost",
+        domain: process.env.Server_Domain,
         path: '/',
         maxAge: 24 * 6 * 60 * 10000,
         sameSite: 'none',

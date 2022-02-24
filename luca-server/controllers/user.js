@@ -46,9 +46,12 @@ module.exports = {
       } else {
         // 쿠키 삭제를 통해 로그아웃을 구현한다.
         res.clearCookie("jwt", {
-          httpOnly: true,
-          secure: true,
-          sameSite: "none",
+          domain: process.env.Server_Domain,
+          path: '/',
+          maxAge: 24 * 6 * 60 * 10000,
+          sameSite: 'none',
+          // httpOnly: true,
+          // secure: true,
         });
         return res.status(200).send({ message: "Signout succeed" });
       }
