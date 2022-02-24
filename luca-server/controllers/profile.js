@@ -58,7 +58,7 @@ module.exports = {
                     })
 
                     res.clearCookie('jwt', {
-                        domain: process.env.Server_Domain,
+                        domain: process.env.SERVER_DOMAIN,
                         path: '/',
                         maxAge: 24 * 6 * 60 * 10000,
                         sameSite: 'none',

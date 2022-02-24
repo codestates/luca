@@ -46,7 +46,7 @@ module.exports = {
       } else {
         // 쿠키 삭제를 통해 로그아웃을 구현한다.
         res.clearCookie("jwt", {
-          domain: process.env.Server_Domain,
+          domain: process.env.SERVER_DOMAIN,
           path: '/',
           maxAge: 24 * 6 * 60 * 10000,
           sameSite: 'none',
