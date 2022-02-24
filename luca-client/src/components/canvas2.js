@@ -1,5 +1,3 @@
-import React from "react";
-
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import styled from "styled-components";
 
@@ -78,7 +76,7 @@ export default function Canvas2() {
       defaultPositionY={100}
     >
       {({ zoomIn, zoomOut, resetTransform, positionX, positionY, ...rest }) => (
-        <React.Fragment>
+        <>
           <Toolbox>
             <button onClick={zoomIn}>+</button>
             <button onClick={zoomOut}>-</button>
@@ -87,7 +85,7 @@ export default function Canvas2() {
           <TransformComponent>
             <Container>{renderBoxes()}</Container>
           </TransformComponent>
-        </React.Fragment>
+        </>
       )}
     </TransformWrapper>
   );
