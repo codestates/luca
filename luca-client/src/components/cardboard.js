@@ -1,6 +1,7 @@
-import { useState } from "react/cjs/react.development";
+import { useEffect, useState } from "react/cjs/react.development";
 import styled from "styled-components";
-
+import { useSelector } from "react-redux";
+import { setCardList } from "../redux/rootSlice";
 // 현재 <CardContainer>, <Opener>, <CardAdder> 에 각각 다른 animation이 적용되어 있습니다.
 // <CardContainer>는 width 를, <Opener>, <CardAdder> 는 right 값을 변화시키는 keyframes 입니다.
 // 1. 절대위치가 아닌, <CardContainer>에 flex 박스를 적용해 컴포넌트를 다시 구성하거나
@@ -182,14 +183,11 @@ const CardAdder = styled.div`
   }
 `;
 
-export default function Cardboard({ cardData }) {
-  let projectIdRef = window.location.href.split("/").reverse()[0]; // projectIdRef === '12'(string)
-  // Route flow 는 App > /project 이고, Link flow 는 App > Main > Projectcard > /project 로 서로 달라서
-  // Projectcard 에서 선택한 projectId 를 <Project> 컴포넌트에 전달하기가 어렵습니다.
-  // 1. (전체 라우팅 구조와 엔드포인트를 바꾸거나 (ex. /main/project/12) ) / 2. 선택한 프로젝트의 id 를 react-redux state 로 관리해 넘겨주는 방법.
-  // 1 은 시간 리스크가 너무 크고, 2 는 비동기 처리를 위해 리팩토링 규모가 너무 커집니다.
-  // 따라서 라우팅 된 endpoint로 들어와서, endpoint에서 porjectIdRef 를 추출해 axios 요청을 보내는 방식으로 작성했습니다.
-  // console.log("ProjectID Cardboard: ", porjectIdRef);
+export default function Cardboard({ createCard, deleteCard, setDragItemId, mouseUp, mouseDown }) {
+  // let projectIdRef = window.location.href.split("/").reverse()[0];
+  const cardList = useSelector((state) => state.user.cardList);
+  const userInfo = useSelector((state) => state.user.userInfo);
+  const isBlock = useSelector((state) => state.user.isblock);
 
   const [isCardContOpen, setIsCardContOpen] = useState(null); // default animation state
   const [isAdderOpen, setIsAdderOpen] = useState(null); // default animation state
@@ -199,13 +197,18 @@ export default function Cardboard({ cardData }) {
   };
 
   const adderOpenHandler = () => {
+    console.log(cardList)
+    createCard();
     setIsAdderOpen(!isAdderOpen);
   };
 
   const cardDragStart = (e) => {
+    setDragItemId(e.target.id);
+    mouseDown();
     console.log("drag start! card id: ", e.target.id);
   };
   const cardDragEnd = (e) => {
+    mouseUp();
     console.log("drag end! card id: ", e.target.id);
     // canvas 에 드롭 이벤트가 발생했다면, card data 에서 일치하는 card id 를 찾아 삭제해야합니다.
   };
@@ -213,17 +216,37 @@ export default function Cardboard({ cardData }) {
   return (
     <div>
       <CardContainer isCardContOpen={isCardContOpen}>
-        {cardData.map((card, i) => (
-          <Card
-            key={card.id}
-            id={card.id}
-            draggable
-            onDragStart={cardDragStart}
-            onDragEnd={cardDragEnd}
-          >
-            {card.content}
-          </Card>
-        ))}
+        {cardList.map((card, i) => {
+          return ( isBlock ? (
+            <div>
+              <Card
+                key={card.id}
+                id={card.id}
+                draggable
+                onDragStart={cardDragStart}
+                onDragEnd={cardDragEnd}
+              >
+                {card.content}
+              </Card>
+              {(card.userId === userInfo.id ? <button onClick={() => deleteCard(card.id)}>X</button> : null)}
+              <button>Block</button>
+            </div>) : (
+            <div>
+              <Card
+                key={card.id}
+                id={card.id}
+                draggable
+                onDragStart={cardDragStart}
+                onDragEnd={cardDragEnd}
+              >
+                {card.content}
+              </Card>
+              {(card.userId === userInfo.id ? <button onClick={() => deleteCard(card.id)}>X</button> : null)}
+            </div>) )
+          
+ 
+
+        })}
         {/* <Card>상위 4개 limit로 할 필요 없음 .map</Card> */}
         {/* websocket 으로 카드 데이터 받을때는 key={card.id} 로 매핑할 것 */}
         <CardAdder

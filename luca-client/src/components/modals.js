@@ -255,6 +255,7 @@ export function CreateProjectModal({ modalHandler }) {
   const nameRef = useRef();
   const descRef = useRef();
   const inviteRef = useRef();
+  const keywordRef = useRef();
   const dispatch = useDispatch();
   const userInfo = useSelector((state) => state.user.userInfo);
   console.log("isGuest: ", userInfo.isGuest);
@@ -305,7 +306,7 @@ export function CreateProjectModal({ modalHandler }) {
   };
 
   const createNewProject = () => {
-    if (nameRef.current.value === "" || descRef.current.value === "") {
+    if (nameRef.current.value === "" || descRef.current.value === "" || keywordRef.current.value === "") {
       alert("내용을 채워주세요");
     } else {
       axios
@@ -315,6 +316,7 @@ export function CreateProjectModal({ modalHandler }) {
             userId: userInfo.id,
             title: nameRef.current.value,
             desc: descRef.current.value,
+            keyword: keywordRef.current.value,
             isTeam: isTeam,
             memberUserId: [userInfo.id, ...memberId],
           },
@@ -382,6 +384,11 @@ export function CreateProjectModal({ modalHandler }) {
             <div className="index">설명</div>
             {/* <input onChange={(e)=>{newProjectHandler(e, "desc")}}/> */}
             <input ref={descRef} />
+          </div>
+          <div className="query">
+            <div className="index">키워드</div>
+            {/* <input onChange={(e)=>{newProjectHandler(e, "desc")}}/> */}
+            <input ref={keywordRef} />
           </div>
           {isTeam ? (
             <div>

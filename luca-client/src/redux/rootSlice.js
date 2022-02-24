@@ -21,6 +21,9 @@ export const rootSlice = createSlice({
     name: 'user',
 
     initialState: {
+        isblock: false,
+        cardList: [],
+        mindmapTree: {},
         projects: [],
         isLogin: false,
         userInfo: {
@@ -42,13 +45,21 @@ export const rootSlice = createSlice({
             state.userInfo = action.payload;
         },
         setProjectList: (state, action) => {
-            // console.log(action.payload)
             state.projects = action.payload;
         },
         updateProjectList: (state, action) => {
             state.projects[action.payload.index].title = action.payload.inputData[0];
             state.projects[action.payload.index].desc = action.payload.inputData[1];
-        }
+        },
+        setCardList: (state, action) => {
+            state.cardList = action.payload;
+        },
+        setMindmapTree: (state, action) => {
+            state.mindmapTree = action.payload;
+        },
+        setIsBlock: (state, action) => {
+            state.isblock = action.payload;
+        },
     },
 
     // extraRefucers: (builder) => {
@@ -67,6 +78,14 @@ export const rootSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { setIsLogin, setUserInfo, setProjectList, updateProjectList } = rootSlice.actions
+export const { 
+    setIsLogin,
+    setUserInfo,
+    setProjectList,
+    updateProjectList,
+    setCardList,
+    setMindmapTree,
+    setIsBlock
+} = rootSlice.actions
 
 export default rootSlice.reducer
