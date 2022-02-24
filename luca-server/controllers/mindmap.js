@@ -22,15 +22,35 @@ module.exports = {
             },
             raw: true
         })
-        await cards.update(
-            {
-                parent: null,
-                storage: 'card'
-            },{ where: {
-                    id: data.cardId
+
+        function findParent(id) {
+            for (let i = 0; i < result.length; i++) {
+                if (result[i].id === id) {
+                    cards.update(
+                        {
+                            parent: null,
+                            storage: 'card'
+                        },{ where: {
+                                id: result[i].id
+                            }
+                        }
+                    )
+                }
+                else if (result[i].parent === id) {
+                    cards.update(
+                        {
+                            parent: null,
+                            storage: 'card'
+                        },{ where: {
+                                id: result[i].id
+                            }
+                        }
+                    )
+                    findParent(result[i].id)
                 }
             }
-        )
+            return;
+        }
         return '';
     },
     get: async (projectId) => {
