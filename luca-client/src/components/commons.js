@@ -184,7 +184,7 @@ const Backdrop = styled.div`
   height: auto;
   display: flex;
   justify-content: center;
-  background-color: #efffde;
+  /* background-color: #efffde; */
 `;
 
 // const Container = styled.div`
@@ -205,7 +205,10 @@ const FooterContainer = styled.div`
 `;
 
 function Footer() {
-  return <FooterContainer>this is footer</FooterContainer>;
+  return (
+    <FooterContainer>
+    </FooterContainer>
+  )
 }
 
 export { Navigator, Backdrop, Footer };
