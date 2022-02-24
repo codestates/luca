@@ -86,8 +86,8 @@ const Registrybox = styled.div`
     }
     > button.submit {
         font-weight: bold;
-        background-color: ${color.primaryLight};;
-        color: ${color.white}
+        background-color: ${color.primaryLight};
+        color: ${color.white};
         margin-right: 240px;
         width: 200px;
         height: 40px;
