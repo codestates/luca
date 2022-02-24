@@ -14,9 +14,9 @@ module.exports = {
         domain: "localhost",
         path: '/',
         maxAge: 24 * 6 * 60 * 10000,
-        // sameSite: 'none',
+        sameSite: 'none',
         httpOnly: true,
-        // secure: true,
+        secure: true,
       })
       .status(statusCode)
       .json(data);
