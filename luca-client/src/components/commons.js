@@ -1,7 +1,11 @@
-// import { useState } from "react/cjs/react.development";
-import { useState } from "react";
+import { useState } from "react/cjs/react.development";
+import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import { LoginModal } from "./modals";
+import axios from "axios";
+import { setIsLogin, setUserInfo } from "../redux/rootSlice.js";
+import { useNavigate } from "react-router-dom";
 
 const NavigatorContainer = styled.div`
   z-index: 999;
@@ -13,10 +17,10 @@ const NavigatorContainer = styled.div`
   text-align: center;
   align-items: center;
   display: flex;
-  box-shadow: 0vh 0.5vh 1vh 0.1vh rgba(0, 0, 0, 0.3);
+  box-shadow: 0vh 0.5vh 1vh 0.1vh rgba(0, 0, 0, 0.1);
 
   > a.logo {
-    margin: 0 8vh;
+    margin: 0 10vh;
 
     > img {
       height: 2em;
@@ -30,129 +34,143 @@ const NavigatorContainer = styled.div`
     text-align: left;
     margin: 1em;
   }
-  > div.account {
-    width: 12em;
-    display: flex;
-    align-items: center;
-    margin-right: 8vh;
 
-    /* > div.guest {
-      flex: 1 0 auto;
-      background-color: ${(props) =>
-      props.impact ? "white" : "rgb(255, 127, 80)"};
-      color: ${(props) => (props.impact ? "black" : "white")};
-      border: solid black 1px;
-      margin: 0.5em;
-      padding: 0.6em;
-      border-radius: 2em;
+  > div.profile {
+    margin-right: 10vh;
+    padding: 2vh 0;
+    > img {
+      height: 6vh;
+      border-radius: 3vh;
       cursor: pointer;
-    } */
-    > div.profile {
-      flex: 1 0 auto;
-      height: 8vh;
-      border-radius: 4vh;
-      font-size: 1.2em;
+    }
+    > div.dropdown {
+      display: none;
+    }
+  }
+  > div.profile:hover {
+    > div.dropdown {
+      position: fixed;
+      top: 9.5vh;
+      right: 9vh;
+      border-radius: 1vh;
+      overflow: hidden;
+      background-color: white;
+      box-shadow: 0vh 0vh 1vh rgba(0, 0, 0, 0.1);
       display: flex;
-      align-items: center;
-      box-shadow: 0vh 0vh 2vh rgba(0, 0, 0, 0.2);
-
-      > img.profile-image-thumb {
-        height: 6vh;
-        border-radius: 3vh;
-        margin: 1vh;
-      }
-      > div.profile-username {
-        margin-left: 2vh;
+      flex-direction: column;
+      > div.username {
+        flex: 1 0 auto;
+        padding: 0.5em 0;
         font-weight: bold;
+        color: rgba(0, 0, 0, 0.7);
+      }
+      > a.dropdown-index {
+        flex: 1 0 auto;
+        width: 15vh;
+        padding: 0.7em;
+        text-align: left;
         cursor: pointer;
-      }
-      > div.profile-username:hover {
-        color: blue;
-      }
-      > div.profile-dropdown {
-        z-index: 999;
-        position: fixed;
-        top: 5vh;
-        width: 10em;
-        height: 8em;
-        border-radius: 4vh;
-        background-color: white;
-        box-shadow: 0vh 0vh 2vh rgba(0, 0, 0, 0.2);
         display: flex;
-        flex-direction: column;
-        > div.dropdown-index {
-          flex: 1 0 auto;
-          margin: 0.25em;
+        > i {
+          size: 1em;
+          margin-right: 0.8em;
+          color: rgba(0, 0, 0, 0.3);
         }
+        > div {
+          color: grey;
+        }
+      }
+      > a.dropdown-index:hover {
+        font-weight: bold;
+        background-color: rgba(0, 0, 0, 0.1);
       }
     }
   }
 `;
+
 const Guest = styled.a`
-  flex: 1 0 auto;
   background-color: ${(props) =>
     props.impact ? "rgb(255, 127, 80)" : "white"};
-  color: ${(props) => (props.impact ? "white" : "black")};
-  font-weight: bold;
-  margin: 0.5em;
-  padding: 0.6em;
+  color: ${(props) => (props.impact ? "white" : "rgba(0,0,0,0.7)")};
+  padding: 0.8em;
   border-radius: 2em;
   cursor: pointer;
 `;
 
-function Navigator({ isLogin }) {
-  const [dropdown, setDropdown] = useState(false);
-  // onClick이벤트 => onMouseOver 로 드롭다운 방법 변경, 구현 중
+function Navigator() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const isLogin = useSelector((state) => state.user.isLogin);
+  const userInfo = useSelector((state) => state.user.userInfo);
 
-  const dropdownHandler = () => {
-    setDropdown(!dropdown);
+  const [modal, setModal] = useState(false);
+
+  const modalHandler = (modalType) => {
+    setModal(modalType);
+  };
+
+  const logoutHandler = () => {
+    axios.get(`${process.env.REACT_APP_API_URL}/user/logout`, {
+      'Content-Type': 'application/json',
+      withCredentials: true
+    })
+      .then(() => {
+        dispatch(setIsLogin(false));
+        dispatch(setUserInfo({
+          id: "",
+          email: "",
+          name: "",
+          isGuest: "",
+          isSocial: "",
+          createdAt: "",
+          updatedAt: ""
+        }));
+        navigate("/")
+      });
   };
 
   return (
     <NavigatorContainer>
-      <a className="logo" href="/">
+      {modal === "login" ? <LoginModal modalHandler={modalHandler} /> : null}
+      <Link to="/" className="logo">
         <img src="Luca_logo.png" />
-      </a>
+      </Link>
       <div className="about">
-        <a href="/">about</a>
+        <Link to="/">about</Link>
       </div>
-      <div className="account">
-        {!isLogin ? (
-          <div className="profile">
-            {!dropdown ? (
-              <>
-                <img
-                  className="profile-image-thumb"
-                  src="https://picsum.photos/300/300?random=1"
-                />
-                <div className="profile-username" onMouseOver={dropdownHandler}>
-                  Username
-                </div>
-              </>
-            ) : (
-              <div className="profile-dropdown">
-                <div className="dropdown-index" onClick={dropdownHandler}>
-                  Username
-                </div>
-                <div className="dropdown-index">
-                  <a href="/mypage">Mypage</a>
-                </div>
-                <div className="dropdown-index">Setting</div>
-                <div className="dropdown-index">Logout</div>
-              </div>
-            )}
+      {isLogin ? (
+        <div className="profile">
+          <img
+            className="profile"
+            src="https://picsum.photos/300/300?random=1"
+          />
+          <div className="dropdown">
+            <div className="username">{userInfo.name}</div>
+            <Link to="/mypage" className="dropdown-index">
+              <i className="fa-solid fa-user"></i>
+              <div>마이페이지</div>
+            </Link>
+            <Link to="/mypage" className="dropdown-index">
+              <i className="fa-solid fa-gear"></i>
+              <div>설정</div>
+            </Link>
+            <div className="dropdown-index" onClick={logoutHandler}>
+              <i
+                className="fa-solid fa-right-from-bracket"
+                style={{ color: "#FF5D50" }}
+              ></i>
+              <div style={{ color: "#FF5D50" }}>로그아웃</div>
+            </div>
           </div>
-        ) : (
-          <>
-            <Guest className="guest" href="/signup">
-              회원가입
-            </Guest>
-            <Guest className="guest" impact>
-              로그인
-            </Guest>
-          </>
-        )}
-      </div>
+        </div>
+      ) : (
+        <div style={{ margin: "0 8vh" }}>
+          <Guest href="/signup">회원가입</Guest>
+          <Guest impact onClick={() => modalHandler("login")}>
+            로그인
+          </Guest>
+        </div>
+      )}
     </NavigatorContainer>
   );
 }
@@ -160,19 +178,34 @@ function Navigator({ isLogin }) {
 // =======================여기까지 네비게이터에 필요한 컴포넌트입니다=======================
 
 const Backdrop = styled.div`
-  width: 100vw;
+  min-width: 90vw;
   min-height: 90vh;
+  margin: 0 5vw;
   height: auto;
+  display: flex;
   justify-content: center;
+  background-color: #efffde;
+`;
+
+// const Container = styled.div`
+//   min-height: 90vh;
+//   height: auto;
+//   flex: 1 0 auto;
+//   max-width: 1320px;
+//   margin: auto;
+// `;
+
+const FooterContainer = styled.div`
+  bottom: 0;
+  width: 100vw;
+  min-height: 20vh;
+  background-color: rgb(70, 70, 70);
+  align-items: center;
   display: flex;
 `;
 
-const Container = styled.div`
-  min-height: 90vh;
-  height: auto;
-  flex: 1 0 auto;
-  max-width: 1320px;
-  margin: auto;
-`;
+function Footer() {
+  return <FooterContainer>this is footer</FooterContainer>;
+}
 
-export { Navigator, Backdrop, Container };
+export { Navigator, Backdrop, Footer };

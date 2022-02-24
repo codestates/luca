@@ -1,4 +1,5 @@
 const { users, cards, projects, users_projects } = require('../models');
+const Sequelize = require("sequelize");
 const { isAuthorized } = require('./token');
 
 module.exports = {
@@ -18,11 +19,12 @@ module.exports = {
                             attributes: []
                         }
                     ],
+                    order: [['createdAt', 'DESC']],
+                    attributes: ['id', 'title', 'desc', 'isTeam', 'admin', 'createdAt', 'updatedAt', [Sequelize.col('users_projects.isAccept'), 'isAccept']],
                     where: {
                         '$users_projects.userId$': verifyInfo.id
                     }
                 });
-                console.log(result)
                 res.status(200).json({ data: result, message: 'Get project list success' });
             }
         } catch (err) {
@@ -32,12 +34,20 @@ module.exports = {
     },
 
     post: async (req, res) => {
-        const { userId, title, desc, isTeam, memberUserId } = req.body;
-        if (!userId || !title || !desc || !isTeam || !memberUserId || memberUserId.length === 0) {
+        const { userId, title, desc, isTeam, memberUserId, keyword } = req.body;
+        if (!userId || !title || !desc || isTeam === undefined || !memberUserId || memberUserId.length === 0) {
             return res.status(422).json({ message: "Insufficient parameters supplied" });
         }
         try {
             const result = await projects.create({ admin: userId, title, desc, isTeam });
+            await cards.create(
+                {
+                    userId: userId,
+                    projectId: result.id,
+                    content: keyword,
+                    parent: 0,
+                    storage: "mindmap"
+                });
             await memberUserId.map(function (el) {
                 if (el === Number(userId)) {
                     users_projects.create({
@@ -141,8 +151,7 @@ module.exports = {
                     })
                     return res.status(200).json({ message: "Refuse" })
                 }
-            } catch (error) {
-                console.log(error)
+            } catch (err) {
                 res.status(500).json({ message: "Internal server error" });
             }
         }

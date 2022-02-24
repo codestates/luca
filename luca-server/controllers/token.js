@@ -1,4 +1,5 @@
 require("dotenv").config();
+
 const { sign, verify } = require("jsonwebtoken");
 
 module.exports = {
@@ -11,9 +12,9 @@ module.exports = {
     return res
       .cookie("jwt", accessToken, {
         domain: "localhost",
-        path: "/",
+        path: '/',
         maxAge: 24 * 6 * 60 * 10000,
-        sameSite: "None",
+        // sameSite: 'none',
         httpOnly: true,
         // secure: true,
       })
@@ -21,17 +22,17 @@ module.exports = {
       .json(data);
   },
   isAuthorized: (req) => {
-    if ('jwt' in req.cookies) {
+    if ("jwt" in req.cookies) {
       try {
         const userInfo = verify(req.cookies.jwt, process.env.ACCESS_SECRET);
         delete userInfo.iat;
         delete userInfo.exp;
         return userInfo;
-      } catch(err) {
-        return 'expired'
+      } catch (err) {
+        return "expired";
       }
     } else {
-      return 'not found';
+      return "not found";
     }
   },
 };

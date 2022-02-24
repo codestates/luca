@@ -1,162 +1,98 @@
 import { useEffect, useRef } from "react/cjs/react.development";
-import { select, hierarchy, tree, linkVertical } from "d3";
-import styled from "styled-components";
+import { select, hierarchy, tree, linkRadial, cluster, selectAll } from "d3";
 
-const data = {
+const rawData = {
+  id: 0,
   name: "Ymir",
   children: [
     {
+      id: 1,
       name: "Eren",
-      children: [{ name: "Armin" }, { name: "Erwin" }],
-    },
-    { name: "Mikasa" },
-    {
-      name: "Levi",
       children: [
-        { name: "Falco" },
-        { name: "Ani" },
+        { id: 4, name: "Armin" },
+        { id: 5, name: "Erwin" },
+        { id: 6, name: "Annie" },
+      ],
+    },
+    { id: 2, name: "Mikasa" },
+    {
+      id: 3,
+      name: "Reiner",
+      children: [
+        { id: 7, name: "Historia" },
+        { id: 8, name: "Bertoldt" },
         {
+          id: 9,
+          name: "Sasha",
           children: [
-            { name: "Armin" },
-            { name: "Erwin" },
-            { name: "Armin" },
-            { name: "Erwin" },
-            { name: "Armin" },
-            { name: "Erwin" },
-            {
-              children: [
-                { name: "Armin" },
-                { name: "Erwin" },
-                { name: "Bertoldt" },
-                { name: "Historia" },
-                { name: "Armin" },
-                {
-                  children: [
-                    { name: "Armin" },
-                    { name: "Erwin" },
-                    { name: "Bertoldt" },
-                    { name: "Historia" },
-                    { name: "Armin" },
-                    {
-                      children: [
-                        { name: "Armin" },
-                        { name: "Erwin" },
-                        { name: "Bertoldt" },
-                        { name: "Historia" },
-                        { name: "Armin" }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
+            { id: 10, name: "Zeke" },
+            { id: 11, name: "Grisha" },
+          ],
+        },
       ],
     },
     {
+      id: "4",
       name: "Reiner",
       children: [{ name: "Historia" }, { name: "Bertoldt" }, { name: "Sasha" }],
     },
   ],
 };
 
-// const data = [
-//   {
-//     name: "D3",
-//   },
-//   {
-//     name: "Core",
-//     parent: [0],
-//   },
-//   {
-//     name: "Scales",
-//     parent: [0],
-//   },
-//   {
-//     name: "SVG",
-//     parent: [0],
-//   },
-//   {
-//     name: "Time",
-//     parent: [2],
-//   },
-//   {
-//     name: "Time",
-//     parent: [2],
-//   },
-//   {
-//     name: "Geometry",
-//     parent: [1],
-//   },
-//   {
-//     name: "Geography",
-//     parent: [1],
-//   },
-// ];
 
 // size 바뀔때마다
 // (mapConRef.current.offsetWidth) 를 기준 dimensions로
 // descendants 와 links 를 리턴하는 함수형태로 리팩토링할 것
 
-const dimensions = [600, 600];
+// const dimensions = [window.innerWidth * 0.8, window.innerHeight * 0.8];
+const dimensions = [window.innerWidth * 0.4, window.innerHeight * 0.4];
+// d3 좌표가 펼쳐질 공간의 너비와 높이입니다.
 
-const root = hierarchy(data);
+const root = hierarchy(rawData);
+// 트리구조 자료를 받아 Node로 변환합니다
 
-const treeLayout = tree()
-  .size(dimensions)
-  .separation((a, b) => (a.parent === b.parent ? 1 : 0.5) / a.depth);
+const treeLayout = cluster()
+  // cluster() -> Dendogram / tree() -> Depth diagram
+  .size([360, window.innerHeight * 0.4])
+  //.size(dimensions)
+  .separation((a, b) => (a.parent === b.parent ? 1 : 1) / a.depth);
+//.size([2 * Math.PI, (window.innerHeight * 0.8) / 2])
+
 treeLayout(root);
+//console.log("treeLayout: ", treeLayout(root));
 
-// 모든 노드 배열
 let nodes = root.descendants();
 
-// 모든 링크 배열
+let radialNodes = nodes.map((node) => {
+  let angle = ((node.x - 90) / 180) * Math.PI;
+  let radius = node.y;
+  return {
+    ...node,
+    x: radius * Math.cos(angle) + window.innerWidth / 2 - 100,
+    y: radius * Math.sin(angle) + window.innerHeight / 2,
+  };
+});
+
 let links = root.links();
 
-// 링크가 렌더된 컴포넌트
-// const LinkagesContainer = styled.div
+function transformer(x, y) {
+  let angle = ((x - 90) / 180) * Math.PI;
+  let radius = y;
+  return {
+    x: radius * Math.cos(angle) + window.innerWidth / 2 - 100,
+    y: radius * Math.sin(angle) + window.innerHeight / 2,
+  };
+}
 
-// function Linkages() {
-//   const svgRef = useRef();
+let radialLinkes = links.map((path) => {
+  return {
+    source: transformer(path.source.x, path.source.y),
+    target: transformer(path.target.x, path.target.y),
+  };
+});
 
-//   useEffect(() => {
-//     const svg = select(svgRef.current);
-//     const linkGenerator = linkVertical()
-//       .source((link) => link.source)
-//       .target((link) => link.target)
-//       .x((node) => node.x)
-//       .y((node) => node.y);
-//     console.log("links: ", links);
+//console.log("nodes: ", nodes);
+//console.log("links: ", links);
+//console.log("transformed: ", radialTransformed);
 
-//     svg
-//       .selectAll(".link")
-//       .data(links)
-//       .join("path")
-//       .attr("class", "link")
-//       .attr("fill", "none")
-//       .attr("stroke", "black")
-//       .attr("d", linkGenerator)
-//       .attr("stroke-dasharray", function () {
-//         const length = this.getTotalLength();
-//         return `${length} ${length}`;
-//       })
-//       .attr("stroke-dashoffset", function () {
-//         const length = this.getTotalLength();
-//         return `${length}`;
-//       })
-//       .transition()
-//       .duration(1000)
-//       .delay((linkObj) => linkObj.source.depth * 1000)
-//       .attr("stroke-dashoffset", 0);
-//   }, []);
-
-//   return (
-//     <svg
-//       ref={svgRef}
-//       style={({ positions: "relative" }, { width: "100%" }, { height: "100%" })}
-//     ></svg>
-//   );
-// }
-
-export { root, nodes, links };
+export { root, nodes, radialNodes, radialLinkes, links, rawData };

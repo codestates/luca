@@ -1,12 +1,13 @@
 import styled from "styled-components";
 import Projectcard from "../components/projectcard";
 import { Navigator, Backdrop, Container } from "../components/commons";
-import {CreateProjectModal, Sortmodal} from "../components/modals";
-import {useState, useEffect} from "react";
+import { CreateProjectModal, Sortmodal } from "../components/modals";
+import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setProjectList } from "../redux/rootSlice.js";
 import axios from "axios";
-
-const url = process.env.URL;
-// console.log(url)
+import { compose } from '@reduxjs/toolkit';
+import Footer from '../components/footer';
 
 const Maincomponent = styled.div`
   margin-top: 10vh;
@@ -14,20 +15,21 @@ const Maincomponent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  > startbox {
+  > div.startbox {
     background-color: gray;
+    border-radius: 0px 0px 20px 20px;
     width: 100%;
     height: 250px;
     display: flex;
     align-items: center;
     flex-direction: column;
     justify-content: space-around;
-    > startinfo {
+    > div.startinfo {
       display: flex;
       align-items: center;
       flex-direction: column;
     }
-    > startbutton {
+    > div.startbutton {
       border: solid;
       border-radius: 20px;
       width: 200px;
@@ -36,14 +38,14 @@ const Maincomponent = styled.div`
       align-items: center;
       justify-content: center;
     }
-    > startbutton:hover {
+    > div.startbutton:hover {
       box-shadow: 0px 0px 10px black;
     }
-    > startbutton:active {
+    > div.startbutton:active {
       color: red;
     }
   }
-  > projectcontainer {
+  > div.projectcontainer {
     position: relative;
     background-color: silver;
     height: 100vh;
@@ -53,7 +55,7 @@ const Maincomponent = styled.div`
     /* > projectcontainer> * {
         width: 1300px;
     } */
-    > sortbox {
+    > div.sortbox {
       /* background-color: red; */
       width: 100%;
       height: 30px;
@@ -66,144 +68,125 @@ const Maincomponent = styled.div`
         margin-right: 10px;
       }
       > div:hover {
-        text-shadow: 0px 0px 10px black;  
+        text-shadow: 0px 0px 10px black;
       }
       /* > div:active {
         color: red;
       } */
     }
-    > projectbox {
+    > div.projectbox {
       /* margin-top: 10px; */
     }
   }
 `;
 
 export function Main() {
-
-  const [projectList, setProjectList] = useState([
-    {
-      "id": 0,
-      "title": "string",
-      "desc": "string",
-      "isTeam": true,
-      "admin": 0,
-      "createdAt": "string",
-      "updatedAt": "2021.4.21"
-    },
-    {
-      "id": 1,
-      "title": "string2",
-      "desc": "string",
-      "isTeam": false,
-      "admin": 0,
-      "createdAt": "string",
-      "updatedAt": "2022.3.12"
-    },
-    {
-      "id": 1,
-      "title": "string2",
-      "desc": "string",
-      "isTeam": false,
-      "admin": 0,
-      "createdAt": "string",
-      "updatedAt": "2033.3.12"
-    }
-  ]);
+  let projects = useSelector((state) => state.user.projects);
+  const dispatch = useDispatch();
   const [isClicked, setIsClicked] = useState(false);
-  const [newProject, setNewProject] = useState({});
+  // const [newProject, setNewProject] = useState({});
   const [sortModal, setSortModal] = useState(false);
-  
+
   const modalHandler = () => {
     setIsClicked(!isClicked);
-  }
+  };
 
-  const newProjectHandler = (name, desc, invite, type) => {
-    setNewProject({
-      "title": name,
-      "desc": desc,
-      "isTeam": type
-    })
-    console.log(name.value);
-    console.log(desc.value);
-    console.log(invite.value);
-    console.log(type);
-    // axios.post()
-  }
+  // const newProjectHandler = (name, desc, invite, type) => {
+  //   setNewProject({
+  //     title: name,
+  //     desc: desc,
+  //     isTeam: type,
+  //   });
+  //   console.log(name.value);
+  //   console.log(desc.value);
+  //   console.log(invite.value);
+  //   console.log(type);
+  //   // axios.post()
+  // };
 
   const sortHandler = (e) => {
-    const projectsClone = [...projectList];
-    if(e === "update"){
-      projectsClone.sort((a, b) => {
-        return b.updatedAt.split(".").join("") - a.updatedAt.split(".").join("")
-      })
-      setProjectList([...projectsClone]);
-      console.log(projectList)
-    }
-    else if(e === "create"){
-      projectsClone.sort((a, b) => {
-        return b.createdAt.split(".").join("") - a.createdAt.split(".").join("")
-      })
+    let projectsClone = projects;
+
+    if (e === "update") {
+      projectsClone = projects.slice().sort((b, a) => {
+        return parseInt(a.updatedAt.split("-").join("")) <
+          parseInt(b.updatedAt.split("-").join(""))
+          ? -1
+          : parseInt(a.updatedAt.split("-").join("")) >
+            parseInt(b.updatedAt.split("-").join(""))
+            ? 1
+            : 0;
+      });
+      dispatch(setProjectList(projectsClone));
+      console.log("sortHandler projectClone");
+      console.log(projectsClone);
+    } else if (e === "create") {
+      projectsClone = projects.slice().sort((b, a) => {
+        return parseInt(a.createdAt.split("-").join("")) <
+          parseInt(b.createdAt.split("-").join(""))
+          ? -1
+          : parseInt(a.createdAt.split("-").join("")) >
+            parseInt(b.createdAt.split("-").join(""))
+            ? 1
+            : 0;
+      });
+      console.log("sortHandler projectClone");
+      console.log(projectsClone);
+      dispatch(setProjectList(projectsClone));
     }
     setSortModal(!sortModal);
-  }
+  };
 
-  useEffect(() => {
-    // axios.get(`${url}/projects`)
-    // .then((res)=>{
-    //   setProjectList(res.data);
-    // })
-    // .catch((err)=>{
-    //   console.log(err);
-    // });
-  }, [projectList]);
+  useEffect(async () => {
+    const result = await axios.get(`${process.env.REACT_APP_API_URL}/project`);
+    dispatch(setProjectList(result.data.data));
+  }, []);
 
   return (
     <div>
+      {/* {console.log(projects)} */}
       <Navigator />
-      <Backdrop onClick={isClicked? modalHandler: null}>
-        <Container>
-          <Maincomponent>
-            <startbox>
-              <startinfo>
-                <h2>Lorem ipsum</h2>
-                img elements must have an alt prop, either with meaningful text,
-                or an empty string for decorative images
-              </startinfo>
-              <startbutton onClick={modalHandler}>start</startbutton>
-            </startbox>
-            <projectcontainer>
-              <sortbox>
-                {
-                  sortModal?
-                  <div>
-                    <div onClick={sortHandler}>sort by update ▲</div>
-                    {/* <Sortmodal sortHandler={sortHandler}/> */}
-                  </div>:
-                  <div onClick={sortHandler}>sort by update ▼</div>
-                }
-              </sortbox>
-                {
-                  sortModal?
-                  <Sortmodal sortHandler={sortHandler}/>:
-                  null
-                }
-              <projectbox>
-                {
-                  projectList.map((el)=>{
-                    return <Projectcard data={el}/>
-                  })
-                }
-              </projectbox>
-            </projectcontainer>
-          </Maincomponent>
-        </Container>
-        {
-          isClicked?
-          <CreateProjectModal modalHandler={modalHandler} newProjectHandler={newProjectHandler}/>:
-          null
-        }
+      <Backdrop onClick={isClicked ? modalHandler : null}>
+        <Maincomponent>
+          <div className="startbox">
+            <div className="startinfo">
+              <h2>Lorem ipsum</h2>
+              img elements must have an alt prop, either with meaningful text,
+              or an empty string for decorative images
+            </div>
+            <div className="startbutton" onClick={modalHandler}>
+              start
+            </div>
+          </div>
+          <div className="projectcontainer">
+            <div className="sortbox">
+              {sortModal ? (
+                <div>
+                  <div onClick={sortHandler}>Sort</div>
+                  {/* <Sortmodal sortHandler={sortHandler}/> */}
+                </div>
+              ) : (
+                <div onClick={sortHandler}>Sort</div>
+              )}
+            </div>
+            {sortModal ? <Sortmodal sortHandler={sortHandler} /> : null}
+            <div className="projectbox">
+              {projects.map((el, i) => {
+                return <Projectcard projectInfo={el} index={i} key={el.id} />;
+              })}
+            </div>
+          </div>
+        </Maincomponent>
+
+        {isClicked ? (
+          <CreateProjectModal
+            modalHandler={modalHandler}
+          // newProjectHandler={newProjectHandler}
+          />
+        ) : null}
       </Backdrop>
       <div className="footer"></div>
+      <Footer />
     </div>
   );
 }
