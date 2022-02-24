@@ -17,6 +17,9 @@ const socketCanvas = async (socket) => {
     socket.on("createCard", async (userId, content, roomName) => {
         socket.join(roomName);
 
+        console.log(socket.nsp);
+        console.log(socket.id);
+        
         await cardController.create(userId, content, roomName);
         const cardInfo = await cardController.get(roomName);
         
@@ -46,30 +49,16 @@ const socketCanvas = async (socket) => {
         socket.broadcast.to(roomName).emit("addMindmap", cardInfo, mindmapInfo);
     })
 
-    socket.on("deleteMindmap", async (data,roomName) => {
+    socket.on("editBlockStart", async (roomName) => {
         socket.join(roomName);
 
-        await mindmapController.delete(data, roomName);
-        const cardInfo = await cardController.get(roomName);
-        const mindmapInfo = await mindmapController.get(roomName);
-
-        socket.emit("deleteMindmap", cardInfo, mindmapInfo);
-        socket.broadcast.to(roomName).emit("deleteMindmap", cardInfo, mindmapInfo);
+        socket.broadcast.to(roomName).emit("editBlockStart", {isBlock: true});
     })
 
-    socket.on("editBlock", async (roomName) => {
-    })
+    socket.on("editBlockEnd", async (roomName) => {
+        socket.join(roomName);
 
-    socket.on("editBlockStart", async (boolean, roomName) => {
-        // socket.emit("editBlockStart", boolean)
-        socket.to(roomName).emit("editBlockStart", boolean)
-        console.log("on")
-    })
-
-    socket.on("editBlockEnd", async (boolean, roomName) => {
-        // socket.emit("editBlockEnd", boolean)
-        socket.to(roomName).emit("editBlockEnd", boolean)
-        console.log("off")
+        socket.broadcast.to(roomName).emit("editBlockEnd", {isBlock: false});
     })
 }
 

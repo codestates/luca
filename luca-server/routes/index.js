@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const cardRouter = require('./card.js');
-const mindmapRouter = require('./mindmap');
+// const cardRouter = require('./card');
+// const mindmapRouter = require('./mindmap');
 const profileRouter = require('./profile');
 const projectRouter = require('./project');
 const userRouter = require('./user');

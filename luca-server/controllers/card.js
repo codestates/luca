@@ -21,8 +21,6 @@ module.exports = {
             },
             raw: true
         });
-
-        //트리 변환 과정 추가
         return cardInfo;
     },
 

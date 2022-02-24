@@ -257,8 +257,8 @@ export function LoginModal({ modalHandler }) {
 export function CreateProjectModal({ modalHandler }) {
   const nameRef = useRef();
   const descRef = useRef();
-  const keywordRef =useRef();
   const inviteRef = useRef();
+  const keywordRef = useRef();
   const dispatch = useDispatch();
   const userInfo = useSelector((state) => state.user.userInfo);
   console.log("isGuest: ", userInfo.isGuest);

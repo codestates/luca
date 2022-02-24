@@ -2,11 +2,7 @@ const app = require('./index')
 const server = require('http').createServer(app);
 const io = require('socket.io')(server, { cors: { origin: "*" } });
 const { cards, projects, users_projects } = require("./models");
-const canvas = require("./controllers/canvas")
-
-const countRoom = (roomName) => {
-    return io.sockets.adapter.rooms.get(roomName)?.size;
-}
+const socketCanvas = require("./controllers/canvas")
 
 try {
     io.on("connection", (socket) => {
@@ -27,7 +23,8 @@ try {
         console.log("SOCKETIO disconnect EVENT: ", socket.id, " client disconnect");
         console.log(socket.rooms);
     })
-        canvas(socket) 
+    
+    socketCanvas(socket) 
     });
 } catch  (err) {
     console.log(err);
