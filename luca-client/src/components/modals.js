@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from 'react-router-dom';
 // import { setIsLogin } from "../redux/slicer/loginSlice";
 // import { setUserInfo } from "../redux/slicer/userInfoSlice";
 import { setIsLogin, setUserInfo, setProjectList } from "../redux/rootSlice";
@@ -146,11 +147,7 @@ const ModalView = styled.div`
         font-weight: bold;
         background-color: ${color.primaryLight};
         cursor: pointer;
-<<<<<<< HEAD
-      } 
-=======
       }
->>>>>>> d5439bcf7cba017d1a649e857f4de7efc03e2f79
     }
     img {
     width: 60px;
@@ -165,6 +162,7 @@ const ModalView = styled.div`
 
 export function LoginModal({ modalHandler }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const isLogin = useSelector((state) => state.user.isLogin);
 
   const [loginInfo, setLoginInfo] = useState({
@@ -192,6 +190,7 @@ export function LoginModal({ modalHandler }) {
           dispatch(setIsLogin(true));
           dispatch(setUserInfo(res.data.data));
           modalHandler(false);
+          navigate("/")
         }
       })
       .catch((err) => {
@@ -258,6 +257,7 @@ export function LoginModal({ modalHandler }) {
 export function CreateProjectModal({ modalHandler }) {
   const nameRef = useRef();
   const descRef = useRef();
+  const keywordRef =useRef();
   const inviteRef = useRef();
   const dispatch = useDispatch();
   const userInfo = useSelector((state) => state.user.userInfo);
@@ -309,7 +309,7 @@ export function CreateProjectModal({ modalHandler }) {
   };
 
   const createNewProject = () => {
-    if (nameRef.current.value === "" || descRef.current.value === "") {
+    if (nameRef.current.value === "" || descRef.current.value === "" || keywordRef.current.value === "") {
       alert("내용을 채워주세요");
     } else {
       axios
@@ -319,6 +319,7 @@ export function CreateProjectModal({ modalHandler }) {
             userId: userInfo.id,
             title: nameRef.current.value,
             desc: descRef.current.value,
+            keyword: keywordRef.current.value,
             isTeam: isTeam,
             memberUserId: [userInfo.id, ...memberId],
           },
@@ -384,6 +385,10 @@ export function CreateProjectModal({ modalHandler }) {
           <div className="query">
             {/* <input onChange={(e)=>{newProjectHandler(e, "desc")}}/> */}
             <input ref={descRef} placeholder="설명" />
+          </div>
+          <div className="query">
+            {/* <input onChange={(e)=>{newProjectHandler(e, "desc")}}/> */}
+            <input ref={keywordRef} placeholder="키워드" />
           </div>
           {isTeam ? (
             <div>

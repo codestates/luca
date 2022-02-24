@@ -4,16 +4,18 @@ import Cardboard from "../components/cardboard";
 import { useEffect, useCallback } from "react";
 import io from "socket.io-client";
 import { useSelector, useDispatch } from "react-redux";
-import { setCardList } from '../redux/rootSlice';
+import { setCardList, setMindmapTree, setIsBlock } from '../redux/rootSlice';
 import Timer from '../components/timer';
+
+const socket = io.connect(`${process.env.REACT_APP_API_URL}`)
 
 export default function Project() {
   const dispatch = useDispatch();
-  const curProjectId = window.location.href.split("/").reverse()[0]
-  const roomName = `${curProjectId}`
+  const roomName = window.location.href.split("/").reverse()[0]
   const userId = useSelector((state) => state.user.userInfo.id);
+  const isBlock = useSelector((state) => state.user.isBlock);
+  const projectId = useSelector((state) => state.user.projectId);
 
-  const socket = io.connect(`${process.env.REACT_APP_API_URL}`)
   const disconnectSocket = useCallback(() => {
     socket.disconnect();
   }, [socket]);
@@ -27,9 +29,9 @@ export default function Project() {
       console.log("SOCKETIO connect EVENT: ", data, " client connect");
     });
     socket.emit("initData", roomName);
-    socket.on("initData", (data) => {
-      dispatch(setCardList(data));
-      console.log(data)
+    socket.on("initData", (cardInfo, mindmapInfo) => {
+      dispatch(setCardList(cardInfo));
+      dispatch(setMindmapTree(mindmapInfo));
     })
   }, []);
 
@@ -37,6 +39,7 @@ export default function Project() {
   useEffect(() => {
     return () => {
       disconnectSocket();
+      window.location.reload();
     };
   }, []);
 
@@ -46,8 +49,26 @@ export default function Project() {
   }
 
   // 카드를 삭제한다.
-  const deleteCard = () => {
-    socket.emit("deleteCard", 30, roomName);
+  const deleteCard = (id) => {
+    socket.emit("deleteCard", id, roomName);
+  }
+
+  const BlockStart = () => {
+    socket.emit("editBlockStart", true, roomName);
+    console.log(isBlock)
+  }
+
+  const BlockEnd = () => {
+    socket.emit("editBlockEnd", false, roomName);
+    console.log(isBlock)
+  }
+
+  const addMindmap = (id) => {
+    socket.emit("addMindmap", {parentId: 382, cardId:id}, roomName);
+  }
+
+  const deleteMindmap = (id) => {
+    socket.emit("addMindmap", id, roomName);
   }
 
   // 배열이 업데이트될 때마다 계속해서 추가로 리스너가 등록되는 것을 방지하기 위해 useEffect 사용)
@@ -60,6 +81,22 @@ export default function Project() {
       dispatch(setCardList(data));
       console.log(data);
     });
+    socket.on("editBlockStart", (data) => {
+      dispatch(setIsBlock(data));
+      console.log(data);
+    });
+    socket.on("editBlockEnd", (data) => {
+      dispatch(setIsBlock(data));
+      console.log(data);
+    });
+    socket.on("addMindmap", (cardInfo, mindmapInfo) => {
+      dispatch(setMindmapTree(mindmapInfo));
+      dispatch(setCardList(cardInfo));
+    });
+    socket.on("deleteMindmap", (cardInfo, mindmapInfo) => {
+      dispatch(setMindmapTree(mindmapInfo));
+      dispatch(setCardList(cardInfo));
+    });
   }, [])
 
   return (
@@ -67,9 +104,8 @@ export default function Project() {
       <Navigator />
       <Timer />
       <Canvas />
-      <Cardboard />
-      <button onClick={() => { createCard() }}>create</button>
-      <button onClick={() => { deleteCard() }}>Delete</button>
+      <Cardboard createCard = {createCard} deleteCard = {deleteCard} addMindmap = {addMindmap}/>
+      <button onMouseDown={() => BlockStart()} onMouseUp={() => BlockEnd()}>block</button>
     </div>
   );
 }

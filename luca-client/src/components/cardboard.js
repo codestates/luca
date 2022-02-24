@@ -200,7 +200,7 @@ const CardAdder = styled.div`
   }
 `;
 
-export default function Cardboard() {
+export default function Cardboard({createCard, deleteCard, addMindmap}) {
   let porjectIdRef = window.location.href.split("/").reverse()[0]; // porjectIdRef === '12'(string)
   // Route flow 는 App > /project 이고, Link flow 는 App > Main > Projectcard > /project 로 서로 달라서
   // Projectcard 에서 선택한 projectId 를 <Project> 컴포넌트에 전달하기가 어렵습니다.
@@ -209,6 +209,8 @@ export default function Cardboard() {
   // 따라서 라우팅 된 endpoint로 들어와서, endpoint에서 porjectIdRef 를 추출해 axios 요청을 보내는 방식으로 작성했습니다.
   // console.log("ProjectID Cardboard: ", porjectIdRef);
   const cardList = useSelector((state) => state.user.cardList);
+  const userInfo = useSelector((state) => state.user.userInfo);
+  const isBlock = useSelector((state) => state.user.isBlock);
 
   const [isCardContOpen, setIsCardContOpen] = useState(null); // default animation state
   const [isAdderOpen, setIsAdderOpen] = useState(null); // default animation state
@@ -219,6 +221,9 @@ export default function Cardboard() {
 
   const adderOpenHandler = () => {
     setIsAdderOpen(!isAdderOpen);
+    if (isAdderOpen){
+      createCard()
+    }
   };
 
   // console.log("isCardContOpen: ", isCardContOpen);
@@ -227,8 +232,16 @@ export default function Cardboard() {
   return (
     <div>
       <CardContainer isCardContOpen={isCardContOpen}>
-        {cardList.map((el, i) => {
-          return <Card projectInfo={el} index={i} key={el.id} />;
+      {(isBlock ? <button><i class="fa-solid fa-ban"></i></button> : null)}
+
+      {cardList.map((el) => {
+            return (
+              <div>
+                <Card key={el.id}>{el.content}</Card>
+                {(el.userId === userInfo.id ? <button onClick={() => deleteCard(el.id)}><i class="fa-solid fa-trash-can"></i></button> : null)}
+                <button onClick={() => addMindmap(el.id)}><i class="fa-solid fa-plus"></i></button>
+              </div>
+            )
         })}
         {/* <Card>상위 4개 limit로 .map</Card> */}
         <CardAdder

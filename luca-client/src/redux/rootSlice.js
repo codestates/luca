@@ -24,8 +24,12 @@ export const rootSlice = createSlice({
         projects: [],
         projectId: 0,
         isLogin: false,
+        isBlock: false,
         cardList: [],
-        mindMapTree: {},
+        mindmapTree: {},
+        time : 0,
+        timerOn: false,
+        settings: false,
         userInfo: {
             id: "",
             email: "",
@@ -48,7 +52,7 @@ export const rootSlice = createSlice({
             state.cardList = action.payload;
         },
         setMindmapTree: (state, action) => {
-            state.mindMapTree = action.payload;
+            state.mindmapTree = action.payload;
         },
         setProjectId: (state, action) => {
             console.log(action.payload)
@@ -58,6 +62,22 @@ export const rootSlice = createSlice({
             // console.log(action.payload)
             state.projects = action.payload;
         },
+        setIsBlock: (state, action) => {
+            // console.log(action.payload)
+            state.isBlock = action.payload;
+        },
+        setTime: (state, action) => {
+            // console.log(action.payload)
+            state.time = action.payload;
+        },
+        setTimeOn: (state, action) => {
+            // console.log(action.payload)
+            state.timerOn = action.payload;
+        },        
+        setSetting: (state, action) => {
+            // console.log(action.payload)
+            state.settings = action.payload;
+        },                
         updateProjectList: (state, action) => {
             state.projects[action.payload.index].title = action.payload.inputData[0];
             state.projects[action.payload.index].desc = action.payload.inputData[1];
@@ -80,6 +100,6 @@ export const rootSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { setIsLogin, setUserInfo, setProjectList, updateProjectList, setProjectId, setCardList, setMindmapTree } = rootSlice.actions
+export const { setIsLogin, setUserInfo, setProjectList, updateProjectList, setProjectId, setCardList, setMindmapTree, setIsBlock, setTime, setTimeOn, setSetting } = rootSlice.actions
 
 export default rootSlice.reducer
