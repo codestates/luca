@@ -6,12 +6,13 @@ import Cardboard from "../components/cardboard";
 import { useEffect, useCallback, useState } from "react";
 import io from "socket.io-client";
 import { useSelector, useDispatch } from "react-redux";
-import { setCardList, setMindmapTree, setIsBlock } from "../redux/rootSlice";
+import { setCardList, setMindmapTree, setBlockData } from "../redux/rootSlice";
 import { useNavigate } from "react-router-dom";
-// import Timer from '../components/timer';
-const socket = io.connect(`${process.env.REACT_APP_API_URL}`);
+import Timer from "../components/timer";
+// const socket = io.connect(`${process.env.REACT_APP_API_URL}`)
 
 export default function Project() {
+  const socket = io.connect(`${process.env.REACT_APP_API_URL}`);
   const curProjectId = window.location.href.split("/").reverse()[0];
   // const navigate = useNavigate();
   // navigate(`http://${process.env.REACT_APP_API_URL}/project/${curProjectId}`);
@@ -48,6 +49,7 @@ export default function Project() {
   useEffect(() => {
     return () => {
       disconnectSocket();
+      // window.location.reload();
     };
   }, []);
 
@@ -61,15 +63,23 @@ export default function Project() {
     socket.emit("deleteCard", id, roomName);
   };
 
-  const mouseDown = () => {
+  const mouseDown = (id) => {
     console.log("마우스 다운");
     // setIsBlock(true);
-    socket.emit("editBlockStart", roomName);
+    socket.emit(
+      "editBlockStart",
+      { cardId: Number(id), isBlock: true },
+      roomName
+    );
   };
-  const mouseUp = () => {
+  const mouseUp = (id) => {
     console.log("마우스 업");
     // setIsBlock(false);
-    socket.emit("editBlockEnd", roomName);
+    socket.emit(
+      "editBlockEnd",
+      { cardId: Number(id), isBlock: false },
+      roomName
+    );
   };
 
   const addMindmapHandler = (id) => {
@@ -82,20 +92,21 @@ export default function Project() {
       dispatch(setCardList(data));
       console.log(data);
     });
-
     socket.on("deleteCard", (data) => {
       dispatch(setCardList(data));
       console.log(data);
     });
 
     socket.on("editBlockStart", (data) => {
-      dispatch(setIsBlock(data.isBlock));
-      console.log(data.isBlock);
+      console.log("==asdf==", data);
+      dispatch(setBlockData(data));
+      console.log(data);
     });
 
     socket.on("editBlockEnd", (data) => {
-      dispatch(setIsBlock(data.isBlock));
-      console.log(data.isBlock);
+      console.log("==asdf==", data);
+      dispatch(setBlockData(data));
+      console.log("==asdf==", data);
     });
 
     socket.on("addMindmap", (cardInfo, mindmapInfo) => {
@@ -107,7 +118,7 @@ export default function Project() {
   return (
     <div>
       {/* <Navigator /> */}
-      {/* <Timer /> */}
+      <Timer />
       <Canvas3 addMindmapHandler={addMindmapHandler} />
       <Cardboard
         createCard={createCard}

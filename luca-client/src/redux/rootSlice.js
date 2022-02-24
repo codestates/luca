@@ -20,11 +20,18 @@ export const rootSlice = createSlice({
   name: "user",
 
   initialState: {
-    isblock: false,
+    blockData: {},
     cardList: [],
     mindmapTree: {},
     projects: [],
+    projectId: 0,
     isLogin: false,
+    isBlock: false,
+    cardList: [],
+    mindmapTree: {},
+    time: 0,
+    timerOn: false,
+    settings: false,
     userInfo: {
       id: "",
       email: "",
@@ -43,8 +50,34 @@ export const rootSlice = createSlice({
     setUserInfo: (state, action) => {
       state.userInfo = action.payload;
     },
+    setCardList: (state, action) => {
+      state.cardList = action.payload;
+    },
+    setMindmapTree: (state, action) => {
+      state.mindmapTree = action.payload;
+    },
+    setProjectId: (state, action) => {
+      console.log(action.payload);
+      state.projectId = action.payload;
+    },
     setProjectList: (state, action) => {
       state.projects = action.payload;
+    },
+    setIsBlock: (state, action) => {
+      // console.log(action.payload)
+      state.isBlock = action.payload;
+    },
+    setTime: (state, action) => {
+      // console.log(action.payload)
+      state.time = action.payload;
+    },
+    setTimeOn: (state, action) => {
+      // console.log(action.payload)
+      state.timerOn = action.payload;
+    },
+    setSetting: (state, action) => {
+      // console.log(action.payload)
+      state.settings = action.payload;
     },
     updateProjectList: (state, action) => {
       state.projects[action.payload.index].title = action.payload.inputData[0];
@@ -56,8 +89,8 @@ export const rootSlice = createSlice({
     setMindmapTree: (state, action) => {
       state.mindmapTree = action.payload;
     },
-    setIsBlock: (state, action) => {
-      state.isblock = action.payload;
+    setBlockData: (state, action) => {
+      state.blockData = action.payload;
     },
   },
 
@@ -84,7 +117,7 @@ export const {
   updateProjectList,
   setCardList,
   setMindmapTree,
-  setIsBlock,
+  setBlockData,
 } = rootSlice.actions;
 
 export default rootSlice.reducer;
