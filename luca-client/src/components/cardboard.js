@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { setCardList } from "../redux/rootSlice";
@@ -140,10 +140,18 @@ const CardAdder = styled.div`
   flex-direction: column;
   justify-content: center;
   cursor: pointer;
-
-  > div {
-    font-size: 5vh;
+  font-size: 5vh;
+  > i {
+    background-color: cyan;
     color: grey;
+  }
+  > input {
+    font-size: 0.7em;
+    margin: auto;
+    width: 80%;
+    height: 70%;
+    outline: none;
+    border: none;
   }
 
   animation-name: ${(props) => {
@@ -164,10 +172,18 @@ const CardAdder = styled.div`
     from {
       width: 15vh;
       height: 15vh;
+      > i {
+        opacity: 1;
+        // 자식 애니메이션은 cascading 작동 X, 새 컴포넌트로 만드는 방법
+      }
     }
     to {
       width: 33vh;
       height: 33vh;
+      border-radius: 0;
+      > i {
+        opacity: 0;
+      }
     }
   }
 
@@ -175,6 +191,7 @@ const CardAdder = styled.div`
     from {
       width: 33vh;
       height: 33vh;
+      border-radius: 0;
     }
     to {
       width: 15vh;
@@ -198,6 +215,8 @@ export default function Cardboard({
   const [isCardContOpen, setIsCardContOpen] = useState(null); // default animation state
   const [isAdderOpen, setIsAdderOpen] = useState(null); // default animation state
 
+  const newCardRef = useRef();
+
   const sliderHandler = () => {
     setIsCardContOpen(!isCardContOpen);
   };
@@ -205,8 +224,16 @@ export default function Cardboard({
   const adderOpenHandler = () => {
     console.log(cardList);
     setIsAdderOpen(!isAdderOpen);
-    if (isAdderOpen) {
-      createCard();
+    // if (isAdderOpen) {
+    //   createCard();
+    // }
+  };
+
+  const createCardHandler = () => {
+    let actual = newCardRef.current.value.replace(/ /g, "");
+    if (actual.length > 0) {
+      createCard(newCardRef.current.value);
+      newCardRef.current.value = "";
     }
   };
 
@@ -262,14 +289,14 @@ export default function Cardboard({
         })}
         {/* <Card>상위 4개 limit로 할 필요 없음 .map</Card> */}
         {/* websocket 으로 카드 데이터 받을때는 key={card.id} 로 매핑할 것 */}
-        <CardAdder
-          isCardContOpen={isCardContOpen}
-          isAdderOpen={isAdderOpen}
-          onClick={adderOpenHandler}
-        >
-          <div>
-            <i className="fa-solid fa-circle-plus"></i>
-          </div>
+        <CardAdder isCardContOpen={isCardContOpen} isAdderOpen={isAdderOpen}>
+          {isAdderOpen ? (
+            <>
+              <input ref={newCardRef} />
+              <button onClick={createCardHandler}>추가</button>
+            </>
+          ) : null}
+          <i className="fa-solid fa-circle-plus" onClick={adderOpenHandler}></i>
         </CardAdder>
 
         <Opener

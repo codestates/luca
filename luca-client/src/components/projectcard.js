@@ -223,8 +223,30 @@ function Projectcard({ projectInfo, index }) {
   return (
     <ProjectCover>
       {modal === "deleteProject" ? (
-        <DeleteProjectModal modalHandler={modalHandler} />
+        <DeleteProjectModal
+          modalHandler={(modalHandler, deleteProjectHandler)}
+        />
       ) : null}
+      <>
+        {projectInfo.isAccept === 1 ? null : (
+          <div className="acceptbox">
+            <div
+              onClick={() => {
+                handlePartyRequest("accept");
+              }}
+            >
+              수락
+            </div>
+            <div
+              onClick={() => {
+                handlePartyRequest("refuse");
+              }}
+            >
+              거절
+            </div>
+          </div>
+        )}
+      </>
       {isEditOn ? (
         <>
           <div className="top">
@@ -265,7 +287,9 @@ function Projectcard({ projectInfo, index }) {
       ) : (
         <>
           <div className="top">
-            <div className="title">{projectInfo.title}</div>
+            <div className="title">
+              <Link to={`/project/${projectInfo.id}`}>{projectInfo.title}</Link>
+            </div>
             <button
               className="edit"
               index={index}
