@@ -266,7 +266,7 @@ function Projectcard({ projectInfo, index }) {
         <>
           <div className="top">
             <div className="title">
-              <Link to={`project/${projectInfo.id}`}>{projectInfo.title}</Link>
+              <Link to={`/project/${projectInfo.id}`}>{projectInfo.title}</Link>
             </div>
             <button
               className="edit"
