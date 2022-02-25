@@ -11,9 +11,9 @@ import Footer from '../components/footer';
 const Container = styled.div`
   min-width: 90vw;
   min-height: 50vh;
-  margin: 20vh 10vh 10vh 10vh;
+  margin: 10vh 10vh 10vh 10vh;
   display: flex;
-  `;
+`;
 
 const Section = styled.div`
   border-radius: 1vh;
@@ -119,6 +119,8 @@ export default function Mypage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userInfo = useSelector((state) => state.user.userInfo);
+  const projects = useSelector((state) => state.user.projects);
+  const cards = useSelector((state) => state.user.cardList);
   const [isEditOn, setIsEditOn] = useState(false);
   const editnameRef = useRef();
 
@@ -151,7 +153,7 @@ export default function Mypage() {
   }
 
   useEffect(() => {
-    console.log(userInfo);
+    console.log(userInfo, projects, cards);
     axios
       .get(`${process.env.REACT_APP_API_URL}/profile`, {
         "Content-Type": "application/json",
@@ -188,8 +190,8 @@ export default function Mypage() {
               </div>
             </Upper>
             <Lower>
-              <div>만든 프로젝트 2개, 참여한 프로젝트 3개</div>
-              <div>만든 카드 34개, 매핑된 카드 27개</div>
+              <div>{`만든 프로젝트 ${projects.length}개, 참여한 프로젝트 3개`}</div>
+              <div>{`만든 카드 ${cards.length}개, 매핑된 카드 27개`}</div>
             </Lower>
           </Right>
         ) : (
@@ -205,8 +207,8 @@ export default function Mypage() {
               </div>
             </Upper>
             <Lower>
-              <div>만든 프로젝트 2개, 참여한 프로젝트 3개</div>
-              <div>만든 카드 34개, 매핑된 카드 27개</div>
+              <div>{`만든 프로젝트 ${projects.length}개, 참여한 프로젝트 3개`}</div>
+              <div>{`만든 카드 ${cards.length}개, 매핑된 카드 27개`}</div>
             </Lower>
           </Right>
         )}

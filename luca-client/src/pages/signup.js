@@ -16,11 +16,11 @@ import {
 } from "../api";
 
 const SignupPage = styled.div`
-  margin-top: 10vh;
+  /* margin-top: 10vh; */
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 60vh;
+  height: 70vh;
   width: 100%;
   > div,title {
     flex: 1 0 auto;
@@ -41,6 +41,7 @@ const Registrybox = styled.div`
   > div {
     width: auto;
     display: flex;
+    justify-content: center;
     > div.emailbox {
       margin-left: 100px;
     }
