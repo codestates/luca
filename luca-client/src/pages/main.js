@@ -1,140 +1,154 @@
 import styled from "styled-components";
 import Projectcard from "../components/projectcard";
-import { Navigator, Backdrop, Container } from "../components/commons";
-import { CreateProjectModal, Sortmodal } from "../components/modals";
+import { Navigator, Footer } from "../components/commons";
+import { CreateProjectModal } from "../components/modals";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setProjectList } from "../redux/rootSlice.js";
+import {
+  setProjectList,
+  updateProjectList,
+  setProjectId,
+} from "../redux/rootSlice";
 import axios from "axios";
-import { compose } from '@reduxjs/toolkit';
-import Footer from '../components/footer';
+import { Link } from "react-router-dom";
+//import { compose } from '@reduxjs/toolkit';
 
-const Maincomponent = styled.div`
+const Container = styled.div`
   margin-top: 10vh;
-  background-color: #f5f5f5;
+  width: 100vw;
+  height: auto;
+`;
+
+const Banner = styled.div`
+  min-height: 16vh;
+  padding: 4vh 0;
+  background: linear-gradient(to right bottom, #ff7f50, orange);
   display: flex;
   flex-direction: column;
   align-items: center;
-  > div.startbox {
-    background-color: gray;
-    border-radius: 0px 0px 20px 20px;
-    width: 100%;
-    height: 250px;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    justify-content: space-around;
-    > div.startinfo {
-      display: flex;
-      align-items: center;
-      flex-direction: column;
-    }
-    > div.startbutton {
-      border: solid;
-      border-radius: 20px;
-      width: 200px;
-      height: 30px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    > div.startbutton:hover {
-      box-shadow: 0px 0px 10px black;
-    }
-    > div.startbutton:active {
-      color: red;
-    }
+
+  > h2 {
+    font-weight: 750;
+    letter-spacing: 0.05em;
+    color: white;
   }
-  > div.projectcontainer {
-    position: relative;
-    background-color: silver;
-    height: 100vh;
-    width: 1300px;
-    display: flex;
-    flex-direction: column;
-    /* > projectcontainer> * {
-        width: 1300px;
-    } */
-    > div.sortbox {
-      /* background-color: red; */
-      width: 100%;
-      height: 30px;
-      border-bottom: solid;
-      margin-top: 20px;
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
+
+  > div.project-intro {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin: 0.3em 0;
+    color: white;
+    letter-spacing: 0.1em;
+  }
+  > div.start {
+    margin-top: 1em;
+    width: 8em;
+    padding: 0.6em 1em;
+    border-radius: 2em;
+    border: none;
+    font-size: 1.1em;
+    font-weight: bold;
+    text-align: center;
+    color: rgb(70, 70, 70);
+    background-color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    box-shadow: 0vh 0.5vh 1vh 0.1vh rgba(0, 0, 0, 0.2);
+  }
+`;
+
+const Section = styled.div`
+  background-color: seashell;
+  display: flex;
+  flex-direction: column;
+`;
+
+const Sorter = styled.div`
+  z-index: 500;
+  padding-top: 16px;
+  min-height: 36px;
+  background-color: white;
+  box-shadow: 0vh 0vh 1vh 0.1vh rgba(0, 0, 0, 0.1);
+
+  > div.dropdowner {
+    position: absolute;
+    width: 120px;
+    right: 24px;
+    height: 20px;
+    margin: 8px 0;
+    padding: 0 10px;
+    background-color: white;
+    cursor: pointer;
+
+    > div.selection {
+      margin-top: 5px;
+      width: 100px;
+      border-radius: 6px;
+
+      background-color: white;
       > div {
-        margin-right: 10px;
+        padding: 10px;
+        cursor: pointer;
       }
       > div:hover {
-        text-shadow: 0px 0px 10px black;
+        color: orange;
       }
-      /* > div:active {
-        color: red;
-      } */
-    }
-    > div.projectbox {
-      /* margin-top: 10px; */
     }
   }
 `;
 
-export function Main() {
-  let projects = useSelector((state) => state.user.projects);
-  const dispatch = useDispatch();
-  const [isClicked, setIsClicked] = useState(false);
-  // const [newProject, setNewProject] = useState({});
-  const [sortModal, setSortModal] = useState(false);
+const Gallery = styled.div`
+  margin: 0 24px;
+  background-color: seashell;
+  padding-top: 60px;
+  padding-bottom: 60px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 24px;
+`;
 
-  const modalHandler = () => {
-    setIsClicked(!isClicked);
+export default function Main() {
+  let projects = useSelector((state) => state.user.projects);
+  console.log("projects: ", projects);
+
+  const dispatch = useDispatch();
+
+  const [modal, setModal] = useState(false);
+  const [sorterOn, setSorterOn] = useState(false);
+  const [curSort, setCurSort] = useState("업데이트 순");
+
+  const modalHandler = (modalType) => {
+    setModal(modalType);
   };
 
-  // const newProjectHandler = (name, desc, invite, type) => {
-  //   setNewProject({
-  //     title: name,
-  //     desc: desc,
-  //     isTeam: type,
-  //   });
-  //   console.log(name.value);
-  //   console.log(desc.value);
-  //   console.log(invite.value);
-  //   console.log(type);
-  //   // axios.post()
-  // };
+  const sortHandler = (opt) => {
+    let sortedProjects = projects;
 
-  const sortHandler = (e) => {
-    let projectsClone = projects;
-
-    if (e === "update") {
-      projectsClone = projects.slice().sort((a, b) => {
+    if (opt === "updatedAt") {
+      sortedProjects = projects.slice().sort((a, b) => {
         return parseInt(a.updatedAt.split("-").join("")) <
           parseInt(b.updatedAt.split("-").join(""))
           ? -1
           : parseInt(a.updatedAt.split("-").join("")) >
             parseInt(b.updatedAt.split("-").join(""))
-            ? 1
-            : 0;
+          ? 1
+          : 0;
       });
-      dispatch(setProjectList(projectsClone));
-      // console.log("sortHandler projectClone");
-      // console.log(projectsClone);
-    } else if (e === "create") {
-      projectsClone = projects.slice().sort((a, b) => {
+      dispatch(setProjectList(sortedProjects));
+      setCurSort("업데이트 순");
+    } else if (opt === "createdAt") {
+      sortedProjects = projects.slice().sort((a, b) => {
         return parseInt(a.createdAt.split("-").join("")) <
           parseInt(b.createdAt.split("-").join(""))
           ? -1
           : parseInt(a.createdAt.split("-").join("")) >
             parseInt(b.createdAt.split("-").join(""))
-            ? 1
-            : 0;
+          ? 1
+          : 0;
       });
-      // console.log("sortHandler projectClone");
-      // console.log(projectsClone);
-      dispatch(setProjectList(projectsClone));
+      dispatch(setProjectList(sortedProjects));
+      setCurSort("생성일 순");
     }
-    setSortModal(!sortModal);
+    setSorterOn(!sorterOn);
   };
 
   useEffect(async () => {
@@ -144,51 +158,45 @@ export function Main() {
 
   return (
     <div>
-      {/* {console.log(projects)} */}
+      {modal === "createProject" ? (
+        <CreateProjectModal modalHandler={modalHandler} />
+      ) : null}
       <Navigator />
-      <Backdrop onClick={isClicked ? modalHandler : null}>
-        <Maincomponent>
-          <div className="startbox">
-            <div className="startinfo">
-              <h2>Lorem ipsum</h2>
-              img elements must have an alt prop, either with meaningful text,
-              or an empty string for decorative images
-            </div>
-            <div className="startbutton" onClick={modalHandler}>
-              start
-            </div>
+      <Container>
+        <Banner>
+          <h2>모든 것은 아이디어에서 시작됩니다.</h2>
+          <div className="project-intro">
+            Luca와 함께 아이디어를 기록하고, 구조화하세요.
           </div>
-          <div className="projectcontainer">
-            <div className="sortbox">
-              {sortModal ? (
-                <div>
-                  <div onClick={sortHandler}>Sort</div>
-                  {/* <Sortmodal sortHandler={sortHandler}/> */}
-                </div>
-              ) : (
-                <div onClick={sortHandler}>Sort</div>
-              )}
-            </div>
-            {sortModal ? <Sortmodal sortHandler={sortHandler} /> : null}
-            <div className="projectbox">
-              {projects.map((el, i) => {
-                return <Projectcard projectInfo={el} index={i} key={el.id} />;
-              })}
-            </div>
+          <div className="project-intro">
+            팀원을 초대해 브레인스토밍을 함께 하세요.
           </div>
-        </Maincomponent>
+          <div className="start" onClick={() => modalHandler("createProject")}>
+            시작하기
+          </div>
+        </Banner>
 
-        {isClicked ? (
-          <CreateProjectModal
-            modalHandler={modalHandler}
-          // newProjectHandler={newProjectHandler}
-          />
-        ) : null}
-      </Backdrop>
-      <div className="footer"></div>
-      <Footer />
+        <Section>
+          <Sorter>
+            <div className="dropdowner" onClick={() => setSorterOn(!sorterOn)}>
+              {curSort} <i className="fa-solid fa-caret-down"></i>
+              {sorterOn ? (
+                <div className="selection">
+                  <div onClick={() => sortHandler("updatedAt")}>
+                    업데이트 순
+                  </div>
+                  <div onClick={() => sortHandler("createdAt")}>생성일 순</div>
+                </div>
+              ) : null}
+            </div>
+          </Sorter>
+          <Gallery>
+            {projects.map((project, i) => (
+              <Projectcard projectInfo={project} index={i} key={project.id} />
+            ))}
+          </Gallery>
+        </Section>
+      </Container>
     </div>
   );
 }
-
-export default Main;

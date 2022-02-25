@@ -1,15 +1,15 @@
 import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 // import { setIsLogin } from "../redux/slicer/loginSlice";
 // import { setUserInfo } from "../redux/slicer/userInfoSlice";
 import { setIsLogin, setUserInfo, setProjectList } from "../redux/rootSlice";
 import axios from "axios";
-import googleIcon from '../asset/images/login_icon_google.svg';
-import kakaoIcon from '../asset/images/login_icon_kakao.svg';
-import naverIcon from '../asset/images/login_icon_naver.svg';
-import { color, device, radius, boxShadow } from '../styles';
+import googleIcon from "../asset/images/login_icon_google.svg";
+import kakaoIcon from "../asset/images/login_icon_kakao.svg";
+import naverIcon from "../asset/images/login_icon_naver.svg";
+import { color, device, radius, boxShadow } from "../styles";
 import {
   requestKakaoLogin,
   requestNaverLogin,
@@ -17,7 +17,7 @@ import {
 } from "../api";
 // ============모달 props 사용법==========================
 
-// const [modal, SetModal] = useState(false);
+// const [modal, setModal] = useState(false);
 
 // const modalHandler = (modalType) => {
 //   setModal(modalType);
@@ -67,7 +67,7 @@ const ModalView = styled.div`
   //min-height: 400px;
   margin: auto;
   padding: 3em;
-  background-color:white;
+  background-color: white;
   display: flex;
   flex-direction: column;
   border-radius: 1em;
@@ -150,13 +150,13 @@ const ModalView = styled.div`
       }
     }
     img {
-    width: 60px;
-    height: 60px;
-    margin: 0.5rem;
-    border-radius: 50%;
-    align-items: center;
-    cursor: pointer;
-  }
+      width: 60px;
+      height: 60px;
+      margin: 0.5rem;
+      border-radius: 50%;
+      align-items: center;
+      cursor: pointer;
+    }
   }
 `;
 
@@ -190,7 +190,7 @@ export function LoginModal({ modalHandler }) {
           dispatch(setIsLogin(true));
           dispatch(setUserInfo(res.data.data));
           modalHandler(false);
-          navigate("/")
+          navigate("/");
         }
       })
       .catch((err) => {
@@ -244,9 +244,21 @@ export function LoginModal({ modalHandler }) {
             </button>
           </div>
           <div>
-            <img src={kakaoIcon} alt='카카오 아이콘' onClick={requestKakaoLogin}></img>
-            <img src={googleIcon} alt='카카오 아이콘' onClick={requestGoogleLogin}></img>
-            <img src={naverIcon} alt='카카오 아이콘' onClick={requestNaverLogin}></img>
+            <img
+              src={kakaoIcon}
+              alt="카카오 아이콘"
+              onClick={requestKakaoLogin}
+            ></img>
+            <img
+              src={googleIcon}
+              alt="카카오 아이콘"
+              onClick={requestGoogleLogin}
+            ></img>
+            <img
+              src={naverIcon}
+              alt="카카오 아이콘"
+              onClick={requestNaverLogin}
+            ></img>
           </div>
         </div>
       </ModalView>
@@ -309,7 +321,11 @@ export function CreateProjectModal({ modalHandler }) {
   };
 
   const createNewProject = () => {
-    if (nameRef.current.value === "" || descRef.current.value === "" || keywordRef.current.value === "") {
+    if (
+      nameRef.current.value === "" ||
+      descRef.current.value === "" ||
+      keywordRef.current.value === ""
+    ) {
       alert("내용을 채워주세요");
     } else {
       axios
