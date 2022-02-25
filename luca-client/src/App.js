@@ -9,13 +9,11 @@ import Project from "./pages/project";
 import KakaoPage from "./pages/oauth/KakaoPage";
 import NaverPage from "./pages/oauth/NaverPage";
 import GooglePage from "./pages/oauth/GooglePage";
+import LoginLoading from "./pages/loginLoading"
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setIsLogin, setUserInfo } from "../src/redux/rootSlice";
 import axios from "axios";
-import TestMain from "./pages/testMain";
-import TestProject from "./pages/testProject";
-import LoginLoading from "./pages/loginLoading"
 
 function App() {
   const dispatch = useDispatch();
