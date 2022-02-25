@@ -455,7 +455,7 @@ export function CreateProjectModal({ modalHandler }) {
   );
 }
 
-export function DeleteProjectModal({ modalHandler }) {
+export function DeleteProjectModal({ modalHandler, deleteProjectHandler }) {
   return (
     <ModalBackdrop onClick={() => modalHandler(false)}>
       <ModalView onClick={(e) => e.stopPropagation()}>
@@ -464,7 +464,15 @@ export function DeleteProjectModal({ modalHandler }) {
         <div className="modal-footer">
           <div className="buttons">
             <button onClick={() => modalHandler(false)}>취소</button>
-            <button className="confirm">삭제</button>
+            <button
+              className="confirm"
+              onClick={() => {
+                deleteProjectHandler();
+                modalHandler(false);
+              }}
+            >
+              삭제
+            </button>
           </div>
         </div>
       </ModalView>
