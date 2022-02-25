@@ -27,7 +27,6 @@ function App() {
         withCredentials: true,
       })
       .then((data) => {
-        // console.log(data.data.data)
         dispatch(setUserInfo(data.data.data));
         dispatch(setIsLogin(true));
       })
