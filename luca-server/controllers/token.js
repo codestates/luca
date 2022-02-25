@@ -11,11 +11,11 @@ module.exports = {
   sendAccessToken: (res, accessToken, statusCode, data) => {
     return res
       .cookie("jwt", accessToken, {
-        domain: "localhost",
+        // domain: process.env.SERVER_DOMAIN,
         path: '/',
         maxAge: 24 * 6 * 60 * 10000,
-        // sameSite: 'none',
         httpOnly: true,
+        // sameSite: 'none',
         // secure: true,
       })
       .status(statusCode)

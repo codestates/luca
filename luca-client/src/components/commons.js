@@ -6,10 +6,11 @@ import { LoginModal } from "./modals";
 import axios from "axios";
 import { setIsLogin, setUserInfo } from "../redux/rootSlice.js";
 import { useNavigate } from "react-router-dom";
+import { color, device, contentWidth } from "../styles";
 
 const NavigatorContainer = styled.div`
   z-index: 999;
-  /* position: fixed; */
+  position: fixed;
   top: 0;
   width: 100vw;
   min-height: 10vh;
@@ -110,22 +111,25 @@ function Navigator() {
   };
 
   const logoutHandler = () => {
-    axios.get(`${process.env.REACT_APP_API_URL}/user/logout`, {
-      'Content-Type': 'application/json',
-      withCredentials: true
-    })
+    axios
+      .get(`${process.env.REACT_APP_API_URL}/user/logout`, {
+        "Content-Type": "application/json",
+        withCredentials: true,
+      })
       .then(() => {
         dispatch(setIsLogin(false));
-        dispatch(setUserInfo({
-          id: "",
-          email: "",
-          name: "",
-          isGuest: "",
-          isSocial: "",
-          createdAt: "",
-          updatedAt: ""
-        }));
-        navigate("/")
+        dispatch(
+          setUserInfo({
+            id: "",
+            email: "",
+            name: "",
+            isGuest: "",
+            isSocial: "",
+            createdAt: "",
+            updatedAt: "",
+          })
+        );
+        navigate("/");
       });
   };
 
@@ -138,39 +142,47 @@ function Navigator() {
       <div className="about">
         <Link to="/">about</Link>
       </div>
-      {isLogin ? (
-        <div className="profile">
-          <img
-            className="profile"
-            src="https://picsum.photos/300/300?random=1"
-          />
-          <div className="dropdown">
-            <div className="username">{userInfo.name}</div>
-            <Link to="/mypage" className="dropdown-index">
-              <i className="fa-solid fa-user"></i>
-              <div>마이페이지</div>
-            </Link>
-            <Link to="/mypage" className="dropdown-index">
-              <i className="fa-solid fa-gear"></i>
-              <div>설정</div>
-            </Link>
-            <div className="dropdown-index" onClick={logoutHandler}>
-              <i
-                className="fa-solid fa-right-from-bracket"
-                style={{ color: "#FF5D50" }}
-              ></i>
-              <div style={{ color: "#FF5D50" }}>로그아웃</div>
+      {isLogin ? 
+        (!userInfo.isGuest ? 
+          (
+            <div className="profile">
+            <img
+              className="profile"
+              src="https://picsum.photos/300/300?random=1"
+            />
+            <div className="dropdown">
+              <div className="username">{userInfo.name}</div>
+              <Link to="/mypage" className="dropdown-index">
+                <i className="fa-solid fa-user"></i>
+                <div>마이페이지</div>
+              </Link>
+              <Link to="/mypage" className="dropdown-index">
+                <i className="fa-solid fa-gear"></i>
+                <div>설정</div>
+              </Link>
+              <div className="dropdown-index" onClick={logoutHandler}>
+                <i
+                  className="fa-solid fa-right-from-bracket"
+                  style={{ color: "#FF5D50" }}
+                ></i>
+                <div style={{ color: "#FF5D50" }}>로그아웃</div>
+              </div>
             </div>
           </div>
-        </div>
-      ) : (
-        <div style={{ margin: "0 8vh" }}>
-          <Guest href="/signup">회원가입</Guest>
-          <Guest impact onClick={() => modalHandler("login")}>
-            로그인
-          </Guest>
-        </div>
-      )}
+          ):
+          <div style={{ margin: "0 8vh" }}>
+            <Guest impact onClick={logoutHandler}>체험 종료</Guest>
+          </div>
+          ) : 
+        (
+          <div style={{ margin: "0 8vh" }}>
+            <Guest href="/signup">회원가입</Guest>
+            <Guest impact onClick={() => modalHandler("login")}>
+              로그인
+            </Guest>
+          </div>
+        )
+      }
     </NavigatorContainer>
   );
 }
@@ -179,36 +191,134 @@ function Navigator() {
 
 const Backdrop = styled.div`
   min-width: 90vw;
-  min-height: 90vh;
-  margin: 0 5vw;
+  min-height: 100vh;
+  margin: 0 2vw;
   height: auto;
   display: flex;
   justify-content: center;
   /* background-color: #efffde; */
 `;
 
-// const Container = styled.div`
-//   min-height: 90vh;
-//   height: auto;
-//   flex: 1 0 auto;
-//   max-width: 1320px;
-//   margin: auto;
-// `;
+const Container = styled.div`
+  min-height: 100vh;
+  height: auto;
+  flex: 1 0 auto;
+  max-width: 1320px;
+  margin: auto;
+`;
 
-const FooterContainer = styled.div`
-  bottom: 0;
+// =======================================================
+
+const FooterContainer = styled.footer`
+  z-index: 999;
   width: 100vw;
-  min-height: 20vh;
-  background-color: rgb(70, 70, 70);
-  align-items: center;
-  display: flex;
+  background-color: ${color.white};
+  border-top: 1px solid ${color.primaryDark};
+  padding: 1rem;
+  color: ${color.primary};
+  @media ${device.laptop} {
+    padding: 2rem 0;
+  }
+`;
+
+const ContentContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  @media ${device.laptop} {
+    grid-template-columns: 1fr 1fr 1fr;
+    width: ${contentWidth};
+    margin: 0 auto;
+  }
+`;
+
+const LogoSection = styled.div`
+  grid-column: 1 / span 2;
+  border-bottom: 1px solid ${color.primaryBorder};
+  img {
+    padding-top: 18px;
+  }
+  p {
+    color: ${color.primary};
+    font-size: 0.85rem;
+  }
+  @media ${device.laptop} {
+    grid-column: 1 / span 1;
+    border-bottom: none;
+  }
+`;
+
+const LinksContainer = styled.div`
+  p {
+    font-weight: bold;
+  }
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  svg {
+    transition: all 0.2s ease-in-out;
+    margin-left: 0.25rem;
+  }
+  a:hover {
+    color: ${color.primaryDark};
+    svg {
+      margin-left: 0.5rem;
+    }
+  }
+  @media ${device.laptop} {
+    border-left: 1px solid ${color.primaryBorder};
+    padding-left: 1rem;
+    ul {
+      flex-direction: row;
+      gap: 2rem;
+    }
+    a {
+      word-break: keep-all;
+    }
+  }
 `;
 
 function Footer() {
   return (
     <FooterContainer>
+      <ContentContainer>
+        <LogoSection>
+          <img src="Luca_logo.png" height="32px" />
+          <p>Copyright © 2022 Luca</p>
+        </LogoSection>
+        <LinksContainer>
+          <p>About Luca</p>
+          <ul>
+            <li>
+              <a href="https://github.com/codestates/luca">Repository</a>
+            </li>
+            <li>
+              <a href="https://github.com/codestates/luca/wiki">Wiki</a>
+            </li>
+          </ul>
+        </LinksContainer>
+        <LinksContainer>
+          <p>Contact</p>
+          <ul>
+            <li>
+              <a href="https://github.com/codestates/luca">김코딩</a>
+            </li>
+            <li>
+              <a href="https://github.com/codestates/luca">김코딩</a>
+            </li>
+            <li>
+              <a href="https://github.com/codestates/luca">김코딩</a>
+            </li>
+            <li>
+              <a href="https://github.com/codestates/luca">김코딩</a>
+            </li>
+          </ul>
+        </LinksContainer>
+      </ContentContainer>
     </FooterContainer>
-  )
+  );
 }
 
-export { Navigator, Backdrop, Footer };
+export { Navigator, Backdrop, Container, Footer };

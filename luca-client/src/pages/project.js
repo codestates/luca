@@ -6,20 +6,20 @@ import Cardboard from "../components/cardboard";
 import { useEffect, useCallback, useState } from "react";
 import io from "socket.io-client";
 import { useSelector, useDispatch } from "react-redux";
-import { setCardList, setMindmapTree, setBlockData } from '../redux/rootSlice';
+import { setCardList, setMindmapTree, setBlockData } from "../redux/rootSlice";
 import { useNavigate } from "react-router-dom";
-// import Timer from '../components/timer';
 
 export default function Project() {
-  const socket = io.connect(`${process.env.REACT_APP_API_URL}`)
-  const curProjectId = window.location.href.split("/").reverse()[0]
+  const socket = io.connect(`${process.env.REACT_APP_API_URL}`);
+  const curProjectId = window.location.href.split("/").reverse()[0];
+
   // const navigate = useNavigate();
   // navigate(`http://${process.env.REACT_APP_API_URL}/project/${curProjectId}`);
   const dispatch = useDispatch();
 
   const [dragItemId, setDragItemId] = useState(null);
 
-  const roomName = `${curProjectId}`
+  const roomName = `${curProjectId}`;
   const userId = useSelector((state) => state.user.userInfo.id);
 
   // const [isBlock, setIsBlock] = useState(false);
@@ -34,13 +34,13 @@ export default function Project() {
       // console.log(`Number of participants: ${count}`);
       console.log("SOCKETIO connect EVENT: ", data, " client connect");
     });
-    
+
     socket.emit("initData", roomName);
 
     socket.on("initData", (cardInfo, mindmapInfo) => {
       dispatch(setCardList(cardInfo));
       dispatch(setMindmapTree(mindmapInfo));
-    })
+    });
   }, []);
 
   useEffect(() => {
@@ -53,27 +53,39 @@ export default function Project() {
   // 카드를 추가한다.
   const createCard = () => {
     socket.emit("createCard", userId, "data", roomName);
-  }
+  };
 
   // 카드를 삭제한다.
   const deleteCard = (id) => {
     socket.emit("deleteCard", id, roomName);
-  }
+  };
 
   const mouseDown = (id) => {
-    console.log('마우스 다운')
+    console.log("마우스 다운");
     // setIsBlock(true);
-    socket.emit("editBlockStart", { cardId: Number(id), isBlock: true }, roomName);
-  }
+    socket.emit(
+      "editBlockStart",
+      { cardId: Number(id), isBlock: true },
+      roomName
+    );
+  };
   const mouseUp = (id) => {
-    console.log('마우스 업')
+    console.log("마우스 업");
     // setIsBlock(false);
-    socket.emit("editBlockEnd", { cardId: Number(id), isBlock: false }, roomName);
-  }
+    socket.emit(
+      "editBlockEnd",
+      { cardId: Number(id), isBlock: false },
+      roomName
+    );
+  };
 
   const addMindmapHandler = (id) => {
-    socket.emit("addMindmap", {cardId: dragItemId, parentId: id}, roomName);
-  }
+    socket.emit("addMindmap", { cardId: dragItemId, parentId: id }, roomName);
+  };
+
+  const deleteMindmapHandler = (id) => {
+    socket.emit("deleteMindmap", { cardId: id }, roomName);
+  };
 
   // 배열이 업데이트될 때마다 계속해서 추가로 리스너가 등록되는 것을 방지하기 위해 useEffect 사용)
   useEffect(() => {
@@ -87,28 +99,40 @@ export default function Project() {
     });
 
     socket.on("editBlockStart", (data) => {
-      console.log('==asdf==',data);
-      dispatch(setBlockData(data))
+      console.log("==asdf==", data);
+      dispatch(setBlockData(data));
       console.log(data);
     });
 
     socket.on("editBlockEnd", (data) => {
-      console.log('==asdf==',data);
-      dispatch(setBlockData(data))
-      console.log('==asdf==',data);
+      console.log("==asdf==", data);
+      dispatch(setBlockData(data));
+      console.log("==asdf==", data);
     });
 
     socket.on("addMindmap", (cardInfo, mindmapInfo) => {
-      dispatch(setCardList(cardInfo))
-      dispatch(setMindmapTree(mindmapInfo))
+      dispatch(setCardList(cardInfo));
+      dispatch(setMindmapTree(mindmapInfo));
     });
-  }, [])
+
+    socket.on("deleteMindmap", (cardInfo, mindmapInfo) => {
+      dispatch(setCardList(cardInfo));
+      dispatch(setMindmapTree(mindmapInfo));
+    });
+  }, []);
 
   return (
     <div>
       {/* <Navigator /> */}
       <Canvas3 addMindmapHandler={addMindmapHandler} />
-      <Cardboard createCard={createCard} deleteCard={deleteCard} addMindmapHandler={addMindmapHandler} setDragItemId={setDragItemId} mouseDown={mouseDown} mouseUp={mouseUp} />
+      <Cardboard
+        createCard={createCard}
+        deleteCard={deleteCard}
+        addMindmapHandler={addMindmapHandler}
+        setDragItemId={setDragItemId}
+        mouseDown={mouseDown}
+        mouseUp={mouseUp}
+      />
     </div>
   );
 }
