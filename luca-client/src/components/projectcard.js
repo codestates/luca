@@ -130,8 +130,6 @@ const ProjectCover = styled.div`
   }
 `;
 
-//projects에서 해당 프로젝트를 구분하기 위해 메인페이지에서 projects의 인덱스를 내려주었습니다.
-
 function Projectcard({ projectInfo, index }) {
   const dispatch = useDispatch();
   const projects = useSelector((state) => state.user.projects);

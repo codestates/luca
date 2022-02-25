@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react/cjs/react.development";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { setCardList } from "../redux/rootSlice";
@@ -212,6 +212,8 @@ export default function Cardboard({
 
   const cardDragStart = (e) => {
     setDragItemId(e.target.id);
+    // setIsAdderOpen(false)
+    // setIsCardContOpen(false)
     mouseDown(e.target.id);
     console.log("drag start! card id: ", e.target.id);
   };

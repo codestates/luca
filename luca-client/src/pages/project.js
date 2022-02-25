@@ -14,6 +14,7 @@ import Timer from "../components/timer";
 export default function Project() {
   const socket = io.connect(`${process.env.REACT_APP_API_URL}`);
   const curProjectId = window.location.href.split("/").reverse()[0];
+
   // const navigate = useNavigate();
   // navigate(`http://${process.env.REACT_APP_API_URL}/project/${curProjectId}`);
   const dispatch = useDispatch();
@@ -30,7 +31,6 @@ export default function Project() {
 
   // 처음 입장할 때만 소켓 연결해준다.
   useEffect(() => {
-    console.log(roomName);
     socket.emit("enterRoom", roomName);
     socket.on("enterRoom", (data, count) => {
       // console.log(`Number of participants: ${count}`);
@@ -40,7 +40,6 @@ export default function Project() {
     socket.emit("initData", roomName);
 
     socket.on("initData", (cardInfo, mindmapInfo) => {
-      console.log("==a==");
       dispatch(setCardList(cardInfo));
       dispatch(setMindmapTree(mindmapInfo));
     });
@@ -86,6 +85,10 @@ export default function Project() {
     socket.emit("addMindmap", { cardId: dragItemId, parentId: id }, roomName);
   };
 
+  const deleteMindmapHandler = (id) => {
+    socket.emit("deleteMindmap", { cardId: id }, roomName);
+  };
+
   // 배열이 업데이트될 때마다 계속해서 추가로 리스너가 등록되는 것을 방지하기 위해 useEffect 사용)
   useEffect(() => {
     socket.on("createCard", (data) => {
@@ -113,12 +116,16 @@ export default function Project() {
       dispatch(setCardList(cardInfo));
       dispatch(setMindmapTree(mindmapInfo));
     });
+
+    socket.on("deleteMindmap", (cardInfo, mindmapInfo) => {
+      dispatch(setCardList(cardInfo));
+      dispatch(setMindmapTree(mindmapInfo));
+    });
   }, []);
 
   return (
     <div>
       {/* <Navigator /> */}
-      {/* <Timer /> */}
       <Canvas3 addMindmapHandler={addMindmapHandler} />
       <Cardboard
         createCard={createCard}

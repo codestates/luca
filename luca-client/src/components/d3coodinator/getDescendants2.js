@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react/cjs/react.development";
+import { useEffect, useRef } from "react";
 // import { select, hierarchy, tree, linkVertical } from "d3";
 import styled from "styled-components";
 import * as d3 from "d3";

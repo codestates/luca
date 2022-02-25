@@ -188,7 +188,7 @@ const Backdrop = styled.div`
   height: auto;
   display: flex;
   justify-content: center;
-  background-color: #efffde;
+  /* background-color: #efffde; */
 `;
 
 const Container = styled.div`
