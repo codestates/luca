@@ -11,7 +11,7 @@ import Footer from '../components/footer';
 const Container = styled.div`
   min-width: 90vw;
   min-height: 50vh;
-  margin: 10vh 10vh 10vh 10vh;
+  margin: 20vh 10vh 10vh 10vh;
   display: flex;
 `;
 
@@ -25,7 +25,6 @@ const Left = styled(Section)`
   height: 55vh;
   margin: 0 15vh;
   background: url("https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/damien-hirst-1-1538661596.jpg");
-  /* background: url("https://www.google.com/url?sa=i&url=https%3A%2F%2Fdepositphotos.com%2Fvector-images%2Fanonymous-profile-pic.html&psig=AOvVaw2d7MHj-Sn-ATS-WXFpOjJg&ust=1645776392089000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCNjn5ovxl_YCFQAAAAAdAAAAABAD"); */
   background-size: cover;
   background-repeat: no-repeat;
   border-radius: 30vh;

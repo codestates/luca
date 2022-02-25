@@ -266,6 +266,7 @@ export default function Signup() {
   const sendMail = (email) => {
     axios
       .post(`${process.env.REACT_APP_API_URL}/user/checkAndMail`, { email: email }, {
+      // .post(`https://localhost:4000/user/checkAndMail`, { email: email }, {
         "Content-Type": "application/json",
         withCredentials: true,
       }).then((res => {
