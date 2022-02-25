@@ -13,28 +13,32 @@ const ProjectcardBody = styled.div`
   justify-content: space-around;
   height: 100px;
   margin-top: 20px;
+  border-radius: 20px;
   > div.projectcardhead {
-    background-color: #f5f5f5;
+    /* background-color: #f5f5f5; */
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
     height: 40px;
-    > div.projectname {
-      display: flex;
-      justify-content: row;
-      align-items: center;
-      > h2 {
-        min-width: 200px;
-        width: auto;
-      }
-      > div.date {
-        margin-left: 20px;
+    > Link {
+      > div.projectname {
+        display: flex;
+        justify-content: row;
+        align-items: center;
+        > h2 {
+          min-width: 200px;
+          width: auto;
+        }
+        > div.date {
+          margin-left: 20px;
+        }
       }
     }
     > div.projectfunc {
       display: flex;
       text-align: center;
+      justify-content: center;
       height: 100%;
       > div.acceptbox {
         display: flex;
@@ -45,7 +49,7 @@ const ProjectcardBody = styled.div`
         margin-right: 20px;
       }
       > div.type {
-        border: solid;
+        border: solid 2px;
         height: 90%;
         width: 90px;
         display: flex;
@@ -54,21 +58,26 @@ const ProjectcardBody = styled.div`
         border-radius: 30px;
       }
       > div.modifybox {
-        border: solid;
-        height: 90%;
+        /* border: solid 2px; */
+        height: 100%;
         width: 100px;
         margin-left: 20px;
         display: flex;
         align-items: center;
         justify-content: space-around;
-
+        > i {
+          font-size: 25px;
+        }
         > div {
-          border: solid green;
+          /* border: solid green; */
+          display: flex;
+          align-items: center;
+          font-size: 20px;
         }
       }
       > div.modifybox:hover {
-        /* color: red; */
-        box-shadow: 0px 0px 10px black;
+        color: gray;
+        /* box-shadow: 0px 0px 10px black; */
       }
       > div.modifybox:active {
         color: red;
@@ -88,6 +97,7 @@ const ProjectcardBody = styled.div`
     }
   }
 `;
+
 
 function Projectcard({ projectInfo, index }) {
   //projects에서 해당 프로젝트를 구분하기 위해 메인페이지에서 projects의 인덱스를 내려주었습니다.
@@ -180,7 +190,7 @@ function Projectcard({ projectInfo, index }) {
         <Link to={`/project/${projectInfo.id}`}>
           <div className="projectname">
             <h2>{isClicked ? <input ref={titleRef} /> : projectInfo.title}</h2>
-            <div className="date">{projectInfo.updatedAt}</div>
+            <div className="date">{projectInfo.createdAt}</div>
           </div>
         </Link>
         <div className="projectfunc">

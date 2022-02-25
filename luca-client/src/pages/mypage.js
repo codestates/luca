@@ -1,18 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { Savealert } from "../components/modals";
-import { Navigator, Backdrop, Footer } from "../components/commons";
+import { Navigator, Backdrop } from "../components/commons";
 import { useSelector, useDispatch } from "react-redux";
 import { setIsLogin, setUserInfo } from "../redux/rootSlice.js";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Footer from '../components/footer';
 
 const Container = styled.div`
   min-width: 90vw;
   min-height: 50vh;
   margin: 20vh 10vh 10vh 10vh;
   display: flex;
-`;
+  `;
 
 const Section = styled.div`
   border-radius: 1vh;
@@ -24,9 +25,23 @@ const Left = styled(Section)`
   height: 55vh;
   margin: 0 15vh;
   background: url("https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/damien-hirst-1-1538661596.jpg");
+  /* background: url("https://www.google.com/url?sa=i&url=https%3A%2F%2Fdepositphotos.com%2Fvector-images%2Fanonymous-profile-pic.html&psig=AOvVaw2d7MHj-Sn-ATS-WXFpOjJg&ust=1645776392089000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCNjn5ovxl_YCFQAAAAAdAAAAABAD"); */
   background-size: cover;
   background-repeat: no-repeat;
   border-radius: 30vh;
+  > i {
+    position: relative;
+    top: 50vh;
+    left: 50vh;
+    font-size: 3vh;
+    color: silver;
+  }
+  > i:hover {
+    color: gray;
+  }
+  > i:active {
+    color: orange;
+  }
 `;
 
 const Right = styled(Section)`
@@ -126,8 +141,14 @@ export default function Mypage() {
         .catch((err) => {
           alert("error");
         });
+    }else{
+      setIsEditOn(false)
     }
   };
+
+  const UploadImage = () => {
+    
+  }
 
   useEffect(() => {
     console.log(userInfo);
@@ -151,7 +172,9 @@ export default function Mypage() {
     <div>
       <Navigator />
       <Container>
-        <Left />
+        <Left>
+          {isEditOn ? <i onClick={UploadImage} className="fa-regular fa-pen-to-square"></i>: null}
+        </Left>
         {isEditOn ? (
           <Right>
             <Upper>

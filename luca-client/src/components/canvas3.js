@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { useState } from "react/cjs/react.development";
+import { useState } from "react";
 import styled from "styled-components";
 import { radialNodes, radialLinkes } from "./d3coodinator/getDescendants";
 import { select, hierarchy, tree, linkRadial, cluster, selectAll } from "d3";
@@ -45,6 +45,7 @@ const Controller = styled.div`
   }
   > button:active {
     transform: translateY(2px);
+  }
 `;
 
 const Exbox = styled.div`

@@ -10,7 +10,7 @@ import { setCardList, setMindmapTree, setBlockData } from '../redux/rootSlice';
 import { useNavigate } from "react-router-dom";
 
 export default function Project() {
-const socket = io.connect(`${process.env.REACT_APP_API_URL}`)
+  const socket = io.connect(`${process.env.REACT_APP_API_URL}`)
   const curProjectId = window.location.href.split("/").reverse()[0]
   // const navigate = useNavigate();
   // navigate(`http://${process.env.REACT_APP_API_URL}/project/${curProjectId}`);
@@ -74,6 +74,10 @@ const socket = io.connect(`${process.env.REACT_APP_API_URL}`)
     socket.emit("addMindmap", {cardId: dragItemId, parentId: id}, roomName);
   }
 
+  const deleteMindmapHandler = (id) => {
+    socket.emit("deleteMindmap", { cardId: id }, roomName);
+  }
+
   // 배열이 업데이트될 때마다 계속해서 추가로 리스너가 등록되는 것을 방지하기 위해 useEffect 사용)
   useEffect(() => {
     socket.on("createCard", (data) => {
@@ -98,6 +102,11 @@ const socket = io.connect(`${process.env.REACT_APP_API_URL}`)
     });
 
     socket.on("addMindmap", (cardInfo, mindmapInfo) => {
+      dispatch(setCardList(cardInfo))
+      dispatch(setMindmapTree(mindmapInfo))
+    });
+
+    socket.on("deleteMindmap", (cardInfo, mindmapInfo) => {
       dispatch(setCardList(cardInfo))
       dispatch(setMindmapTree(mindmapInfo))
     });

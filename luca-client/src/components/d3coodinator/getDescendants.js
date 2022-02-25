@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react/cjs/react.development";
+import { useEffect, useRef } from "react";
 import { select, hierarchy, tree, linkRadial, cluster, selectAll } from "d3";
 
 const rawData = {
@@ -31,8 +31,18 @@ const rawData = {
         },
       ],
     },
+    {
+      id: "4",
+      name: "Reiner",
+      children: [{ name: "Historia" }, { name: "Bertoldt" }, { name: "Sasha" }],
+    },
   ],
 };
+
+
+// size 바뀔때마다
+// (mapConRef.current.offsetWidth) 를 기준 dimensions로
+// descendants 와 links 를 리턴하는 함수형태로 리팩토링할 것
 
 // const dimensions = [window.innerWidth * 0.8, window.innerHeight * 0.8];
 const dimensions = [window.innerWidth * 0.4, window.innerHeight * 0.4];
