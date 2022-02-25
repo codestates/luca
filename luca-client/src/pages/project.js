@@ -51,8 +51,8 @@ export default function Project() {
   }, []);
 
   // 카드를 추가한다.
-  const createCard = () => {
-    socket.emit("createCard", userId, "data", roomName);
+  const createCard = (newCardContent) => {
+    socket.emit("createCard", userId, newCardContent, roomName);
   };
 
   // 카드를 삭제한다.
