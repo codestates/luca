@@ -15,8 +15,8 @@ module.exports = {
         path: '/',
         maxAge: 24 * 6 * 60 * 10000,
         httpOnly: true,
-        sameSite: 'none',
-        secure: false,
+        // sameSite: 'none',
+        // secure: true,
       })
       .status(statusCode)
       .json(data);

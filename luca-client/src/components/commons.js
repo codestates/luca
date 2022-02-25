@@ -142,39 +142,47 @@ function Navigator() {
       <div className="about">
         <Link to="/">about</Link>
       </div>
-      {isLogin ? (
-        <div className="profile">
-          <img
-            className="profile"
-            src="https://picsum.photos/300/300?random=1"
-          />
-          <div className="dropdown">
-            <div className="username">{userInfo.name}</div>
-            <Link to="/mypage" className="dropdown-index">
-              <i className="fa-solid fa-user"></i>
-              <div>마이페이지</div>
-            </Link>
-            <Link to="/mypage" className="dropdown-index">
-              <i className="fa-solid fa-gear"></i>
-              <div>설정</div>
-            </Link>
-            <div className="dropdown-index" onClick={logoutHandler}>
-              <i
-                className="fa-solid fa-right-from-bracket"
-                style={{ color: "#FF5D50" }}
-              ></i>
-              <div style={{ color: "#FF5D50" }}>로그아웃</div>
+      {isLogin ? 
+        (!userInfo.isGuest ? 
+          (
+            <div className="profile">
+            <img
+              className="profile"
+              src="https://picsum.photos/300/300?random=1"
+            />
+            <div className="dropdown">
+              <div className="username">{userInfo.name}</div>
+              <Link to="/mypage" className="dropdown-index">
+                <i className="fa-solid fa-user"></i>
+                <div>마이페이지</div>
+              </Link>
+              <Link to="/mypage" className="dropdown-index">
+                <i className="fa-solid fa-gear"></i>
+                <div>설정</div>
+              </Link>
+              <div className="dropdown-index" onClick={logoutHandler}>
+                <i
+                  className="fa-solid fa-right-from-bracket"
+                  style={{ color: "#FF5D50" }}
+                ></i>
+                <div style={{ color: "#FF5D50" }}>로그아웃</div>
+              </div>
             </div>
           </div>
-        </div>
-      ) : (
-        <div style={{ margin: "0 8vh" }}>
-          <Guest href="/signup">회원가입</Guest>
-          <Guest impact onClick={() => modalHandler("login")}>
-            로그인
-          </Guest>
-        </div>
-      )}
+          ):
+          <div style={{ margin: "0 8vh" }}>
+            <Guest impact onClick={logoutHandler}>체험 종료</Guest>
+          </div>
+          ) : 
+        (
+          <div style={{ margin: "0 8vh" }}>
+            <Guest href="/signup">회원가입</Guest>
+            <Guest impact onClick={() => modalHandler("login")}>
+              로그인
+            </Guest>
+          </div>
+        )
+      }
     </NavigatorContainer>
   );
 }
