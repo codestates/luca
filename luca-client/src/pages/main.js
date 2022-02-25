@@ -8,9 +8,10 @@ import {
   setProjectList,
   updateProjectList,
   setProjectId,
+  setIsLogin
 } from "../redux/rootSlice";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 //import { compose } from '@reduxjs/toolkit';
 
 const Container = styled.div`
@@ -110,6 +111,7 @@ export default function Main() {
   let projects = useSelector((state) => state.user.projects);
   console.log("projects: ", projects);
 
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const [modal, setModal] = useState(false);
@@ -152,7 +154,16 @@ export default function Main() {
   };
 
   useEffect(async () => {
-    const result = await axios.get(`${process.env.REACT_APP_API_URL}/project`);
+    const result = await axios
+    .get(`${process.env.REACT_APP_API_URL}/project`, {
+      "Content-Type": "application/json",
+      withCredentials: true,
+    }).catch((err) => {
+      if(err.response.status === 401) {
+        setIsLogin(false);
+        navigate("/");
+      }
+    });
     dispatch(setProjectList(result.data.data));
   }, []);
 
