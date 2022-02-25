@@ -166,7 +166,7 @@ export default function Canvas3({ addMindmapHandler }) {
           </Controller>
 
           <TransformComponent>
-            <ExCont>
+            {/* <ExCont>
               <img src="https://picsum.photos/300/300?random=1" />
               <img src="https://picsum.photos/300/300?random=2" />
               <img src="https://picsum.photos/300/300?random=3" />
@@ -182,45 +182,45 @@ export default function Canvas3({ addMindmapHandler }) {
               <img src="https://picsum.photos/300/300?random=5" />
               <img src="https://picsum.photos/300/300?random=6" />
               <img src="https://picsum.photos/300/300?random=7" />
-              <img src="https://picsum.photos/300/300?random=8" />
-              {/* 흰 배경 컴포넌트(scaleable)를 깔고 그 위에 mindmap 렌더하도록 canvas 수정 */}
-            </ExCont>
-            {/* <Container> */}
-            {/* {radialNodes.map((node, i) => (
-              <Exbox
-                key={i}
-                parent={node.data.parent}
-                id={node.data.id}
-                coordY={node.y}
-                coordX={node.x}
-                //onClick={blockHandler}
-                onDragOver={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  console.log(`- dragover in node (id: ${e.target.id}) -`);
-                }}
-                // onDragOver -> onDrop
-                onDrop={dropHandler}
-              >
-                {node.data.content}
-              </Exbox>
-            ))}
-            <svg width={"100vw"} height={"100vh"}>
-              {radialLinkes.map((link, i) => {
-                return (
-                  <line
-                    key={i}
-                    x1={link.source.x}
-                    y1={link.source.y}
-                    x2={link.target.x}
-                    y2={link.target.y}
-                    stroke="lightgrey"
-                    strokeWidth="2"
-                  />
-                );
-              })}
-            </svg> */}
-            {/* </Container> */}
+              <img src="https://picsum.photos/300/300?random=8" /> */}
+            {/* 흰 배경 컴포넌트(scaleable)를 깔고 그 위에 mindmap 렌더하도록 canvas 수정 */}
+            {/* </ExCont> */}
+            <Container>
+              {radialNodes.map((node, i) => (
+                <Exbox
+                  key={i}
+                  parent={node.data.parent}
+                  id={node.data.id}
+                  coordY={node.y}
+                  coordX={node.x}
+                  //onClick={blockHandler}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log(`- dragover in node (id: ${e.target.id}) -`);
+                  }}
+                  // onDragOver -> onDrop
+                  onDrop={dropHandler}
+                >
+                  {node.data.content}
+                </Exbox>
+              ))}
+              <svg width={"100vw"} height={"100vh"}>
+                {radialLinkes.map((link, i) => {
+                  return (
+                    <line
+                      key={i}
+                      x1={link.source.x}
+                      y1={link.source.y}
+                      x2={link.target.x}
+                      y2={link.target.y}
+                      stroke="lightgrey"
+                      strokeWidth="2"
+                    />
+                  );
+                })}
+              </svg>
+            </Container>
           </TransformComponent>
         </>
       )}

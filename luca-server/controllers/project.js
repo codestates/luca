@@ -19,7 +19,7 @@ module.exports = {
                             attributes: []
                         }
                     ],
-                    order: [['createdAt', 'DESC']],
+                    order: [['createdAt', 'DESC'], ['id', 'DESC']],
                     attributes: ['id', 'title', 'desc', 'isTeam', 'admin', 'createdAt', 'updatedAt', [Sequelize.col('users_projects.isAccept'), 'isAccept']],
                     where: {
                         '$users_projects.userId$': verifyInfo.id

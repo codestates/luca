@@ -51,7 +51,7 @@ module.exports = {
           maxAge: 24 * 6 * 60 * 10000,
           httpOnly: true,
           // sameSite: 'none',
-          // secure: false,
+          // secure: true,
         });
         return res.status(200).send({ message: "Signout succeed" });
       }
