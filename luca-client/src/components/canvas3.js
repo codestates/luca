@@ -1,11 +1,11 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { useState } from "react";
 import styled from "styled-components";
 //import { radialNodes, radialLinkes } from "./d3coodinator/getDescendants";
 import { select, hierarchy, tree, linkRadial, cluster, selectAll } from "d3";
 import { useSelector } from "react-redux";
-import Timer from './timer';
+import Timer from "./timer";
 
 const Container = styled.div`
   width: 99vw;
@@ -73,9 +73,18 @@ const Exbox = styled.div`
 `;
 
 export default function Canvas3({ addMindmapHandler }) {
-  let projectIdRef = window.location.href.split("/").reverse()[0]; // projectIdRef === '12'(string)
-
+  // let projectIdRef = window.location.href.split("/").reverse()[0]; // projectIdRef === '12'(string)
   const rawData = useSelector((state) => state.user.mindmapTree);
+
+  const [disabled, setDisabled] = useState(false);
+  // 화면이 pan 되지 않으면서 마인드맵의 노드를 drag하기 위해 필요합니다.
+  // 마인드맵의 노드를 onDragStart 이벤트시에는 TransformWrapper 의 disabled={true},
+  // onDragEnd 이벤트시에는 TransformWrapper 의 disabled = {false} 로 바꿔줘야 합니다.
+
+  const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
+  // 우클릭시 드롭다운메뉴 이벤트를 위한 마우스 좌표 객체입니다.
+
+  const [nodeOption, setNodeOption] = useState(false);
 
   const root = hierarchy(rawData);
   const treeLayout = tree()
@@ -117,10 +126,6 @@ export default function Canvas3({ addMindmapHandler }) {
   //console.log("radialLinkes: ", radialLinkes);
   //console.log("links: ", links);
 
-  const [disabled, setDisabled] = useState(false);
-  // 화면이 pan 되지 않으면서 마인드맵의 노드를 drag하기 위해 필요합니다.
-  // 마인드맵의 노드를 onDragStart 이벤트시에는 TransformWrapper 의 disabled={true},
-  // onDragEnd 이벤트시에는 TransformWrapper 의 disabled = {false} 로 바꿔줘야 합니다.
   const blockHandler = () => {
     setDisabled(!disabled);
   };
@@ -133,6 +138,20 @@ export default function Canvas3({ addMindmapHandler }) {
     console.log("dropped on node! node id: ", e.target.id);
     // 노드에 드롭 시 노드 id를 가져왔습니다. 이제 mindmap 데이터에서 노드 id를 찾아 자식노드로 추가해줘야합니다.
   };
+
+  const handleContextMenu = useCallback(
+    (e) => {
+      e.preventDefault();
+      setAnchorPoint({ x: e.pageX, y: e.pageY });
+      setNodeOption(true);
+    },
+    [setAnchorPoint, setNodeOption]
+  );
+
+  useEffect(() => {
+    document.addEventListener("contextmenu", handleContextMenu);
+    document.removeEventListener("contextmenu", handleContextMenu);
+  });
 
   return (
     <TransformWrapper
@@ -166,7 +185,7 @@ export default function Canvas3({ addMindmapHandler }) {
           </Controller>
 
           <TransformComponent>
-            <ExCont>
+            {/* <ExCont>
               <img src="https://picsum.photos/300/300?random=1" />
               <img src="https://picsum.photos/300/300?random=2" />
               <img src="https://picsum.photos/300/300?random=3" />
@@ -183,44 +202,44 @@ export default function Canvas3({ addMindmapHandler }) {
               <img src="https://picsum.photos/300/300?random=6" />
               <img src="https://picsum.photos/300/300?random=7" />
               <img src="https://picsum.photos/300/300?random=8" />
-              {/* 흰 배경 컴포넌트(scaleable)를 깔고 그 위에 mindmap 렌더하도록 canvas 수정 */}
-            </ExCont>
-            {/* <Container> */}
-            {/* {radialNodes.map((node, i) => (
-              <Exbox
-                key={i}
-                parent={node.data.parent}
-                id={node.data.id}
-                coordY={node.y}
-                coordX={node.x}
-                //onClick={blockHandler}
-                onDragOver={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  console.log(`- dragover in node (id: ${e.target.id}) -`);
-                }}
-                // onDragOver -> onDrop
-                onDrop={dropHandler}
-              >
-                {node.data.content}
-              </Exbox>
-            ))}
-            <svg width={"100vw"} height={"100vh"}>
-              {radialLinkes.map((link, i) => {
-                return (
-                  <line
-                    key={i}
-                    x1={link.source.x}
-                    y1={link.source.y}
-                    x2={link.target.x}
-                    y2={link.target.y}
-                    stroke="lightgrey"
-                    strokeWidth="2"
-                  />
-                );
-              })}
-            </svg> */}
-            {/* </Container> */}
+              <div> 흰 배경 컴포넌트(scaleable)를 깔고 그 위에 mindmap 렌더하도록 canvas 수정</div>
+            </ExCont> */}
+            <Container>
+              {radialNodes.map((node, i) => (
+                <Exbox
+                  key={i}
+                  parent={node.data.parent}
+                  id={node.data.id}
+                  coordY={node.y}
+                  coordX={node.x}
+                  //onClick={blockHandler}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log(`- dragover in node (id: ${e.target.id}) -`);
+                  }}
+                  // onDragOver -> onDrop
+                  onDrop={dropHandler}
+                >
+                  {node.data.content}
+                </Exbox>
+              ))}
+              <svg width={"100vw"} height={"100vh"}>
+                {radialLinkes.map((link, i) => {
+                  return (
+                    <line
+                      key={i}
+                      x1={link.source.x}
+                      y1={link.source.y}
+                      x2={link.target.x}
+                      y2={link.target.y}
+                      stroke="lightgrey"
+                      strokeWidth="2"
+                    />
+                  );
+                })}
+              </svg>
+            </Container>
           </TransformComponent>
         </>
       )}
