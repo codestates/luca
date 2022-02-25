@@ -15,6 +15,8 @@ import { setIsLogin, setUserInfo } from "../src/redux/rootSlice";
 import axios from "axios";
 import TestMain from "./pages/testMain";
 import TestProject from "./pages/testProject";
+import LoginLoading from "./pages/loginLoading"
+
 function App() {
   const dispatch = useDispatch();
 
@@ -56,7 +58,9 @@ function App() {
   return (
     <div>
       <Routes>
-        <Route path="/" element={isLogin ? <Main /> : <About />} />
+        <Route path="/" element={isLogin ? <LoginLoading /> : <About />} />
+        <Route path="/main" element={ <Main />} />
+        <Route path="/loginloading" component={<LoginLoading />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/mypage" element={<Mypage />} />
         <Route path="/changepassword" element={<ChangePassword />} />
