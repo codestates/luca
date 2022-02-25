@@ -67,9 +67,6 @@ function App() {
         <Route path="/auth/callback/kakao" element={<KakaoPage />} />
         <Route path="/auth/callback/naver" element={<NaverPage />} />
         <Route path="/auth/callback/google" element={<GooglePage />} />
-        <Route path="/test" element={<TestMain />} />
-        <Route path="/test/project/1" element={<TestProject />} />
-        <Route path="/test/project/2" element={<TestProject />} />
       </Routes>
     </div>
   );
