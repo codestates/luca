@@ -8,8 +8,6 @@ import io from "socket.io-client";
 import { useSelector, useDispatch } from "react-redux";
 import { setCardList, setMindmapTree, setBlockData } from "../redux/rootSlice";
 import { useNavigate } from "react-router-dom";
-import Timer from "../components/timer";
-// const socket = io.connect(`${process.env.REACT_APP_API_URL}`)
 
 export default function Project() {
   const socket = io.connect(`${process.env.REACT_APP_API_URL}`);
