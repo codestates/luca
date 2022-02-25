@@ -1,202 +1,35 @@
 import styled from "styled-components";
 import Projectcard from "../components/projectcard";
 import { Navigator, Footer } from "../components/commons";
-import { CreateProjectModal, Sortmodal } from "../components/modals";
+import { CreateProjectModal } from "../components/modals";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setProjectList } from "../redux/rootSlice.js";
+import {
+  setProjectList,
+  updateProjectList,
+  setProjectId,
+} from "../redux/rootSlice";
 import axios from "axios";
+import { Link } from "react-router-dom";
 //import { compose } from '@reduxjs/toolkit';
 
-// const Maincomponent = styled.div`
-//   margin-top: 10vh;
-//   background-color: #f5f5f5;
-//   display: flex;
-//   flex-direction: column;
-//   align-items: center;
-//   > div.startbox {
-//     background-color: gray;
-//     width: 100%;
-//     height: 250px;
-//     display: flex;
-//     align-items: center;
-//     flex-direction: column;
-//     justify-content: space-around;
-//     > div.startinfo {
-//       display: flex;
-//       align-items: center;
-//       flex-direction: column;
-//     }
-//     > div.startbutton {
-//       border: solid;
-//       border-radius: 20px;
-//       width: 200px;
-//       height: 30px;
-//       display: flex;
-//       align-items: center;
-//       justify-content: center;
-//     }
-//     > div.startbutton:hover {
-//       box-shadow: 0px 0px 10px black;
-//     }
-//     > div.startbutton:active {
-//       color: red;
-//     }
-//   }
-//   > div.projectcontainer {
-//     position: relative;
-//     background-color: silver;
-//     height: 100vh;
-//     width: 1300px;
-//     display: flex;
-//     flex-direction: column;
-//     /* > projectcontainer> * {
-//         width: 1300px;
-//     } */
-//     > div.sortbox {
-//       /* background-color: red; */
-//       width: 100%;
-//       height: 30px;
-//       border-bottom: solid;
-//       margin-top: 20px;
-//       display: flex;
-//       justify-content: flex-end;
-//       align-items: center;
-//       > div {
-//         margin-right: 10px;
-//       }
-//       > div:hover {
-//         text-shadow: 0px 0px 10px black;
-//       }
-//       /* > div:active {
-//         color: red;
-//       } */
-//     }
-//     > div.projectbox {
-//       /* margin-top: 10px; */
-//     }
-//   }
-// `;
-
-// export function Main() {
-//   let projects = useSelector((state) => state.user.projects);
-//   const dispatch = useDispatch();
-//   const [isClicked, setIsClicked] = useState(false);
-//   const [sortModal, setSortModal] = useState(false);
-
-//   const modalHandler = () => {
-//     setIsClicked(!isClicked);
-//   };
-
-//   const sortHandler = (e) => {
-//     let projectsClone = projects;
-
-//     if (e === "update") {
-//       projectsClone = projects.slice().sort((a, b) => {
-//         return parseInt(a.updatedAt.split("-").join("")) <
-//           parseInt(b.updatedAt.split("-").join(""))
-//           ? -1
-//           : parseInt(a.updatedAt.split("-").join("")) >
-//             parseInt(b.updatedAt.split("-").join(""))
-//           ? 1
-//           : 0;
-//       });
-//       dispatch(setProjectList(projectsClone));
-//       // console.log("sortHandler projectClone");
-//       // console.log(projectsClone);
-//     } else if (e === "create") {
-//       projectsClone = projects.slice().sort((a, b) => {
-//         return parseInt(a.createdAt.split("-").join("")) <
-//           parseInt(b.createdAt.split("-").join(""))
-//           ? -1
-//           : parseInt(a.createdAt.split("-").join("")) >
-//             parseInt(b.createdAt.split("-").join(""))
-//           ? 1
-//           : 0;
-//       });
-//       // console.log("sortHandler projectClone");
-//       // console.log(projectsClone);
-//       dispatch(setProjectList(projectsClone));
-//     }
-//     setSortModal(!sortModal);
-//   };
-
-//   useEffect(async () => {
-//     const result = await axios.get(`${process.env.REACT_APP_API_URL}/project`);
-//     dispatch(setProjectList(result.data.data));
-//   }, []);
-
-//   return (
-//     <div>
-//       {/* {console.log(projects)} */}
-//       <Navigator />
-//       <Backdrop onClick={isClicked ? modalHandler : null}>
-//         <Maincomponent>
-//           <div className="startbox">
-//             <div className="startinfo">
-//               <h2>Lorem ipsum</h2>
-//               img elements must have an alt prop, either with meaningful text,
-//               or an empty string for decorative images
-//             </div>
-//             <div className="startbutton" onClick={modalHandler}>
-//               start
-//             </div>
-//           </div>
-//           <div className="projectcontainer">
-//             <div className="sortbox">
-//               {sortModal ? (
-//                 <div>
-//                   <div onClick={sortHandler}>Sort</div>
-//                   {/* <Sortmodal sortHandler={sortHandler}/> */}
-//                 </div>
-//               ) : (
-//                 <div onClick={sortHandler}>Sort</div>
-//               )}
-//             </div>
-//             {sortModal ? <Sortmodal sortHandler={sortHandler} /> : null}
-//             <div className="projectbox">
-//               {projects.map((el, i) => {
-//                 return <Projectcard projectInfo={el} index={i} key={el.id} />;
-//               })}
-//             </div>
-//           </div>
-//         </Maincomponent>
-
-//         {isClicked ? (
-//           <CreateProjectModal
-//             modalHandler={modalHandler}
-//             // newProjectHandler={newProjectHandler}
-//           />
-//         ) : null}
-//       </Backdrop>
-//       <div className="footer"></div>
-//       <Footer />
-//     </div>
-//   );
-// }
-
 const Container = styled.div`
-  position: absolute;
-  top: 10vh;
+  margin-top: 10vh;
+  width: 100vw;
   height: auto;
-  display: flex;
-  flex-direction: column;
-  background-color: blue;
 `;
 
-const randomColor = () => Math.floor(Math.random() * 10777215).toString(16);
-
 const Banner = styled.div`
-  flex: 1 0 auto;
   min-height: 16vh;
   padding: 4vh 0;
-  background-color: white;
   background: linear-gradient(to right bottom, #ff7f50, orange);
   display: flex;
   flex-direction: column;
   align-items: center;
 
   > h2 {
+    font-weight: 750;
+    letter-spacing: 0.05em;
     color: white;
   }
 
@@ -205,66 +38,129 @@ const Banner = styled.div`
     font-weight: bold;
     margin: 0.3em 0;
     color: white;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.1em;
   }
-  > button {
+  > div.start {
     margin-top: 1em;
     width: 8em;
-    font-size: 1.1em;
     padding: 0.6em 1em;
     border-radius: 2em;
     border: none;
+    font-size: 1.1em;
     font-weight: bold;
+    text-align: center;
     color: rgb(70, 70, 70);
-    background-color: rgba(255, 255, 255, 0.4);
-    box-shadow: 0vh 0.5vh 1vh 0.1vh rgba(0, 0, 0, 0.3);
+    background-color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    box-shadow: 0vh 0.5vh 1vh 0.1vh rgba(0, 0, 0, 0.2);
   }
 `;
 
 const Section = styled.div`
-  flex: 1 0 auto;
-  background-color: green;
+  background-color: seashell;
   display: flex;
   flex-direction: column;
-  align-items: center;
 `;
 
 const Sorter = styled.div`
-  min-height: 3vh;
-  background-color: cyan;
+  z-index: 500;
+  padding-top: 16px;
+  min-height: 36px;
+  background-color: white;
+  box-shadow: 0vh 0vh 1vh 0.1vh rgba(0, 0, 0, 0.1);
+
+  > div.dropdowner {
+    position: absolute;
+    width: 120px;
+    right: 24px;
+    height: 20px;
+    margin: 8px 0;
+    padding: 0 10px;
+    background-color: white;
+    cursor: pointer;
+
+    > div.selection {
+      margin-top: 5px;
+      width: 100px;
+      border-radius: 6px;
+
+      background-color: white;
+      > div {
+        padding: 10px;
+        cursor: pointer;
+      }
+      > div:hover {
+        color: orange;
+      }
+    }
+  }
 `;
 
 const Gallery = styled.div`
-  flex: 1 0 auto;
-  margin: 0 1.5vw;
-  background-color: violet;
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: flex-start;
+  margin: 0 24px;
+  background-color: seashell;
+  padding-top: 60px;
+  padding-bottom: 60px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 24px;
 `;
-
-const ProjectCover = styled.div`
-  width: 19vw;
-  padding: 2vw;
-  height: 14vw;
-  margin: 0.5vw;
-  border-radius: 6px;
-  background-color: tomato;
-`;
-
-let prCompo = {
-  id: "integer",
-  title: "string",
-  desc: "string",
-  isTeam: "boolean",
-  admin: "integer",
-  createdAt: "string",
-  updatedAt: "string",
-};
 
 export default function Main() {
+  let projects = useSelector((state) => state.user.projects);
+  console.log("projects: ", projects);
+
+  const dispatch = useDispatch();
+
+  const [modal, setModal] = useState(false);
+  const [sorterOn, setSorterOn] = useState(false);
+  const [curSort, setCurSort] = useState("업데이트 순");
+
+  const modalHandler = (modalType) => {
+    setModal(modalType);
+  };
+
+  const sortHandler = (opt) => {
+    let sortedProjects = projects;
+
+    if (opt === "updatedAt") {
+      sortedProjects = projects.slice().sort((a, b) => {
+        return parseInt(a.updatedAt.split("-").join("")) <
+          parseInt(b.updatedAt.split("-").join(""))
+          ? -1
+          : parseInt(a.updatedAt.split("-").join("")) >
+            parseInt(b.updatedAt.split("-").join(""))
+          ? 1
+          : 0;
+      });
+      dispatch(setProjectList(sortedProjects));
+      setCurSort("업데이트 순");
+    } else if (opt === "createdAt") {
+      sortedProjects = projects.slice().sort((a, b) => {
+        return parseInt(a.createdAt.split("-").join("")) <
+          parseInt(b.createdAt.split("-").join(""))
+          ? -1
+          : parseInt(a.createdAt.split("-").join("")) >
+            parseInt(b.createdAt.split("-").join(""))
+          ? 1
+          : 0;
+      });
+      dispatch(setProjectList(sortedProjects));
+      setCurSort("생성일 순");
+    }
+    setSorterOn(!sorterOn);
+  };
+
+  useEffect(async () => {
+    const result = await axios.get(`${process.env.REACT_APP_API_URL}/project`);
+    dispatch(setProjectList(result.data.data));
+  }, []);
+
   return (
     <div>
+      {modal === "createProject" ? (
+        <CreateProjectModal modalHandler={modalHandler} />
+      ) : null}
       <Navigator />
       <Container>
         <Banner>
@@ -275,24 +171,32 @@ export default function Main() {
           <div className="project-intro">
             팀원을 초대해 브레인스토밍을 함께 하세요.
           </div>
-          <button>시작하기</button>
+          <div className="start" onClick={() => modalHandler("createProject")}>
+            시작하기
+          </div>
         </Banner>
 
         <Section>
-          <Sorter>Sorter</Sorter>
+          <Sorter>
+            <div className="dropdowner" onClick={() => setSorterOn(!sorterOn)}>
+              {curSort} <i className="fa-solid fa-caret-down"></i>
+              {sorterOn ? (
+                <div className="selection">
+                  <div onClick={() => sortHandler("updatedAt")}>
+                    업데이트 순
+                  </div>
+                  <div onClick={() => sortHandler("createdAt")}>생성일 순</div>
+                </div>
+              ) : null}
+            </div>
+          </Sorter>
           <Gallery>
-            <ProjectCover>ProjectCover</ProjectCover>
-            <ProjectCover>ProjectCover</ProjectCover>
-            <ProjectCover>ProjectCover</ProjectCover>
-            <ProjectCover>ProjectCover</ProjectCover>
-            <ProjectCover>ProjectCover</ProjectCover>
-            <ProjectCover>ProjectCover</ProjectCover>
-            <ProjectCover>ProjectCover</ProjectCover>
-            <ProjectCover>ProjectCover</ProjectCover>
+            {projects.map((project, i) => (
+              <Projectcard projectInfo={project} index={i} key={project.id} />
+            ))}
           </Gallery>
         </Section>
       </Container>
-      <Footer />
     </div>
   );
 }
