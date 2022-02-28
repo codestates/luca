@@ -146,7 +146,7 @@ const Timer = () => {
             <TimerImage>
                 <div>
                     {!settings && (
-                        <button className='start' onClick={() => clickTimer()}><i class="fa-solid fa-clock"></i></button>
+                        <button className='start' onClick={() => clickTimer()}><i className="fa-solid fa-clock"></i></button>
                     )}
                 </div>
             </TimerImage>

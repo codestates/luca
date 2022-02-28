@@ -22,7 +22,6 @@ const CardContainer = styled.div`
   align-content: baseline;
   box-shadow: 0vh 0vh 1vh rgba(0, 0, 0, 0.5);
   overflow: hidden;
-
   animation-name: ${(props) => {
     if (props.isCardContOpen !== null && props.isCardContOpen === true) {
       return "containerIn";
@@ -37,7 +36,6 @@ const CardContainer = styled.div`
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
   animation-play-state: running;
-
   @keyframes containerIn {
     from {
       width: 18vh;
@@ -48,7 +46,6 @@ const CardContainer = styled.div`
       overflow: scroll;
     }
   }
-
   @keyframes containerOut {
     from {
       width: 108vh;
@@ -80,7 +77,6 @@ const Opener = styled.div`
     margin-left: 0.75vh;
     flex: 1 0 auto;
   }
-
   animation-name: ${(props) => {
     if (props.isCardContOpen !== null && props.isCardContOpen === true) {
       return "openerIn";
@@ -95,7 +91,6 @@ const Opener = styled.div`
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
   animation-play-state: running;
-
   @keyframes openerIn {
     from {
       right: 20vh;
@@ -104,7 +99,6 @@ const Opener = styled.div`
       right: 110vh;
     }
   }
-
   @keyframes openerOut {
     from {
       right: 110vh;
@@ -117,12 +111,39 @@ const Opener = styled.div`
 
 const Card = styled.div`
   z-index: 800;
-  width: 11vh;
-  height: 11vh;
-  margin: 1.4vh 1.5vh 0vh 1.5vh;
-  padding: 2vh;
-  background: ${(props) => `rgb${(props.color)}`};
+  width: 14vh;
+  height: 14vh;
+  margin: 2vh 1.5vh 0vh 1.5vh;
+  background-color: ${(props) => (`rgb${(props.color)}`)};
+  filter: ${(props) => (props.blocked ? "brightness(50%)" : "none")};
   box-shadow: 0vh 0.5vh 1vh 0vh rgba(0, 0, 0, 0.3);
+  > div.content {
+    margin: -1.5vh 1.5vh;
+    font-size: 2vh;
+    text-align: ${(props) => (props.blocked ? "center" : "left")};
+    word-break: break-word;
+    overflow: hidden;
+  }
+  > div.delete {
+    position: relative;
+    top: -1vh;
+    right: -12vh;
+    width: 1em;
+    height: 1em;
+    padding: 0.2em;
+    border-radius: 1em;
+    text-align: center;
+    background-color: lightgrey;
+    > i {
+      color: rgb(100, 100, 100);
+    }
+  }
+  > div.delete::-moz-drag-over {
+    display: none;
+    > i {
+      display: none;
+    }
+  }
 `;
 
 const CardAdder = styled.div`
@@ -190,13 +211,11 @@ const CardAdder = styled.div`
     border-radius: 50%;
     cursor: pointer;
   }
-  }
   
   > button:active {
     transform: translateY(2px);
   }
 }
-
   animation-name: ${(props) => {
     if (props.isAdderOpen !== null) {
       if (props.isAdderOpen === true) {
@@ -210,7 +229,6 @@ const CardAdder = styled.div`
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
   animation-play-state: running;
-
   @keyframes adderOpen {
     from {
       width: 15vh;
@@ -229,7 +247,6 @@ const CardAdder = styled.div`
       }
     }
   }
-
   @keyframes adderClose {
     from {
       width: 33vh;
@@ -313,38 +330,44 @@ export default function Cardboard({
       <CardContainer isCardContOpen={isCardContOpen} ref={outSection}>
         {cardList.map((card, i) => {
           return blockData.isBlock && card.id === blockData.cardId ? (
-            <div>
-              <Card
-                key={card.id}
-                id={card.id}
-                color={card.color}
-                draggable
-                onDragStart={cardDragStart}
-                onDragEnd={cardDragEnd}
-              >
-                {card.content}
-              </Card>
+            <Card
+              key={card.id}
+              id={card.id}
+              color={card.color}
+              draggable
+              onDragStart={cardDragStart}
+              onDragEnd={cardDragEnd}
+              blocked={true}
+            >
               {card.userId === userInfo.id ? (
-                <button onClick={() => deleteCard(card.id)}>X</button>
+                <div className="delete" onClick={() => deleteCard(card.id)}>
+                  <i className="fa-solid fa-xmark"></i>
+                </div>
               ) : null}
-              <button>Block</button>
-            </div>
+              <div className="content">
+                {card.content}
+              </div>
+            </Card>
           ) : (
-            <div>
-              <Card
-                key={card.id}
-                id={card.id}
-                color={card.color}
-                draggable
-                onDragStart={cardDragStart}
-                onDragEnd={cardDragEnd}
-              >
-                {card.content}
-              </Card>
+            <Card
+              key={card.id}
+              id={card.id}
+              color={card.color}
+              draggable
+              onDragStart={cardDragStart}
+              onDragEnd={cardDragEnd}
+            >
               {card.userId === userInfo.id ? (
-                <button onClick={() => deleteCard(card.id)}>X</button>
+                <div
+                  className="delete"
+                  onClick={() => deleteCard(card.id)}
+                  draggable={false}
+                >
+                  <i className="fa-solid fa-xmark"></i>
+                </div>
               ) : null}
-            </div>
+              <div className="content">{card.content}</div>
+            </Card>
           );
         })}
         {/* <Card>상위 4개 limit로 할 필요 없음 .map</Card> */}
@@ -363,7 +386,7 @@ export default function Cardboard({
                     createCardHandler()
                   }
                 }
-              } />
+              } maxLength={45} />
               <button className='submit' onClick={createCardHandler}>추가</button>
             </>
           ) :
