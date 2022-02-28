@@ -8,7 +8,7 @@ import {
   setProjectList,
   updateProjectList,
   setProjectId,
-  setIsLogin
+  setIsLogin,
 } from "../redux/rootSlice";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
@@ -77,6 +77,7 @@ const Sorter = styled.div`
     height: 20px;
     margin: 8px 0;
     padding: 0 10px;
+    text-align: right;
     background-color: white;
     cursor: pointer;
 
@@ -155,15 +156,16 @@ export default function Main() {
 
   useEffect(async () => {
     const result = await axios
-    .get(`${process.env.REACT_APP_API_URL}/project`, {
-      "Content-Type": "application/json",
-      withCredentials: true,
-    }).catch((err) => {
-      if(err.response.status === 401) {
-        setIsLogin(false);
-        navigate("/");
-      }
-    });
+      .get(`${process.env.REACT_APP_API_URL}/project`, {
+        "Content-Type": "application/json",
+        withCredentials: true,
+      })
+      .catch((err) => {
+        if (err.response.status === 401) {
+          setIsLogin(false);
+          navigate("/");
+        }
+      });
     dispatch(setProjectList(result.data.data));
   }, []);
 

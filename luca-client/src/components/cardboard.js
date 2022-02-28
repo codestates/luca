@@ -167,8 +167,6 @@ const CardAdder = styled.div`
   }
   > div {
     > button.yellow {
-  z-index: 900;
-
     background: rgb(253, 251, 209);
     margin: 5px;
     width: 20px;
