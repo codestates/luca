@@ -89,6 +89,29 @@ const Nodebox = styled.div`
   }
 `;
 
+const Lines = styled.svg`
+  width: 100vw;
+  height: 100vh;
+  > line {
+    stroke: lightgrey;
+    stroke-width: 1px;
+  }
+  stroke-dasharray: 500;
+  stroke-dashoffset: 0;
+  animation: dashDraw 1s linear 1;
+  // props.depth * delay(1s)
+  // useEffect ?
+
+  @keyframes dashDraw {
+    0% {
+      stroke-dashoffset: 500;
+    }
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
+`;
+
 export default function Canvas3({ addMindmapHandler, deleteMindmapHandler }) {
   // let projectIdRef = window.location.href.split("/").reverse()[0]; // projectIdRef === '12'(string)
   const rawData = useSelector((state) => state.user.mindmapTree);
@@ -228,7 +251,7 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler }) {
                   </div>
                 </Nodebox>
               ))}
-              <svg width={"100vw"} height={"100vh"}>
+              <Lines>
                 {radialLinkes.map((link, i) => {
                   return (
                     <line
@@ -237,12 +260,10 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler }) {
                       y1={link.source.y}
                       x2={link.target.x}
                       y2={link.target.y}
-                      stroke="lightgrey"
-                      strokeWidth="1"
                     />
                   );
                 })}
-              </svg>
+              </Lines>
             </Container>
           </TransformComponent>
         </>
