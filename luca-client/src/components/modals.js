@@ -101,8 +101,35 @@ const ModalView = styled.div`
       }
 
       > input:focus {
-        border-bottom-width: 2.5px;
+        /* border-bottom-width: 2.5px; */
         border-color: rgba(0, 0, 0, 0.5);
+      }
+      
+      > div.searchContainer {
+        flex: 1 0 auto;
+        display: flex;
+        flex-direction: row;
+
+        > input {
+          width: 100%;
+          height: 40px;
+          padding: 0.5rem;
+          font-size: 1rem;
+          border: 1px solid ${color.primaryBorder};
+          border-radius: ${radius};
+        }
+
+        > input:focus {
+          /* border-bottom-width: 2.5px; */
+          border-color: rgba(0, 0, 0, 0.5);
+        }
+
+        > button {
+          min-width: 58px;
+          margin-left: 1rem;
+          border: 1px solid ${color.primaryBorder};
+          border-radius: ${radius};
+        }
       }
 
       button.options {
@@ -130,6 +157,16 @@ const ModalView = styled.div`
         /* border: solid red; */
         color: blue;
         border-radius: 10px;
+      }
+    }
+
+    div.memberContainer {
+      border: 1px solid ${color.primaryBorder};
+      border-radius: ${radius};
+      padding: 1rem 0 1rem 0;
+      
+      > div {
+        font-size: 1.2em;
       }
     }
 
@@ -324,6 +361,7 @@ export function CreateProjectModal({ modalHandler }) {
         } else {
           setMemberId([...memberId, result.data.data.id]);
           setMemberEmail([...memberEmail, result.data.data.email]);
+          inviteRef.current.value = "";
         }
       } else if (result.data.message === "Not found user") {
         alert("존재하지 않는 유저입니다");
@@ -418,19 +456,21 @@ export function CreateProjectModal({ modalHandler }) {
             <input ref={keywordRef} placeholder="키워드" />
           </div>
           {isTeam ? (
-            <div>
-              <div className="query">
+            <div className="query">
+              <div className="searchContainer">
                 {/* <input onChange={(e)=>{newProjectHandler(e, "invite")}}/> */}
-                <input ref={inviteRef} placeholder="초대" />
+                <input ref={inviteRef} placeholder="초대 이메일" />
                 <button onClick={findMemberHandler}>추가</button>
               </div>
-              <div>
-                {memberEmail.map((el) => {
-                  return <div>{el}</div>;
-                })}
-              </div>
             </div>
-          ) : null}
+            ) : null}
+            {isTeam && memberEmail.length > 0 ? (
+            <div className="memberContainer">
+              {memberEmail.map((el) => {
+                return <div>{el}</div>;
+              })}
+            </div>
+            ) : null}
         </div>
         <div className="modal-footer">
           <div className="buttons">
@@ -545,4 +585,82 @@ export function Savealert() {
       <div>저장되었습니다</div>
     </SaveAlertbox>
   );
+}
+
+const WithdrawalBox = styled.div`
+  position: absolute;
+  top: 200px;
+  left: 30%;
+  width: 600px;
+  height: 100px;
+  background-color: orange;
+  border-radius: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.9);
+  > div.alertMessage {
+    font-size: 1.5rem;
+  }
+  > div.choiceBox {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+    width: 200px;
+    margin-top: 10px;
+    > div {
+      font-size: 1.2rem;
+      border: solid darkorange;
+      border-radius: 10px;
+      width: 50px;
+      height: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: yellow;
+    }
+    >div:hover {
+      background-color: darkorange;
+      color: white;
+    }
+    >div:active {
+      border: solid red;
+    }
+  }
+`
+
+export function WithdrawalConfirm ({withdrawalModalHandler}) {
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
+  const handleWithdrawal = (el) => {
+    if(el === "confirm"){
+      axios.delete(`${process.env.REACT_APP_API_URL}/profile`)
+      .then((res)=>{
+        console.log(res)
+        dispatch(setIsLogin(false));
+        dispatch(setUserInfo({}));
+        navigate("/");
+      })
+      .catch((err)=>{
+        console.log(err)
+      })
+    }
+    if(el === "cancel"){
+      withdrawalModalHandler(false);
+    }
+  }
+
+  return (
+    <WithdrawalBox>
+      <div className="alertMessage">프로젝트를 삭제하시겠습니까?</div>
+      <div className="choiceBox">
+        <div className="confirm" onClick={()=>{handleWithdrawal("confirm")}}>확인</div>
+        <div className="calcel" onClick={()=>{handleWithdrawal("cancel")}}>취소</div>
+      </div>
+    </WithdrawalBox>
+  )
 }
