@@ -466,8 +466,8 @@ export function CreateProjectModal({ modalHandler }) {
             ) : null}
             {isTeam && memberEmail.length > 0 ? (
             <div className="memberContainer">
-              {memberEmail.map((el) => {
-                return <div>{el}</div>;
+              {memberEmail.map((el, i) => {
+                return <div key={i}>{el}</div>;
               })}
             </div>
             ) : null}
