@@ -546,3 +546,81 @@ export function Savealert() {
     </SaveAlertbox>
   );
 }
+
+const WithdrawalBox = styled.div`
+  position: absolute;
+  top: 200px;
+  left: 30%;
+  width: 600px;
+  height: 100px;
+  background-color: orange;
+  border-radius: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.9);
+  > div.alertMessage {
+    font-size: 1.5rem;
+  }
+  > div.choiceBox {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+    width: 200px;
+    margin-top: 10px;
+    > div {
+      font-size: 1.2rem;
+      border: solid darkorange;
+      border-radius: 10px;
+      width: 50px;
+      height: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: yellow;
+    }
+    >div:hover {
+      background-color: darkorange;
+      color: white;
+    }
+    >div:active {
+      border: solid red;
+    }
+  }
+`
+
+export function WithdrawalConfirm ({withdrawalModalHandler}) {
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
+  const handleWithdrawal = (el) => {
+    if(el === "confirm"){
+      axios.delete(`${process.env.REACT_APP_API_URL}/profile`)
+      .then((res)=>{
+        console.log(res)
+        dispatch(setIsLogin(false));
+        dispatch(setUserInfo({}));
+        navigate("/");
+      })
+      .catch((err)=>{
+        console.log(err)
+      })
+    }
+    if(el === "cancel"){
+      withdrawalModalHandler(false);
+    }
+  }
+
+  return (
+    <WithdrawalBox>
+      <div className="alertMessage">프로젝트를 삭제하시겠습니까?</div>
+      <div className="choiceBox">
+        <div className="confirm" onClick={()=>{handleWithdrawal("confirm")}}>확인</div>
+        <div className="calcel" onClick={()=>{handleWithdrawal("cancel")}}>취소</div>
+      </div>
+    </WithdrawalBox>
+  )
+}
