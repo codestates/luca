@@ -7,12 +7,16 @@ import { setIsLogin, setUserInfo } from "../redux/rootSlice.js";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Footer from '../components/footer';
+import { WithdrawalConfirm } from "../components/modals";
 
 const Container = styled.div`
   min-width: 90vw;
+  /* width: 90%; */
   min-height: 50vh;
+  /* height: 50%; */
   margin: 20vh 10vh 10vh 10vh;
   display: flex;
+  position: relative;
 `;
 
 const Section = styled.div`
@@ -122,6 +126,7 @@ export default function Mypage() {
   const cards = useSelector((state) => state.user.cardList);
   const [isEditOn, setIsEditOn] = useState(false);
   const editnameRef = useRef();
+  const [withdrawalModal, setWithdrawalModal] = useState(false);
 
   const handlerEditname = () => {
     let newName = editnameRef.current.value;
@@ -147,8 +152,8 @@ export default function Mypage() {
     }
   };
 
-  const UploadImage = () => {
-    
+  const withdrawalModalHandler = () => {
+    setWithdrawalModal(!withdrawalModal);
   }
 
   useEffect(() => {
@@ -173,6 +178,7 @@ export default function Mypage() {
     <div>
       <Navigator />
       <Container>
+        {withdrawalModal? <WithdrawalConfirm withdrawalModalHandler={withdrawalModalHandler} />: null}
         <Left>
           {/* {isEditOn ? <i onClick={UploadImage} className="fa-regular fa-pen-to-square"></i>: null} */}
         </Left>
@@ -185,7 +191,7 @@ export default function Mypage() {
               </div>
               <div className="edit">
                 <Button onClick={handlerEditname}>저장</Button>
-                <Button warn={true}>회원탈퇴</Button>
+                <Button warn={true} onClick={()=>{setWithdrawalModal(true)}}>회원탈퇴</Button>
               </div>
             </Upper>
             <Lower>
