@@ -248,7 +248,7 @@ export default function Signup() {
           withCredentials: true,
         })
         .then((res) => {
-          if (res.status === 200) {
+          if (res.status === 201) {
             dispatch(setIsLogin(true));
             dispatch(setUserInfo(res.data.data));
             navigate("/")
@@ -384,7 +384,7 @@ export default function Signup() {
 
             <div>
               <div>
-              <button className='submit' onClick={SignupHandler}>회원가입</button>
+                <button className='submit' onClick={SignupHandler}>회원가입</button>
               </div>
             </div>
 

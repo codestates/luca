@@ -9,13 +9,11 @@ import Project from "./pages/project";
 import KakaoPage from "./pages/oauth/KakaoPage";
 import NaverPage from "./pages/oauth/NaverPage";
 import GooglePage from "./pages/oauth/GooglePage";
+import LoginLoading from "./pages/loginLoading"
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setIsLogin, setUserInfo } from "../src/redux/rootSlice";
 import axios from "axios";
-import TestMain from "./pages/testMain";
-import TestProject from "./pages/testProject";
-import LoginLoading from "./pages/loginLoading"
 
 function App() {
   const dispatch = useDispatch();
@@ -27,7 +25,6 @@ function App() {
         withCredentials: true,
       })
       .then((data) => {
-        // console.log(data.data.data)
         dispatch(setUserInfo(data.data.data));
         dispatch(setIsLogin(true));
       })
@@ -68,9 +65,6 @@ function App() {
         <Route path="/auth/callback/kakao" element={<KakaoPage />} />
         <Route path="/auth/callback/naver" element={<NaverPage />} />
         <Route path="/auth/callback/google" element={<GooglePage />} />
-        <Route path="/test" element={<TestMain />} />
-        <Route path="/test/project/1" element={<TestProject />} />
-        <Route path="/test/project/2" element={<TestProject />} />
       </Routes>
     </div>
   );

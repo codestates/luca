@@ -134,7 +134,10 @@ export default function Project() {
     <div>
       {/* <Navigator /> */}
       <button onClick={showHistoryHandler}>history</button>
-      <Canvas3 addMindmapHandler={addMindmapHandler} />
+      <Canvas3
+        addMindmapHandler={addMindmapHandler}
+        deleteMindmapHandler={deleteMindmapHandler}
+      />
       <Cardboard
         createCard={createCard}
         deleteCard={deleteCard}

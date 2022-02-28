@@ -59,6 +59,7 @@ const socketCanvas = async (socket) => {
         socket.join(roomName);
 
         const mindmapInfo = await mindmapController.history(data);
+
         console.log(mindmapInfo)
 
         socket.emit("showHistory", mindmapInfo);

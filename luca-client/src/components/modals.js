@@ -111,8 +111,18 @@ const ModalView = styled.div`
         margin: 0.5em;
         // 탭으로 구현할 것
         border-radius: 10px;
-        background-color: ${(props) => (props.guestBlock ? "grey" : "white")};
-        cursor: ${(props) => (props.guestBlock ? "not-allowed" : "pointer")};
+        background-color: white;
+        cursor: pointer;
+      }
+      
+      button.block {
+        flex: 1 0 auto;
+        font-size: 1.2em;
+        margin: 0.5em;
+        // 탭으로 구현할 것
+        border-radius: 10px;
+        background-color: grey;
+        cursor: not-allowed;
       }
 
       button.options:visited {
@@ -389,7 +399,7 @@ export function CreateProjectModal({ modalHandler }) {
                 팀
               </button>
             ) : (
-              <button className="options" guestBlock={true}>
+              <button className="block">
                 팀
               </button>
             )}

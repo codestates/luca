@@ -134,7 +134,7 @@ module.exports = {
           },
         });
 
-        const mailOptions = await transporter.sendMail({
+        const mailOptions = ({
           from: `Luca`,
           to: req.body.email,
           subject: "[Luca]인증 확인 이메일입니다",

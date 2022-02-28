@@ -61,23 +61,22 @@ module.exports = {
         return mindmapTree[0];
     },
 
-    history: (data) => {
-        const array = [];
-        const findId = (data) => {
-            cards.findOne({
+    history: async (data) => {
+        let array = [];
+        const findId = async (data) => {
+
+            const result = await cards.findOne({
                 where: {
                     id: data
                 },
                 raw: true
             })
-                .then((res) => {
-                    array.push(res);
-                    if (res.parent) {
-                        findId(res.parent);
-                    } else {
-                        return;
-                    }
-                })
+            array.push(result);
+            if (result.parent) {
+                findId(result.parent);
+            } else {
+                return;
+            }
         };
         findId(data);
         return array;

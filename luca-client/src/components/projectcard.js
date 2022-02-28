@@ -224,7 +224,7 @@ function Projectcard({ projectInfo, index }) {
     <ProjectCover>
       {modal === "deleteProject" ? (
         <DeleteProjectModal
-          modalHandler={(modalHandler, deleteProjectHandler)}
+          modalHandler={(modalHandler)} deleteProjectHandler={deleteProjectHandler}
         />
       ) : null}
       <>
