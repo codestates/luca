@@ -6,7 +6,7 @@ import Cardboard from "../components/cardboard";
 import { useEffect, useCallback, useState } from "react";
 import io from "socket.io-client";
 import { useSelector, useDispatch } from "react-redux";
-import { setCardList, setMindmapTree, setBlockData } from "../redux/rootSlice";
+import { setCardList, setMindmapTree, setMindmapHistory, setBlockData } from "../redux/rootSlice";
 import { useNavigate } from "react-router-dom";
 
 export default function Project() {
@@ -87,6 +87,10 @@ export default function Project() {
     socket.emit("deleteMindmap", { cardId: id }, roomName);
   };
 
+  const showHistoryHandler = () => {
+    socket.emit("showHistory", 492, roomName);
+  };
+
   // 배열이 업데이트될 때마다 계속해서 추가로 리스너가 등록되는 것을 방지하기 위해 useEffect 사용)
   useEffect(() => {
     socket.on("createCard", (data) => {
@@ -119,11 +123,17 @@ export default function Project() {
       dispatch(setCardList(cardInfo));
       dispatch(setMindmapTree(mindmapInfo));
     });
+
+    socket.on("showHistory", (mindmapInfo) => {
+      // dispatch(setMindmapHistory(mindmapInfo));
+      console.log(mindmapInfo)
+    });
   }, []);
 
   return (
     <div>
       {/* <Navigator /> */}
+      <button onClick={showHistoryHandler}>history</button>
       <Canvas3 addMindmapHandler={addMindmapHandler} />
       <Cardboard
         createCard={createCard}

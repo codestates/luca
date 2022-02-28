@@ -5,7 +5,7 @@ const mindmapController = require("./mindmap");
 const socketCanvas = async (socket) => {
     // 전체 카드를 보내준다.
     socket.on("initData", async (roomName) => {
-        
+
         const cardInfo = await cardController.get(roomName);
         const mindmapInfo = await mindmapController.get(roomName);
 
@@ -16,7 +16,7 @@ const socketCanvas = async (socket) => {
     // 카드를 추가한 후 전체 카드 데이터를 보내준다.
     socket.on("createCard", async (userId, content, roomName) => {
         socket.join(roomName);
-        
+
         await cardController.create(userId, content, roomName);
         const cardInfo = await cardController.get(roomName);
         socket.emit("createCard", cardInfo)
@@ -46,13 +46,22 @@ const socketCanvas = async (socket) => {
 
     socket.on("deleteMindmap", async (data, roomName) => {
         socket.join(roomName);
-        
+
         await mindmapController.delete(data, roomName);
         const cardInfo = await cardController.get(roomName);
         const mindmapInfo = await mindmapController.get(roomName);
 
         socket.emit("deleteMindmap", cardInfo, mindmapInfo);
         socket.broadcast.to(roomName).emit("deleteMindmap", cardInfo, mindmapInfo);
+    })
+
+    socket.on("showHistory", async (data, roomName) => {
+        socket.join(roomName);
+
+        const mindmapInfo = await mindmapController.history(data);
+        console.log(mindmapInfo)
+
+        socket.emit("showHistory", mindmapInfo);
     })
 
     socket.on("editBlockStart", async (data, roomName) => {
