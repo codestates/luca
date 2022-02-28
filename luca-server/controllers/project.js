@@ -46,6 +46,7 @@ module.exports = {
                     projectId: result.id,
                     content: keyword,
                     parent: 0,
+                    color: "(253, 251, 209)",
                     storage: "mindmap"
                 });
             await memberUserId.map(function (el) {
