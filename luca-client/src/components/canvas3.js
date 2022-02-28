@@ -48,13 +48,10 @@ const Controller = styled.div`
   }
 `;
 
-const ExCont = styled.div`
-  overflow: -moz-hidden-unscrollable;
-`;
-
-const Exbox = styled.div`
+const Nodebox = styled.div`
+  z-index: 990;
   position: fixed;
-  padding: 1em;
+  padding: 0.8em;
   background-color: ${(props) =>
     props.parent === 0 ? "lightyellow" : "white"};
   border-radius: ${(props) => (props.parent === 0 ? "2em" : "0.2em")};
@@ -66,13 +63,33 @@ const Exbox = styled.div`
   }};
   transform: translate(-50%, -50%);
   text-align: center;
-  font-size: ${(props) => (props.parent === 0 ? "1.2em" : "1em")};
+  font-size: ${(props) =>
+    props.parent === 0 ? props.nodeScale + 2 + "px" : props.nodeScale + "px"};
   font-weight: ${(props) => (props.parent === 0 ? "700" : "normal")};
-  box-shadow: 0vh 0vh 1vh rgba(0, 0, 0, 0.3);
-  color: rgb(50, 50, 50);
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+
+  > div.delete {
+    display: none;
+  }
+  &:hover {
+    z-index: 999;
+    transform: translate(-50%, -50%) scale(1.5);
+    > div.delete {
+      display: ${(props) => (props.parent === 0 ? "none" : "block")};
+      margin-top: 0.5em;
+      font-size: 0.5em;
+      border-radius: 0.3em;
+      background-color: lightgrey;
+      cursor: pointer;
+    }
+    > div.delete:hover {
+      font-weight: bold;
+      color: red;
+    }
+  }
 `;
 
-export default function Canvas3({ addMindmapHandler }) {
+export default function Canvas3({ addMindmapHandler, deleteMindmapHandler }) {
   // let projectIdRef = window.location.href.split("/").reverse()[0]; // projectIdRef === '12'(string)
   const rawData = useSelector((state) => state.user.mindmapTree);
 
@@ -87,9 +104,9 @@ export default function Canvas3({ addMindmapHandler }) {
   const [nodeOption, setNodeOption] = useState(false);
 
   const root = hierarchy(rawData);
-  const treeLayout = tree()
-    .size([360, window.innerHeight * 0.3])
-    .separation((a, b) => (a.parent === b.parent ? 1 : 1) / a.depth);
+  const treeLayout = cluster()
+    .size([360, window.innerHeight * 0.4])
+    .separation((a, b) => (a.parent === b.parent ? 1 : 2) / a.depth);
   treeLayout(root);
 
   let nodes = root.descendants();
@@ -122,6 +139,10 @@ export default function Canvas3({ addMindmapHandler }) {
     };
   });
 
+  const nodeScale = Math.pow(0.95, nodes[0].height) * 10;
+  // 기본적인 scaler 모델입니다. 비율은 추후 ui에 따라 변경가능
+
+  console.log("nodeScale: ", nodeScale);
   //console.log("radialNodes: ", radialNodes);
   //console.log("radialLinkes: ", radialLinkes);
   //console.log("links: ", links);
@@ -153,11 +174,20 @@ export default function Canvas3({ addMindmapHandler }) {
     document.removeEventListener("contextmenu", handleContextMenu);
   });
 
+  const simplified = (str) => {
+    let viewLength = 10;
+    if (str.length > viewLength) {
+      return str.slice(0, viewLength) + "...";
+    } else {
+      return str;
+    }
+  };
+
   return (
     <TransformWrapper
-      initialScale={1}
-      initialPositionX={0}
-      initialPositionY={0}
+      initialScale={2}
+      initialPositionX={-window.innerWidth * 0.45}
+      initialPositionY={-window.innerHeight * 0.5}
       disabled={disabled}
     >
       {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
@@ -185,31 +215,13 @@ export default function Canvas3({ addMindmapHandler }) {
           </Controller>
 
           <TransformComponent>
-            {/* <ExCont>
-              <img src="https://picsum.photos/300/300?random=1" />
-              <img src="https://picsum.photos/300/300?random=2" />
-              <img src="https://picsum.photos/300/300?random=3" />
-              <img src="https://picsum.photos/300/300?random=4" />
-              <img src="https://picsum.photos/300/300?random=5" />
-              <img src="https://picsum.photos/300/300?random=6" />
-              <img src="https://picsum.photos/300/300?random=7" />
-              <img src="https://picsum.photos/300/300?random=8" />
-              <img src="https://picsum.photos/300/300?random=1" />
-              <img src="https://picsum.photos/300/300?random=2" />
-              <img src="https://picsum.photos/300/300?random=3" />
-              <img src="https://picsum.photos/300/300?random=4" />
-              <img src="https://picsum.photos/300/300?random=5" />
-              <img src="https://picsum.photos/300/300?random=6" />
-              <img src="https://picsum.photos/300/300?random=7" />
-              <img src="https://picsum.photos/300/300?random=8" />
-              <div> 흰 배경 컴포넌트(scaleable)를 깔고 그 위에 mindmap 렌더하도록 canvas 수정</div>
-            </ExCont> */}
             <Container>
               {radialNodes.map((node, i) => (
-                <Exbox
+                <Nodebox
                   key={i}
                   parent={node.data.parent}
                   id={node.data.id}
+                  nodeScale={nodeScale}
                   coordY={node.y}
                   coordX={node.x}
                   //onClick={blockHandler}
@@ -221,8 +233,16 @@ export default function Canvas3({ addMindmapHandler }) {
                   // onDragOver -> onDrop
                   onDrop={dropHandler}
                 >
-                  {node.data.content}
-                </Exbox>
+                  {!node.data.parent
+                    ? node.data.content
+                    : simplified(node.data.content)}
+                  <div
+                    className="delete"
+                    onClick={() => deleteMindmapHandler(node.data.id)}
+                  >
+                    맵에서 삭제
+                  </div>
+                </Nodebox>
               ))}
               <svg width={"100vw"} height={"100vh"}>
                 {radialLinkes.map((link, i) => {
@@ -234,7 +254,7 @@ export default function Canvas3({ addMindmapHandler }) {
                       x2={link.target.x}
                       y2={link.target.y}
                       stroke="lightgrey"
-                      strokeWidth="2"
+                      strokeWidth="1"
                     />
                   );
                 })}
