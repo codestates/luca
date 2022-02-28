@@ -167,7 +167,10 @@ const CardAdder = styled.div`
   }
   > div {
     > button.yellow {
+  z-index: 900;
+
     background: rgb(253, 251, 209);
+    margin: 5px;
     width: 20px;
     height: 20px;
     border-radius: 50%;
@@ -175,6 +178,7 @@ const CardAdder = styled.div`
   }
   > button.blue {
     background: rgb(183, 229, 237);
+    margin: 5px;
     width: 20px;
     height: 20px;
     border-radius: 50%;
@@ -182,6 +186,7 @@ const CardAdder = styled.div`
   }
   > button.pink {
     background: rgb(249, 206, 218);
+    margin: 5px;
     width: 20px;
     height: 20px;
     border-radius: 50%;
