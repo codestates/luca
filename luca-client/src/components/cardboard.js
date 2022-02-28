@@ -190,7 +190,6 @@ const CardAdder = styled.div`
     border-radius: 50%;
     cursor: pointer;
   }
-  }
   
   > button:active {
     transform: translateY(2px);
@@ -313,7 +312,7 @@ export default function Cardboard({
       <CardContainer isCardContOpen={isCardContOpen} ref={outSection}>
         {cardList.map((card, i) => {
           return blockData.isBlock && card.id === blockData.cardId ? (
-            <div>
+            <div key={card.id}>
               <Card
                 key={card.id}
                 id={card.id}
@@ -330,7 +329,7 @@ export default function Cardboard({
               <button>Block</button>
             </div>
           ) : (
-            <div>
+            <div key={card.id}>
               <Card
                 key={card.id}
                 id={card.id}
