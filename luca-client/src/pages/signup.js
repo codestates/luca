@@ -249,7 +249,7 @@ export default function Signup() {
           withCredentials: true,
         })
         .then((res) => {
-          if (res.status === 200) {
+          if (res.status === 201) {
             dispatch(setIsLogin(true));
             dispatch(setUserInfo(res.data.data));
             navigate("/")

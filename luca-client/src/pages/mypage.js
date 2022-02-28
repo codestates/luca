@@ -174,7 +174,7 @@ export default function Mypage() {
       <Navigator />
       <Container>
         <Left>
-          {isEditOn ? <i onClick={UploadImage} className="fa-regular fa-pen-to-square"></i>: null}
+          {/* {isEditOn ? <i onClick={UploadImage} className="fa-regular fa-pen-to-square"></i>: null} */}
         </Left>
         {isEditOn ? (
           <Right>
