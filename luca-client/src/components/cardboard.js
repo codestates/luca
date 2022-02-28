@@ -117,12 +117,39 @@ const Opener = styled.div`
 
 const Card = styled.div`
   z-index: 800;
-  width: 11vh;
-  height: 11vh;
-  margin: 1.4vh 1.5vh 0vh 1.5vh;
-  padding: 2vh;
-  background: ${(props) => `rgb${(props.color)}`};
+  width: 14vh;
+  height: 14vh;
+  margin: 2vh 1.5vh 0vh 1.5vh;
+  background-color: ${(props) => (`rgb${(props.color)}`)};
+  filter: ${(props) => (props.blocked ? "brightness(50%)" : "none")};
   box-shadow: 0vh 0.5vh 1vh 0vh rgba(0, 0, 0, 0.3);
+  > div.content {
+    margin: -1.5vh 1.5vh;
+    font-size: 2vh;
+    text-align: ${(props) => (props.blocked ? "center" : "left")};
+    word-break: break-word;
+    overflow: hidden;
+  }
+  > div.delete {
+    position: relative;
+    top: -1vh;
+    right: -12vh;
+    width: 1em;
+    height: 1em;
+    padding: 0.2em;
+    border-radius: 1em;
+    text-align: center;
+    background-color: lightgrey;
+    > i {
+      color: rgb(100, 100, 100);
+    }
+  }
+  > div.delete::-moz-drag-over {
+    display: none;
+    > i {
+      display: none;
+    }
+  }
 `;
 
 const CardAdder = styled.div`
@@ -279,12 +306,12 @@ export default function Cardboard({
     return () => {
       window.removeEventListener('click', handleCloseModal);
     };
-  })
+})
 
-  const changeColorHandler = ({ color }) => {
-    console.log(cardList)
-    setChangeColor(color)
-  }
+const changeColorHandler = ({ color }) => {
+  console.log(cardList)
+  setChangeColor(color)
+}
 
   const createCardHandler = () => {
     let actual = newCardRef.current.value.replace(/ /g, "");
@@ -312,38 +339,44 @@ export default function Cardboard({
       <CardContainer isCardContOpen={isCardContOpen} ref={outSection}>
         {cardList.map((card, i) => {
           return blockData.isBlock && card.id === blockData.cardId ? (
-            <div key={card.id}>
-              <Card
-                key={card.id}
-                id={card.id}
-                color={card.color}
-                draggable
-                onDragStart={cardDragStart}
-                onDragEnd={cardDragEnd}
-              >
-                {card.content}
-              </Card>
+            <Card
+              key={card.id}
+              id={card.id}
+              color={card.color}
+              draggable
+              onDragStart={cardDragStart}
+              onDragEnd={cardDragEnd}
+              blocked={true}
+            >
               {card.userId === userInfo.id ? (
-                <button onClick={() => deleteCard(card.id)}>X</button>
+                <div className="delete" onClick={() => deleteCard(card.id)}>
+                  <i className="fa-solid fa-xmark"></i>
+                </div>
               ) : null}
-              <button>Block</button>
-            </div>
+              <div className="content">
+                {card.content}
+              </div>
+            </Card>
           ) : (
-            <div key={card.id}>
-              <Card
-                key={card.id}
-                id={card.id}
-                color={card.color}
-                draggable
-                onDragStart={cardDragStart}
-                onDragEnd={cardDragEnd}
-              >
-                {card.content}
-              </Card>
+            <Card
+              key={card.id}
+              id={card.id}
+              color={card.color}
+              draggable
+              onDragStart={cardDragStart}
+              onDragEnd={cardDragEnd}
+            >
               {card.userId === userInfo.id ? (
-                <button onClick={() => deleteCard(card.id)}>X</button>
+                <div
+                  className="delete"
+                  onClick={() => deleteCard(card.id)}
+                  draggable={false}
+                >
+                  <i className="fa-solid fa-xmark"></i>
+                </div>
               ) : null}
-            </div>
+              <div className="content">{card.content}</div>
+            </Card>
           );
         })}
         {/* <Card>상위 4개 limit로 할 필요 없음 .map</Card> */}
@@ -351,7 +384,7 @@ export default function Cardboard({
         <CardAdder color={changeColor} isCardContOpen={isCardContOpen} isAdderOpen={isAdderOpen} ref={outSection} >
           {isAdderOpen ? (
             <>
-              <div>
+               <div>
                 <button className='yellow' onClick={() => changeColorHandler({ color: "(253, 251, 209)" })} />
                 <button className='blue' onClick={() => changeColorHandler({ color: "(183, 229, 237)" })} />
                 <button className='pink' onClick={() => changeColorHandler({ color: "(249, 206, 218)" })} />
@@ -362,13 +395,13 @@ export default function Cardboard({
                     createCardHandler()
                   }
                 }
-              } />
+              } maxLength={45} />
               <button className='submit' onClick={createCardHandler}>추가</button>
             </>
           ) :
-            <i className="fa-solid fa-circle-plus" onClick={adderOpenHandler}></i>
-          }
-        </CardAdder>
+          <i className="fa-solid fa-circle-plus" onClick={adderOpenHandler}></i>
+        }
+                </CardAdder>
 
         <Opener
           className="opener"
