@@ -124,7 +124,10 @@ export default function Project() {
   return (
     <div>
       {/* <Navigator /> */}
-      <Canvas3 addMindmapHandler={addMindmapHandler} />
+      <Canvas3
+        addMindmapHandler={addMindmapHandler}
+        deleteMindmapHandler={deleteMindmapHandler}
+      />
       <Cardboard
         createCard={createCard}
         deleteCard={deleteCard}

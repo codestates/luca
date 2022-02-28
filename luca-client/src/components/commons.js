@@ -160,13 +160,13 @@ function Navigator() {
                 <i className="fa-solid fa-gear"></i>
                 <div>설정</div>
               </Link>
-              <div className="dropdown-index" onClick={logoutHandler}>
+              <a className="dropdown-index" onClick={logoutHandler}>
                 <i
                   className="fa-solid fa-right-from-bracket"
                   style={{ color: "#FF5D50" }}
                 ></i>
                 <div style={{ color: "#FF5D50" }}>로그아웃</div>
-              </div>
+              </a>
             </div>
           </div>
           ):
