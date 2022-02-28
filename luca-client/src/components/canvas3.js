@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { useState } from "react";
 import styled from "styled-components";
@@ -101,8 +101,6 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler }) {
   const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
   // 우클릭시 드롭다운메뉴 이벤트를 위한 마우스 좌표 객체입니다.
 
-  const [nodeOption, setNodeOption] = useState(false);
-
   const root = hierarchy(rawData);
   const treeLayout = cluster()
     .size([360, window.innerHeight * 0.4])
@@ -159,20 +157,6 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler }) {
     console.log("dropped on node! node id: ", e.target.id);
     // 노드에 드롭 시 노드 id를 가져왔습니다. 이제 mindmap 데이터에서 노드 id를 찾아 자식노드로 추가해줘야합니다.
   };
-
-  const handleContextMenu = useCallback(
-    (e) => {
-      e.preventDefault();
-      setAnchorPoint({ x: e.pageX, y: e.pageY });
-      setNodeOption(true);
-    },
-    [setAnchorPoint, setNodeOption]
-  );
-
-  useEffect(() => {
-    document.addEventListener("contextmenu", handleContextMenu);
-    document.removeEventListener("contextmenu", handleContextMenu);
-  });
 
   const simplified = (str) => {
     let viewLength = 10;

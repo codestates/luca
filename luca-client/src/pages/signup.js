@@ -16,11 +16,11 @@ import {
 } from "../api";
 
 const SignupPage = styled.div`
-  margin-top: 10vh;
+  /* margin-top: 10vh; */
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 60vh;
+  height: 70vh;
   width: 100%;
   > div,title {
     flex: 1 0 auto;
@@ -41,6 +41,7 @@ const Registrybox = styled.div`
   > div {
     width: auto;
     display: flex;
+    justify-content: center;
     > div.emailbox {
       margin-left: 100px;
     }
@@ -248,7 +249,7 @@ export default function Signup() {
           withCredentials: true,
         })
         .then((res) => {
-          if (res.status === 200) {
+          if (res.status === 201) {
             dispatch(setIsLogin(true));
             dispatch(setUserInfo(res.data.data));
             navigate("/")
@@ -265,6 +266,7 @@ export default function Signup() {
   const sendMail = (email) => {
     axios
       .post(`${process.env.REACT_APP_API_URL}/user/checkAndMail`, { email: email }, {
+      // .post(`https://localhost:4000/user/checkAndMail`, { email: email }, {
         "Content-Type": "application/json",
         withCredentials: true,
       }).then((res => {
