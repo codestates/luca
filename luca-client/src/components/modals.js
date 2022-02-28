@@ -204,6 +204,7 @@ export function LoginModal({ modalHandler }) {
         }
       })
       .catch((err) => {
+        console.log(err.response);
         if (err.response.status === 400) {
           return setErrorMessage("잘못된 이메일 혹은 비밀번호입니다.");
         }

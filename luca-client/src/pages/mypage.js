@@ -13,7 +13,7 @@ const Container = styled.div`
   min-height: 50vh;
   margin: 20vh 10vh 10vh 10vh;
   display: flex;
-  `;
+`;
 
 const Section = styled.div`
   border-radius: 1vh;
@@ -25,7 +25,6 @@ const Left = styled(Section)`
   height: 55vh;
   margin: 0 15vh;
   background: url("https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/damien-hirst-1-1538661596.jpg");
-  /* background: url("https://www.google.com/url?sa=i&url=https%3A%2F%2Fdepositphotos.com%2Fvector-images%2Fanonymous-profile-pic.html&psig=AOvVaw2d7MHj-Sn-ATS-WXFpOjJg&ust=1645776392089000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCNjn5ovxl_YCFQAAAAAdAAAAABAD"); */
   background-size: cover;
   background-repeat: no-repeat;
   border-radius: 30vh;
@@ -119,6 +118,8 @@ export default function Mypage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userInfo = useSelector((state) => state.user.userInfo);
+  const projects = useSelector((state) => state.user.projects);
+  const cards = useSelector((state) => state.user.cardList);
   const [isEditOn, setIsEditOn] = useState(false);
   const editnameRef = useRef();
 
@@ -151,7 +152,7 @@ export default function Mypage() {
   }
 
   useEffect(() => {
-    console.log(userInfo);
+    console.log(userInfo, projects, cards);
     axios
       .get(`${process.env.REACT_APP_API_URL}/profile`, {
         "Content-Type": "application/json",
@@ -173,7 +174,7 @@ export default function Mypage() {
       <Navigator />
       <Container>
         <Left>
-          {isEditOn ? <i onClick={UploadImage} className="fa-regular fa-pen-to-square"></i>: null}
+          {/* {isEditOn ? <i onClick={UploadImage} className="fa-regular fa-pen-to-square"></i>: null} */}
         </Left>
         {isEditOn ? (
           <Right>
@@ -188,8 +189,8 @@ export default function Mypage() {
               </div>
             </Upper>
             <Lower>
-              <div>만든 프로젝트 2개, 참여한 프로젝트 3개</div>
-              <div>만든 카드 34개, 매핑된 카드 27개</div>
+              <div>{`만든 프로젝트 ${projects.length}개, 참여한 프로젝트 3개`}</div>
+              <div>{`만든 카드 ${cards.length}개, 매핑된 카드 27개`}</div>
             </Lower>
           </Right>
         ) : (
@@ -205,8 +206,8 @@ export default function Mypage() {
               </div>
             </Upper>
             <Lower>
-              <div>만든 프로젝트 2개, 참여한 프로젝트 3개</div>
-              <div>만든 카드 34개, 매핑된 카드 27개</div>
+              <div>{`만든 프로젝트 ${projects.length}개, 참여한 프로젝트 3개`}</div>
+              <div>{`만든 카드 ${cards.length}개, 매핑된 카드 27개`}</div>
             </Lower>
           </Right>
         )}

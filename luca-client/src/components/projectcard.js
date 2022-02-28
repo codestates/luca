@@ -48,12 +48,12 @@ const ProjectCover = styled.div`
       border-color: #ff7f50;
     }
 
-    > div.unit-label {
+    /* > div.unit-label {
       padding: 0.5em 1em;
       margin: auto 0 auto auto;
       border-radius: 2em;
       background-color: ${(props) => (props.team ? "lightgreen" : "lightpink")};
-    }
+    } */
 
     > div.delete {
       margin: auto 0 auto 20px;
@@ -129,6 +129,13 @@ const ProjectCover = styled.div`
     flex: 1 0 auto;
   }
 `;
+
+const UnitLabel = styled.div`
+  padding: 0.5em 1em;
+  margin: auto 0 auto auto;
+  border-radius: 2em;
+  background-color: ${(props) => (props.team ? "lightgreen" : "lightpink")};
+`
 
 function Projectcard({ projectInfo, index }) {
   const dispatch = useDispatch();
@@ -297,9 +304,9 @@ function Projectcard({ projectInfo, index }) {
             >
               <i className="fa-solid fa-pen-to-square"></i>
             </button>
-            <div className="unit-label" team={String(projectInfo.isTeam)}>
+            <UnitLabel className="unit-label" team={projectInfo.isTeam}>
               {projectInfo.isTeam ? "Team" : "Private"}
-            </div>
+            </UnitLabel>
           </div>
           <div className="desc">{projectInfo.desc}</div>
         </>

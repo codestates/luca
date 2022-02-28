@@ -28,8 +28,12 @@ const TimerImage = styled.div`
         border: solid lightgrey 1px;
         color: rgb(160, 160, 160);
         font-size: 1.2rem;
-    }`
-;
+    }
+    button.start:hover {
+        background-color: rgb(160, 160, 160);
+        color: white;
+    }
+`;
 
 const TimerDisplay = styled.div`
     position: fixed;
