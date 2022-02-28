@@ -11,18 +11,22 @@ import { setCardList } from "../redux/rootSlice";
 const CardContainer = styled.div`
   z-index: 800;
   position: fixed;
-  top: 13vh;
-  right: 2vh;
-  width: 18vh;
-  height: 68vh;
+  top: ${(props) => (props.isSidebar ? "13vh" : "none")};
+  bottom: ${(props) => (props.isSidebar ? "none" : "1vh")};
+  right:  ${(props) => (props.isSidebar ? "2vh" : "20vh")};
+  width: ${(props) => (props.isSidebar ? "18vh" : "130vh")};
+  height: ${(props) => (props.isSidebar ? "68vh" : "18vh")};
   background-color: white;
   border-radius: 0vh 1vh 1vh 0vh;
   display: flex;
   flex-flow: column wrap;
   align-content: baseline;
   box-shadow: 0vh 0vh 1vh rgba(0, 0, 0, 0.5);
-  overflow: hidden;
+  overflow: ${(props) => (props.isSidebar ? "hidden" : "scroll")};
   animation-name: ${(props) => {
+    if (props.isSidebar !== true) {
+      return null
+    }
     if (props.isCardContOpen !== null && props.isCardContOpen === true) {
       return "containerIn";
     } else if (
@@ -49,14 +53,37 @@ const CardContainer = styled.div`
   @keyframes containerOut {
     from {
       width: 108vh;
-      //overflow: hidden;
-      //scroll-snap-type: x proximity;
+      overflow: scroll;
+      scroll-snap-type: x proximity;
     }
     to {
       width: 18vh;
-      //overflow: hidden;
-      //scroll-snap-type: x proximity;
+      overflow: scroll;
+      scroll-snap-type: x proximity;
     }
+  }
+`;
+
+const Transform = styled.div`
+  z-index: 850;
+  position: fixed;
+  top: ${(props) => (props.isSidebar ? "10vh" : "none")};
+  bottom: ${(props) => (props.isSidebar ? "none" : "20vh")};
+  right: ${(props) => (props.isSidebar ? "20vh" : "148vh")};
+  width: 2.5vh;
+  height: 2.5vh;
+  border-radius: 1vh 0 0 1vh;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  > i {
+    margin-left: 0.75vh;
+    flex: 1 0 auto;
+  }
+  > button {
+      border: none;
+      background: none;
+      color: grey;
   }
 `;
 
@@ -111,7 +138,7 @@ const Opener = styled.div`
 
 const Card = styled.div`
   z-index: 800;
-  width: 14vh;
+  width:14vh;
   height: 14vh;
   margin: 2vh 1.5vh 0vh 1.5vh;
   background-color: ${(props) => (`rgb${(props.color)}`)};
@@ -274,6 +301,7 @@ export default function Cardboard({
   const [changeColor, setChangeColor] = useState("(253, 251, 209)")
   const [isCardContOpen, setIsCardContOpen] = useState(null); // default animation state
   const [isAdderOpen, setIsAdderOpen] = useState(null); // default animation state
+  const [isSidebar, setIsSidebar] = useState(true);
 
   const newCardRef = useRef();
   const outSection = useRef();
@@ -289,9 +317,22 @@ export default function Cardboard({
 
   const handleCloseModal = e => {
     if ((isAdderOpen) && (!outSection.current || !outSection.current.contains(e.target))) {
-      setIsAdderOpen(false);
+      setIsAdderOpen(!isAdderOpen);
     }
   }
+
+  const handleSidebarModal = () => {
+    setIsSidebar(!isSidebar)
+    return (
+      <Transform onClick={sliderHandler} isCardContOpen={isCardContOpen} isSidebar={isSidebar}>
+        {isSidebar ? (
+          <button onClick={handleSidebarModal}><i className="fa-solid fa-circle-chevron-down"></i></button>) : (
+          <button onClick={handleSidebarModal}><i className="fa-solid fa-circle-chevron-up"></i></button>
+        )}
+      </Transform>
+    )
+  }
+
   useEffect(() => {
     window.addEventListener('click', handleCloseModal);
     return () => {
@@ -327,7 +368,14 @@ export default function Cardboard({
 
   return (
     <div>
-      <CardContainer isCardContOpen={isCardContOpen} ref={outSection}>
+      <Transform onClick={sliderHandler} isCardContOpen={isCardContOpen} isSidebar={isSidebar}>
+        {isSidebar ? (
+          <button onClick={handleSidebarModal}><i className="fa-solid fa-circle-chevron-down"></i></button>) : (
+          <button onClick={handleSidebarModal}><i className="fa-solid fa-circle-chevron-up"></i></button>
+        )}
+      </Transform>
+      <CardContainer isCardContOpen={isCardContOpen} isSidebar={isSidebar}>
+
         {cardList.map((card, i) => {
           return blockData.isBlock && card.id === blockData.cardId ? (
             <Card
@@ -372,6 +420,19 @@ export default function Cardboard({
         })}
         {/* <Card>상위 4개 limit로 할 필요 없음 .map</Card> */}
         {/* websocket 으로 카드 데이터 받을때는 key={card.id} 로 매핑할 것 */}
+        {isSidebar ? (
+          <Opener
+            className="opener"
+            onClick={sliderHandler}
+            isCardContOpen={isCardContOpen}
+          >
+            {isCardContOpen ? (
+              <i className="fa-solid fa-angle-right"></i>
+            ) : (
+              <i className="fa-solid fa-angle-left"></i>
+            )}
+          </Opener>
+        ) : null}
         <CardAdder color={changeColor} isCardContOpen={isCardContOpen} isAdderOpen={isAdderOpen} ref={outSection} >
           {isAdderOpen ? (
             <>
@@ -393,18 +454,6 @@ export default function Cardboard({
             <i className="fa-solid fa-circle-plus" onClick={adderOpenHandler}></i>
           }
         </CardAdder>
-
-        <Opener
-          className="opener"
-          onClick={sliderHandler}
-          isCardContOpen={isCardContOpen}
-        >
-          {isCardContOpen ? (
-            <i className="fa-solid fa-angle-right"></i>
-          ) : (
-            <i className="fa-solid fa-angle-left"></i>
-          )}
-        </Opener>
       </CardContainer>
     </div>
   );
