@@ -20,6 +20,9 @@ module.exports = {
       parent: {
         type: Sequelize.INTEGER
       },
+      color: {
+        type: Sequelize.STRING
+      },
       storage: {
         type: Sequelize.STRING
       },

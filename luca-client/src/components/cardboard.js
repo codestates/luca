@@ -117,38 +117,12 @@ const Opener = styled.div`
 
 const Card = styled.div`
   z-index: 800;
-  width: 14vh;
-  height: 14vh;
-  margin: 2vh 1.5vh 0vh 1.5vh;
-  background-color: ${(props) => (props.blocked ? "grey" : "lightyellow")};
+  width: 11vh;
+  height: 11vh;
+  margin: 1.4vh 1.5vh 0vh 1.5vh;
+  padding: 2vh;
+  background: ${(props) => `rgb${(props.color)}`};
   box-shadow: 0vh 0.5vh 1vh 0vh rgba(0, 0, 0, 0.3);
-  > div.content {
-    margin: -1.5vh 1.5vh;
-    font-size: 2vh;
-    text-align: ${(props) => (props.blocked ? "center" : "left")};
-    word-break: break-word;
-    overflow: hidden;
-  }
-  > div.delete {
-    position: relative;
-    top: -1vh;
-    right: -12vh;
-    width: 1em;
-    height: 1em;
-    padding: 0.2em;
-    border-radius: 1em;
-    text-align: center;
-    background-color: lightgrey;
-    > i {
-      color: rgb(100, 100, 100);
-    }
-  }
-  > div.delete::-moz-drag-over {
-    display: none;
-    > i {
-      display: none;
-    }
-  }
 `;
 
 const CardAdder = styled.div`
@@ -158,7 +132,7 @@ const CardAdder = styled.div`
   right: 3.5vh;
   width: 15vh;
   height: 15vh;
-  background-color: white;
+  background: ${(props) => `rgb${(props.color)}`};
   border-radius: 1vh;
   box-shadow: 0vh 0vh 1vh rgba(0, 0, 0, 0.5);
   text-align: center;
@@ -168,17 +142,60 @@ const CardAdder = styled.div`
   cursor: pointer;
   font-size: 5vh;
   > i {
-    background-color: cyan;
+    /* background-color: cyan; */
     color: grey;
   }
   > input {
     font-size: 0.7em;
+    background: ${(props) => `rgb${(props.color)}`};
     margin: auto;
     width: 80%;
     height: 70%;
     outline: none;
     border: none;
   }
+  > button.submit {
+    background: white;
+    color: black;
+    margin: 20px;
+    padding: 0;
+    text-align: center;
+    padding: 20px;
+    border-radius: 30px;
+    font-size: large;
+    font-weight: bold;
+  }
+  > div {
+    > button.yellow {
+    background: rgb(253, 251, 209);
+    margin: 5px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  > button.blue {
+    background: rgb(183, 229, 237);
+    margin: 5px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  > button.pink {
+    background: rgb(249, 206, 218);
+    margin: 5px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  }
+  
+  > button:active {
+    transform: translateY(2px);
+  }
+}
 
   animation-name: ${(props) => {
     if (props.isAdderOpen !== null) {
@@ -237,11 +254,12 @@ export default function Cardboard({
   const cardList = useSelector((state) => state.user.cardList);
   const userInfo = useSelector((state) => state.user.userInfo);
   const blockData = useSelector((state) => state.user.blockData);
-
+  const [changeColor, setChangeColor] = useState("(253, 251, 209)")
   const [isCardContOpen, setIsCardContOpen] = useState(null); // default animation state
   const [isAdderOpen, setIsAdderOpen] = useState(null); // default animation state
 
   const newCardRef = useRef();
+  const outSection = useRef();
 
   const sliderHandler = () => {
     setIsCardContOpen(!isCardContOpen);
@@ -250,15 +268,29 @@ export default function Cardboard({
   const adderOpenHandler = () => {
     console.log(cardList);
     setIsAdderOpen(!isAdderOpen);
-    // if (isAdderOpen) {
-    //   createCard();
-    // }
   };
+
+  const handleCloseModal = e => {
+    if ((isAdderOpen) && (!outSection.current || !outSection.current.contains(e.target))) {
+      setIsAdderOpen(false);
+    }
+  }
+  useEffect(() => {
+    window.addEventListener('click', handleCloseModal);
+    return () => {
+      window.removeEventListener('click', handleCloseModal);
+    };
+  })
+
+  const changeColorHandler = ({ color }) => {
+    console.log(cardList)
+    setChangeColor(color)
+  }
 
   const createCardHandler = () => {
     let actual = newCardRef.current.value.replace(/ /g, "");
     if (actual.length > 0) {
-      createCard(newCardRef.current.value);
+      createCard(newCardRef.current.value, changeColor);
       newCardRef.current.value = "";
     }
   };
@@ -278,57 +310,65 @@ export default function Cardboard({
 
   return (
     <div>
-      <CardContainer isCardContOpen={isCardContOpen}>
+      <CardContainer isCardContOpen={isCardContOpen} ref={outSection}>
         {cardList.map((card, i) => {
           return blockData.isBlock && card.id === blockData.cardId ? (
-            <Card
-              key={card.id}
-              id={card.id}
-              draggable
-              onDragStart={cardDragStart}
-              onDragEnd={cardDragEnd}
-              blocked={true}
-            >
+            <div>
+              <Card
+                key={card.id}
+                id={card.id}
+                color={card.color}
+                draggable
+                onDragStart={cardDragStart}
+                onDragEnd={cardDragEnd}
+              >
+                {card.content}
+              </Card>
               {card.userId === userInfo.id ? (
-                <div className="delete" onClick={() => deleteCard(card.id)}>
-                  <i className="fa-solid fa-xmark"></i>
-                </div>
+                <button onClick={() => deleteCard(card.id)}>X</button>
               ) : null}
-              <div className="content">
-                user {card.userId} using this card...
-              </div>
-            </Card>
+              <button>Block</button>
+            </div>
           ) : (
-            <Card
-              key={card.id}
-              id={card.id}
-              draggable
-              onDragStart={cardDragStart}
-              onDragEnd={cardDragEnd}
-            >
+            <div>
+              <Card
+                key={card.id}
+                id={card.id}
+                color={card.color}
+                draggable
+                onDragStart={cardDragStart}
+                onDragEnd={cardDragEnd}
+              >
+                {card.content}
+              </Card>
               {card.userId === userInfo.id ? (
-                <div
-                  className="delete"
-                  onClick={() => deleteCard(card.id)}
-                  draggable={false}
-                >
-                  <i className="fa-solid fa-xmark"></i>
-                </div>
+                <button onClick={() => deleteCard(card.id)}>X</button>
               ) : null}
-              <div className="content">{card.content}</div>
-            </Card>
+            </div>
           );
         })}
         {/* <Card>상위 4개 limit로 할 필요 없음 .map</Card> */}
         {/* websocket 으로 카드 데이터 받을때는 key={card.id} 로 매핑할 것 */}
-        <CardAdder isCardContOpen={isCardContOpen} isAdderOpen={isAdderOpen}>
+        <CardAdder color={changeColor} isCardContOpen={isCardContOpen} isAdderOpen={isAdderOpen} ref={outSection} >
           {isAdderOpen ? (
             <>
-              <input ref={newCardRef} maxLength={45} />
-              <button onClick={createCardHandler}>추가</button>
+              <div>
+                <button className='yellow' onClick={() => changeColorHandler({ color: "(253, 251, 209)" })} />
+                <button className='blue' onClick={() => changeColorHandler({ color: "(183, 229, 237)" })} />
+                <button className='pink' onClick={() => changeColorHandler({ color: "(249, 206, 218)" })} />
+              </div>
+              <input color={changeColor} placeholder='text...' ref={newCardRef} onKeyPress={
+                (e) => {
+                  if (e.key === 'Enter') {
+                    createCardHandler()
+                  }
+                }
+              } />
+              <button className='submit' onClick={createCardHandler}>추가</button>
             </>
-          ) : null}
-          <i className="fa-solid fa-circle-plus" onClick={adderOpenHandler}></i>
+          ) :
+            <i className="fa-solid fa-circle-plus" onClick={adderOpenHandler}></i>
+          }
         </CardAdder>
 
         <Opener

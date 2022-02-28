@@ -386,7 +386,7 @@ export default function Signup() {
 
             <div>
               <div>
-              <button className='submit' onClick={SignupHandler}>회원가입</button>
+                <button className='submit' onClick={SignupHandler}>회원가입</button>
               </div>
             </div>
 
