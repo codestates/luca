@@ -86,47 +86,56 @@ const TimerDisplay = styled.div`
     ;
 
 const Timer = () => {
-    const curProjectId = window.location.href.split("/").reverse()[0]
-    const socket = io.connect(`${process.env.REACT_APP_API_URL}`)
-    const roomName = `${curProjectId}`
+    // const curProjectId = window.location.href.split("/").reverse()[0]
+    // const socket = io.connect(`${process.env.REACT_APP_API_URL}`)
+    // const roomName = `${curProjectId}`
     const [time, setTime] = useState(0);
     const [timerOn, setTimeOn] = useState(false);
     const [settings, setSettings] = useState(false);
 
-    const increaseTime = () => socket.emit("increaseTime", time, roomName);
-    const decreaseTime = () => socket.emit("decreaseTime", time, roomName);
-    const clickTimer = () => socket.emit("clickTimer", true, roomName);
-    const startTimer = () => socket.emit("startTimer", true, roomName);
-    const pauseTimer = () => socket.emit("pauseTimer", false, roomName);
+    // const increaseTime = () => socket.emit("increaseTime", time, roomName);
+    // const decreaseTime = () => socket.emit("decreaseTime", time, roomName);
+    // const clickTimer = () => socket.emit("clickTimer", true, roomName);
+    // const startTimer = () => socket.emit("startTimer", true, roomName);
+    // const pauseTimer = () => socket.emit("pauseTimer", false, roomName);
+    // const resetTimer = () => {
+    //     setTime(0);
+    //     socket.emit("resetTimer", false, roomName);
+    // };
+
+    // const disconnectSocket = useCallback(() => {
+    //     socket.disconnect();
+    // }, [socket]);
+
+    // useEffect(() => {
+    //     socket.emit("enterRoom", roomName);
+
+    //     return () => {
+    //         disconnectSocket();
+    //     };
+    // }, []);
+
+    const increaseTime = () => setTime(time + 300);
+    const decreaseTime = () => setTime(time - 300);
+    const clickTimer = () => setSettings(true);
+    const startTimer = () => setTimeOn(true);
+    const pauseTimer = () => setTimeOn(false);
     const resetTimer = () => {
+        setSettings(false);
         setTime(0);
-        socket.emit("resetTimer", false, roomName);
     };
 
-    const disconnectSocket = useCallback(() => {
-        socket.disconnect();
-    }, [socket]);
-
-    useEffect(() => {
-        socket?.emit("enterRoom", roomName);
-
-        return () => {
-            disconnectSocket();
-        };
-    }, []);
-
-
-    useEffect(() => {
-        socket.on("increaseTime", (data) => setTime(data + 300));
-        socket.on("decreaseTime", (data) => setTime(data - 300));
-        socket.on("clickTimer", (data) => setSettings(data));
-        socket.on("startTimer", (data) => setTimeOn(data));
-        socket.on("pauseTimer", (data) => setTimeOn(data));
-        socket.on("resetTimer", (data) => {
-            setSettings(data);
-            setTime(0);
-        });
-    }, [])
+    // useEffect(() => {
+    //     socket.on("increaseTime", (data) => setTime(time + 300));
+    //     socket.on("decreaseTime", (data) => setTime(time - 300));
+    //     socket.on("clickTimer", (data) => setSettings(data));
+    //     socket.on("startTimer", (data) => setTimeOn(data));
+    //     socket.on("pauseTimer", (data) => setTimeOn(data));
+    //     socket.on("resetTimer", (data) => {
+    //         setSettings(data);
+    //         setTime(0);
+    //     });
+    // }, [])
 
     useEffect(() => {
         let interval = null;
