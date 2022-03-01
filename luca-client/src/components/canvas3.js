@@ -12,13 +12,14 @@ const Container = styled.div`
   width: 99vw;
   height: 99vh;
   border: solid red 1px;
+  overflow: visible;
 `;
 
 const Controller = styled.div`
   z-index: 999;
   position: fixed;
   top: 13vh;
-  left: 2vh;
+  left: 20px;
   background-color: white;
   border-radius: 6px;
   box-shadow: 0vh 0vh 1vh rgba(0, 0, 0, 0.3);
@@ -49,29 +50,71 @@ const Controller = styled.div`
   }
 `;
 
+const Scaler = styled.div`
+  z-index: 900;
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 150px;
+  height: 50px;
+  display: flex;
+  flex-direction: column;
+  background-color: cyan;
+  > div {
+    flex: 1 0 auto;
+    display: flex;
+
+    > div.index {
+      width: 50px;
+      background-color: green;
+    }
+    div.mod {
+      width: 100px;
+      background-color: blue;
+      display: flex;
+      justify-content: space-around;
+    }
+  }
+`;
+
+// 기존 코드
+// const Layout = styled.div`
+//   font-size: 16px;
+//   color: ${(props) => props.color};
+// `;
+
+// attrs를 사용한 코드
+// const Layout = styled.div.attrs((props) => ({
+//   color: props.color,
+// }))`
+//   font-size: 16px;
+// `;
+
 const Nodebox = styled.div`
   z-index: 990;
   position: fixed;
-  padding: 0.8em;
-  background-color: ${(props) =>
-    props.parent === 0 ? "lightyellow" : "white"};
-
   top: ${(props) => {
     return String(props.coordY) + "px";
   }};
   left: ${(props) => {
     return String(props.coordX) + "px";
   }};
+  padding: 0.8em;
+  background-color: ${(props) =>
+    props.parent === 0 ? "lightyellow" : "white"};
   transform: translate(-50%, -50%);
   text-align: center;
   border-radius: 4px;
-  font-size: ${(props) =>
-    props.parent === 0 ? props.nodeScale + 2 + "px" : props.nodeScale + "px"};
+  /* font-size: ${(props) =>
+    props.parent === 0
+      ? props.nodeScale + 2 + "px"
+      : props.nodeScale + "px"}; */
+  font-size: 16px;
   font-weight: ${(props) => (props.parent === 0 ? "700" : "normal")};
   box-shadow: ${(props) =>
     props.highlights.includes(props.id)
       ? "0 0 6px red"
-      : "0 0 4px rgba(0, 0, 0, 0.5)"};
+      : "0 0 8px rgba(0, 0, 0, 0.3)"};
 
   /* > div.text {
     background-color: ${(props) =>
@@ -102,11 +145,13 @@ const Nodebox = styled.div`
 const Lines = styled.svg`
   width: 100vw;
   height: 100vh;
+  overflow: visible;
+
   > line {
-    stroke: lightgrey;
+    stroke: rgb(180, 180, 180);
     stroke-width: 1px;
   }
-  stroke-dasharray: 500;
+  //stroke-dasharray: 500;
   stroke-dashoffset: 0;
   animation: dashDraw 1s linear 1;
   // props.depth * delay(1s)
@@ -130,8 +175,9 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler }) {
     { id: rawData.id, content: rawData.content },
   ]);
 
+  const [mapScale, setMapScale] = useState(2);
+
   const [highlight, setHighlight] = useState({ list: [], word: "" });
-  console.log("highlight: ", highlight);
 
   const [disabled, setDisabled] = useState(false);
   // 화면이 pan 되지 않으면서 마인드맵의 노드를 drag하기 위해 필요합니다.
@@ -140,7 +186,7 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler }) {
 
   const root = hierarchy(rawData);
   const treeLayout = cluster()
-    .size([360, window.innerHeight * 0.4])
+    .size([360, window.innerHeight * (mapScale / 5)]) // * 0.4
     .separation((a, b) => (a.parent === b.parent ? 1 : 2) / a.depth);
   treeLayout(root);
 
@@ -174,10 +220,9 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler }) {
     };
   });
 
-  const nodeScale = Math.pow(0.9, nodes[0].height) * 20;
-  // 기본적인 scaler 모델입니다. 비율은 추후 ui에 따라 변경가능
+  //const nodeScale = Math.pow(0.95, nodes[0].height) * 18;
+  // 기본적인 scale 모델입니다. 비율은 추후 ui에 따라 변경가능
 
-  console.log("nodeScale: ", nodeScale);
   //console.log("radialNodes: ", radialNodes);
   //console.log("radialLinkes: ", radialLinkes);
   //console.log("links: ", links);
@@ -227,14 +272,19 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler }) {
     setPathData(findParent(id, rawData));
   };
 
+  useEffect(() => {}, [mapScale]);
+
   return (
     <TransformWrapper
       initialScale={2}
-      initialPositionX={-window.innerWidth * 0.45}
-      initialPositionY={-window.innerHeight * 0.5}
+      initialPositionX={-window.innerWidth / 2}
+      initialPositionY={-window.innerHeight / 2}
+      limitToBounds={false}
+      minScale={0.3}
       disabled={disabled}
+      panning={{ excluded: ["nodebox"] }}
     >
-      {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
+      {({ zoomIn, zoomOut, setTransform, centerView }) => (
         <>
           <Controller>
             <button onClick={() => zoomIn()}>
@@ -243,74 +293,84 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler }) {
             <button onClick={() => zoomOut()}>
               <i className="fa-solid fa-magnifying-glass-minus"></i>
             </button>
-            <button onClick={() => resetTransform()}>
+            <button onClick={() => centerView(1, 300, "easeOut")}>
               <i className="fa-solid fa-minimize"></i>
             </button>
             <button>
               <i className="fa-solid fa-clock-rotate-left"></i>
             </button>
-            <button>
-              <i className="fa-solid fa-border-all"></i>
+            <button onClick={() => setTransform(-500, -300, 2, 200, "linear")}>
+              t<i className="fa-solid fa-border-all"></i>
             </button>
             <button onClick={blockHandler}>
               <i className="fa-solid fa-border-none"></i>
             </button>
-            <Timer />
+            {/* <Timer /> */}
           </Controller>
           <Finder
             mapData={radialNodes}
             pathData={pathData}
             setHighlight={setHighlight}
+            setTransform={setTransform}
           />
-
+          <Scaler>
+            <div>
+              <div className="index">map</div>
+              <div className="mod">
+                <button onClick={() => setMapScale(mapScale - 1)}>-</button>
+                {mapScale}
+                <button onClick={() => setMapScale(mapScale + 1)}>+</button>
+              </div>
+            </div>
+          </Scaler>
           <TransformComponent>
-            <Container>
-              {radialNodes.map((node, i) => (
-                <Nodebox
-                  key={i}
-                  parent={node.data.parent}
-                  id={node.data.id}
-                  nodeScale={nodeScale}
-                  coordY={node.y}
-                  coordX={node.x}
-                  highlights={highlight.list.map((node) => node.data.id)}
-                  //onClick={blockHandler}
-                  word={highlight.word}
-                  onClick={() => pathHandler(node.data.id)}
-                  onDragOver={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log(`- dragover in node (id: ${e.target.id}) -`);
-                  }}
-                  // onDragOver -> onDrop
-                  onDrop={dropHandler}
-                >
-                  {!node.data.parent
-                    ? node.data.content
-                    : simplified(node.data.content)}
+            {/* <Container> */}
+            {radialNodes.map((node, i) => (
+              <Nodebox
+                className="nodebox"
+                key={i}
+                parent={node.data.parent}
+                id={node.data.id}
+                coordY={node.y}
+                coordX={node.x}
+                highlights={highlight.list.map((node) => node.data.id)}
+                //onClick={blockHandler}
+                word={highlight.word}
+                onClick={() => pathHandler(node.data.id)}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log(`- dragover in node (id: ${e.target.id}) -`);
+                }}
+                // onDragOver -> onDrop
+                onDrop={dropHandler}
+              >
+                {!node.data.parent
+                  ? node.data.content
+                  : simplified(node.data.content)}
 
-                  <div
-                    className="delete"
-                    onClick={(e) => deleteMindmapHandler(e, node.data.id)}
-                  >
-                    <i className="fa-solid fa-rectangle-xmark"></i>
-                  </div>
-                </Nodebox>
-              ))}
-              <Lines>
-                {radialLinkes.map((link, i) => {
-                  return (
-                    <line
-                      key={i}
-                      x1={link.source.x}
-                      y1={link.source.y}
-                      x2={link.target.x}
-                      y2={link.target.y}
-                    />
-                  );
-                })}
-              </Lines>
-            </Container>
+                <div
+                  className="delete"
+                  onClick={(e) => deleteMindmapHandler(e, node.data.id)}
+                >
+                  <i className="fa-solid fa-rectangle-xmark"></i>
+                </div>
+              </Nodebox>
+            ))}
+            <Lines>
+              {radialLinkes.map((link, i) => {
+                return (
+                  <line
+                    key={i}
+                    x1={link.source.x}
+                    y1={link.source.y}
+                    x2={link.target.x}
+                    y2={link.target.y}
+                  />
+                );
+              })}
+            </Lines>
+            {/* </Container> */}
           </TransformComponent>
         </>
       )}
