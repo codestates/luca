@@ -110,6 +110,7 @@ const Registrybox = styled.div`
     }
   }
 `;
+
 const Input = styled.input`
   width: 100%;
   height: 40px;
@@ -142,12 +143,6 @@ const InvalidMessage = styled.p`
   font-size: 0.875rem;
   color: red;
 `;
-const OauthIcon = styled.div`
-  /* display: flex;
-  flex-direction: row;
-  justify-content: center;
-  width: 100%; */
-`
 
 export default function Signup() {
   const dispatch = useDispatch();
@@ -266,7 +261,7 @@ export default function Signup() {
   const sendMail = (email) => {
     axios
       .post(`${process.env.REACT_APP_API_URL}/user/checkAndMail`, { email: email }, {
-      // .post(`https://localhost:4000/user/checkAndMail`, { email: email }, {
+        // .post(`https://localhost:4000/user/checkAndMail`, { email: email }, {
         "Content-Type": "application/json",
         withCredentials: true,
       }).then((res => {
