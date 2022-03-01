@@ -103,9 +103,18 @@ const Timer = () => {
         socket.emit("resetTimer", false, roomName);
     };
 
+    const disconnectSocket = useCallback(() => {
+        socket.disconnect();
+    }, [socket]);
+
     useEffect(() => {
-        socket.emit("enterRoom", roomName);
+        socket?.emit("enterRoom", roomName);
+
+        return () => {
+            disconnectSocket();
+        };
     }, []);
+
 
     useEffect(() => {
         socket.on("increaseTime", (data) => setTime(data + 300));

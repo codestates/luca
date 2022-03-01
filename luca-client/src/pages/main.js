@@ -127,26 +127,26 @@ export default function Main() {
     let sortedProjects = projects;
 
     if (opt === "updatedAt") {
-      sortedProjects = projects.slice().sort((a, b) => {
+      sortedProjects = projects.slice().sort((b, a) => {
         return parseInt(a.updatedAt.split("-").join("")) <
           parseInt(b.updatedAt.split("-").join(""))
           ? -1
           : parseInt(a.updatedAt.split("-").join("")) >
             parseInt(b.updatedAt.split("-").join(""))
-          ? 1
-          : 0;
+            ? 1
+            : 0;
       });
       dispatch(setProjectList(sortedProjects));
       setCurSort("업데이트 순");
     } else if (opt === "createdAt") {
-      sortedProjects = projects.slice().sort((a, b) => {
+      sortedProjects = projects.slice().sort((b, a) => {
         return parseInt(a.createdAt.split("-").join("")) <
           parseInt(b.createdAt.split("-").join(""))
           ? -1
           : parseInt(a.createdAt.split("-").join("")) >
             parseInt(b.createdAt.split("-").join(""))
-          ? 1
-          : 0;
+            ? 1
+            : 0;
       });
       dispatch(setProjectList(sortedProjects));
       setCurSort("생성일 순");
