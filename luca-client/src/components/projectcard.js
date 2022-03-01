@@ -323,7 +323,7 @@ function Projectcard({ projectInfo, index }) {
         </p>
       </div>
       <div className="summary">
-        참여한 사람 4명, 만들어진 카드 46개, 매핑된 카드 39개
+        {`참여한 사람 4명, 만들어진 카드 3개, 매핑된 카드 39개`}
       </div>
     </ProjectCover>
   );
