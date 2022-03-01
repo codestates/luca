@@ -113,6 +113,13 @@ const ProjectCover = styled.div`
     padding: 10px 30px;
     > p {
       margin: 16px 0;
+      > span.keyword {
+        border-radius: 4px;
+        background-color: lightyellow;
+        padding: 0.5em;
+        margin-right: 0.3em;
+        box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+      }
       > span {
         font-weight: bold;
       }
@@ -165,6 +172,7 @@ const UnitLabel = styled.div`
 `;
 
 function Projectcard({ projectInfo, index }) {
+  console.log("projectInfo: ", projectInfo);
   const dispatch = useDispatch();
   const projects = useSelector((state) => state.user.projects);
   const userInfo = useSelector((state) => state.user.userInfo);
@@ -326,12 +334,11 @@ function Projectcard({ projectInfo, index }) {
       {!isEditOn ? (
         <div className="origin">
           <p>
-            <span>user{projectInfo.admin}</span> 님이{" "}
-            {projectInfo.createdAt.slice(0, 10)}
-            일에
+            <span>user{projectInfo.username}</span> 님이{" "}
+            <span>{projectInfo.createdAt.slice(0, 10)}</span> 일에
           </p>
           <p>
-            <span>seed idea</span> 로 시작함
+            <span className="keyword">{projectInfo.keyword}</span> 로 시작함
           </p>
         </div>
       ) : (

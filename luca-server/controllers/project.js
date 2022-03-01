@@ -19,10 +19,7 @@ module.exports = {
               attributes: [],
             },
           ],
-          order: [
-            ["createdAt", "DESC"],
-            ["id", "DESC"],
-          ],
+          order: [["id", "DESC"]],
           attributes: [
             "id",
             "title",
@@ -70,11 +67,33 @@ module.exports = {
           order: [["projectId", "DESC"]],
           raw: true,
         });
+        const result4 = await cards.findAll({
+          where: { projectId: projectIdArray, parent: 0 },
+          attributes: ["content"],
+          order: [["projectId", "DESC"]],
+          raw: true,
+        });
+        const result5 = await projects.findAll({
+          include: [
+            {
+              model: users,
+              required: true,
+              attributes: [],
+            },
+          ],
+          order: [["id", "DESC"]],
+          attributes: ["id", [Sequelize.col("user.name"), "name"]],
+          where: {
+            id: projectIdArray,
+          },
+          raw: true,
+        });
         result.map((el, i) => {
-          console.log(el.dataValues, i);
           el.dataValues.numUser = result1[i].numUser;
           el.dataValues.numCard = result2[i].numCard;
           el.dataValues.numMindmap = result3[i].numMindmap;
+          el.dataValues.keyword = result4[i].content;
+          el.dataValues.username = result5[i].name;
         });
         res
           .status(200)

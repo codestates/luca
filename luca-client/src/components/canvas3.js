@@ -70,8 +70,8 @@ const Nodebox = styled.div`
   font-weight: ${(props) => (props.parent === 0 ? "700" : "normal")};
   box-shadow: ${(props) =>
     props.highlights.includes(props.id)
-      ? "0 0 3px red"
-      : "0 0 2px rgba(0, 0, 0, 0.3)"};
+      ? "0 0 4px red"
+      : "0 0 4px rgba(0, 0, 0, 0.5)"};
 
   /* > div.text {
     background-color: ${(props) =>
@@ -174,7 +174,7 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler }) {
     };
   });
 
-  const nodeScale = Math.pow(0.95, nodes[0].height) * 10;
+  const nodeScale = Math.pow(0.9, nodes[0].height) * 20;
   // 기본적인 scaler 모델입니다. 비율은 추후 ui에 따라 변경가능
 
   console.log("nodeScale: ", nodeScale);
@@ -291,9 +291,9 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler }) {
 
                   <div
                     className="delete"
-                    onClick={() => deleteMindmapHandler(node.data.id)}
+                    onClick={(e) => deleteMindmapHandler(e, node.data.id)}
                   >
-                    맵에서 삭제
+                    <i className="fa-solid fa-rectangle-xmark"></i>
                   </div>
                 </Nodebox>
               ))}

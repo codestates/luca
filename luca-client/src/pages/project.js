@@ -89,7 +89,8 @@ export default function Project() {
     socket.emit("addMindmap", { cardId: dragItemId, parentId: id }, roomName);
   };
 
-  const deleteMindmapHandler = (id) => {
+  const deleteMindmapHandler = (e, id) => {
+    e.stopPropagation();
     socket.emit("deleteMindmap", { cardId: id }, roomName);
   };
 

@@ -78,14 +78,21 @@ const Resizer = styled.div`
 const PathNode = styled.div`
   z-index: 750;
   width: 8vh;
-  height: 8vh;
-  padding: 1vh;
+  height: auto;
+  padding: 1vh 1vh 0 1vh;
   margin-bottom: 1vh;
   border-radius: 4px;
   background-color: white;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
-  font-size: 0.8em;
+  //font-size: 0.8em;
+  text-align: center;
   word-break: break-word;
+  > div {
+    > i {
+      color: grey;
+      text-align: center;
+    }
+  }
 `;
 
 export default function Finder({ mapData, pathData, setHighlight }) {
@@ -130,6 +137,9 @@ export default function Finder({ mapData, pathData, setHighlight }) {
           {pathData.map((path, i) => (
             <PathNode key={i}>
               {path.content || mapData[0].data.content}
+              <div>
+                <i className="fa-solid fa-chevron-down"></i>
+              </div>
             </PathNode>
           ))}
         </PathContainer>
