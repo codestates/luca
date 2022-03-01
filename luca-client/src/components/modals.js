@@ -132,13 +132,23 @@ const ModalView = styled.div`
         }
       }
 
-      button.options {
+      button.private {
         flex: 1 0 auto;
         font-size: 1.2em;
         margin: 0.5em;
         // 탭으로 구현할 것
         border-radius: 10px;
-        background-color: white;
+        background-color: ${(props) => (props.isTeam ? "none" : `${color.primaryLight};`)};;
+        cursor: pointer;
+      }
+
+      button.team {
+        flex: 1 0 auto;
+        font-size: 1.2em;
+        margin: 0.5em;
+        // 탭으로 구현할 것
+        border-radius: 10px;
+        background-color: ${(props) => (props.isTeam ? `${color.primaryLight};` : "none")};;;
         cursor: pointer;
       }
       
@@ -321,7 +331,7 @@ export function CreateProjectModal({ modalHandler }) {
   const keywordRef = useRef();
   const dispatch = useDispatch();
   const userInfo = useSelector((state) => state.user.userInfo);
-  console.log("isGuest: ", userInfo.isGuest);
+  // console.log("isGuest: ", userInfo.isGuest);
 
   const [isTeam, setIsTeam] = useState(false);
   const [memberId, setMemberId] = useState([]);
@@ -331,6 +341,7 @@ export function CreateProjectModal({ modalHandler }) {
     setMemberId([]);
     setMemberEmail([]);
     setIsTeam(e);
+    console.log(isTeam)
   };
 
   const findMemberHandler = async () => {
@@ -416,12 +427,12 @@ export function CreateProjectModal({ modalHandler }) {
 
   return (
     <ModalBackdrop onClick={() => modalHandler(false)}>
-      <ModalView onClick={(e) => e.stopPropagation()}>
+      <ModalView onClick={(e) => e.stopPropagation()} isTeam={isTeam}>
         <div className="modal-title">새 프로젝트</div>
         <div className="modal-body">
           <div className="query">
             <button
-              className="options"
+              className="private"
               onClick={() => {
                 handleTeam(false);
               }}
@@ -430,7 +441,7 @@ export function CreateProjectModal({ modalHandler }) {
             </button>
             {!userInfo.isGuest ? (
               <button
-                className="options"
+                className="team"
                 onClick={() => {
                   handleTeam(true);
                 }}
@@ -463,14 +474,14 @@ export function CreateProjectModal({ modalHandler }) {
                 <button onClick={findMemberHandler}>추가</button>
               </div>
             </div>
-            ) : null}
-            {isTeam && memberEmail.length > 0 ? (
+          ) : null}
+          {isTeam && memberEmail.length > 0 ? (
             <div className="memberContainer">
               {memberEmail.map((el, i) => {
                 return <div key={i}>{el}</div>;
               })}
             </div>
-            ) : null}
+          ) : null}
         </div>
         <div className="modal-footer">
           <div className="buttons">
@@ -587,80 +598,67 @@ export function Savealert() {
   );
 }
 
-const WithdrawalBox = styled.div`
-  position: absolute;
-  top: 200px;
-  left: 30%;
-  width: 600px;
-  height: 100px;
-  background-color: orange;
-  border-radius: 30px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.9);
-  > div.alertMessage {
-    font-size: 1.5rem;
-  }
-  > div.choiceBox {
-    display: flex;
-    justify-content: space-between;
-    flex-direction: row;
-    align-items: center;
-    width: 200px;
-    margin-top: 10px;
-    > div {
-      font-size: 1.2rem;
-      border: solid darkorange;
-      border-radius: 10px;
-      width: 50px;
-      height: 30px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: yellow;
-    }
-    >div:hover {
-      background-color: darkorange;
-      color: white;
-    }
-    >div:active {
-      border: solid red;
-    }
-  }
-`
-
-export function WithdrawalConfirm ({withdrawalModalHandler}) {
+export function WithdrawalConfirm({ withdrawalModalHandler }) {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
+
   const handleWithdrawal = (el) => {
-    if(el === "confirm"){
+    if (el === "confirm") {
       axios.delete(`${process.env.REACT_APP_API_URL}/profile`)
-      .then((res)=>{
-        console.log(res)
-        dispatch(setIsLogin(false));
-        dispatch(setUserInfo({}));
-        navigate("/");
-      })
-      .catch((err)=>{
-        console.log(err)
-      })
+        .then((res) => {
+          console.log(res)
+          dispatch(setIsLogin(false));
+          dispatch(setUserInfo({}));
+          navigate("/");
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     }
-    if(el === "cancel"){
+    if (el === "cancel") {
       withdrawalModalHandler(false);
     }
   }
 
   return (
-    <WithdrawalBox>
-      <div className="alertMessage">프로젝트를 삭제하시겠습니까?</div>
-      <div className="choiceBox">
-        <div className="confirm" onClick={()=>{handleWithdrawal("confirm")}}>확인</div>
-        <div className="calcel" onClick={()=>{handleWithdrawal("cancel")}}>취소</div>
-      </div>
-    </WithdrawalBox>
-  )
+    <ModalBackdrop onClick={() => withdrawalModalHandler(false)}>
+      <ModalView onClick={(e) => e.stopPropagation()}>
+        <div className="modal-title">회원 탈퇴를 진행하시겠습니까?</div>
+        <div>모든 프로젝트가 삭제되며 복구할 수 없습니다</div>
+        <div className="modal-footer">
+          <div className="buttons">
+            <button onClick={() => { handleWithdrawal("cancel") }}>취소</button>
+            <button
+              className="confirm"
+              onClick={() => { handleWithdrawal("confirm") }}>
+              확인
+            </button>
+          </div>
+        </div>
+      </ModalView>
+    </ModalBackdrop>
+  );
+}
+
+export function ExitGuestModal({ exitGuestModalHandler, logoutHandler }) {
+  return (
+    <ModalBackdrop onClick={() => exitGuestModalHandler(false)}>
+      <ModalView onClick={(e) => e.stopPropagation()}>
+        <div className="modal-title">체험을 종료하시겠습니까?</div>
+        <div>모든 프로젝트가 삭제되며 복구할 수 없습니다</div>
+        <div className="modal-footer">
+          <div className="buttons">
+            <button onClick={() => exitGuestModalHandler(false)}>취소</button>
+            <button
+              className="confirm"
+              onClick={logoutHandler}
+            >
+              확인
+            </button>
+          </div>
+        </div>
+      </ModalView>
+    </ModalBackdrop>
+  );
 }

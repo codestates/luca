@@ -7,6 +7,7 @@ import axios from "axios";
 import { setIsLogin, setUserInfo } from "../redux/rootSlice.js";
 import { useNavigate } from "react-router-dom";
 import { color, device, contentWidth } from "../styles";
+import { ExitGuestModal } from "./modals";
 
 const NavigatorContainer = styled.div`
   z-index: 999;
@@ -103,12 +104,16 @@ function Navigator() {
   const dispatch = useDispatch();
   const isLogin = useSelector((state) => state.user.isLogin);
   const userInfo = useSelector((state) => state.user.userInfo);
-
+  const [exitGuestModal, setExitGuestModal] = useState(false);
   const [modal, setModal] = useState(false);
 
   const modalHandler = (modalType) => {
     setModal(modalType);
   };
+
+  const exitGuestModalHandler = () => {
+    setExitGuestModal(!exitGuestModal);
+  }
 
   const logoutHandler = () => {
     axios
@@ -135,6 +140,7 @@ function Navigator() {
 
   return (
     <NavigatorContainer>
+      {exitGuestModal ? <ExitGuestModal exitGuestModalHandler={exitGuestModalHandler} logoutHandler={logoutHandler} /> : null}
       {modal === "login" ? <LoginModal modalHandler={modalHandler} /> : null}
       <Link to="/" className="logo">
         <img src="Luca_logo.png" />
@@ -171,7 +177,7 @@ function Navigator() {
             </div>
           ) :
           <div style={{ margin: "0 8vh" }}>
-            <Guest impact onClick={logoutHandler}>체험 종료</Guest>
+            <Guest impact onClick={() => { exitGuestModalHandler(true) }}>체험 종료</Guest>
           </div>
         ) :
         (

@@ -70,7 +70,7 @@ const Nodebox = styled.div`
   font-weight: ${(props) => (props.parent === 0 ? "700" : "normal")};
   box-shadow: ${(props) =>
     props.highlights.includes(props.id)
-      ? "0 0 4px red"
+      ? "0 0 6px red"
       : "0 0 4px rgba(0, 0, 0, 0.5)"};
 
   /* > div.text {

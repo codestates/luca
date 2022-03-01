@@ -13,6 +13,7 @@ import {
   setBlockData,
 } from "../redux/rootSlice";
 import { useNavigate } from "react-router-dom";
+import Timer from '../components/timer';
 
 export default function Project() {
   const socket = io.connect(`${process.env.REACT_APP_API_URL}`);
