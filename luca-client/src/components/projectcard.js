@@ -162,7 +162,7 @@ const UnitLabel = styled.div`
   margin: auto 0 auto auto;
   border-radius: 2em;
   background-color: ${(props) => (props.team ? "lightgreen" : "lightpink")};
-`
+`;
 
 function Projectcard({ projectInfo, index }) {
   const dispatch = useDispatch();
@@ -258,7 +258,8 @@ function Projectcard({ projectInfo, index }) {
     <ProjectCover>
       {modal === "deleteProject" ? (
         <DeleteProjectModal
-          modalHandler={(modalHandler)} deleteProjectHandler={deleteProjectHandler}
+          modalHandler={modalHandler}
+          deleteProjectHandler={deleteProjectHandler}
         />
       ) : null}
       {isEditOn ? (
@@ -276,11 +277,17 @@ function Projectcard({ projectInfo, index }) {
             ref={descRef}
           />
         </>
-        ) : (
+      ) : (
         <>
           <div className="top">
             <div className="title">
-              {(projectInfo.isAccept ? <Link to={`/project/${projectInfo.id}`}>{projectInfo.title}</Link> : <a>{projectInfo.title}</a>)}
+              {projectInfo.isAccept ? (
+                <Link to={`/project/${projectInfo.id}`}>
+                  {projectInfo.title}
+                </Link>
+              ) : (
+                <a>{projectInfo.title}</a>
+              )}
             </div>
             <button
               className="edit"
@@ -330,33 +337,30 @@ function Projectcard({ projectInfo, index }) {
       ) : (
         <div className="edit-box">
           <button
-              className="confirm-edit"
-              index={index}
-              onClick={() =>
-                editProjectHandler(titleRef.current, descRef.current)
-              }
-            >
-              저장
-            </button>
-            <button
-              className="confirm-edit"
-              onClick={() => setIsEditOn(false)}
-              cancel={1}
-            >
-              취소
-            </button>
-            <div
-              className="delete"
-              onClick={() => modalHandler("deleteProject")}
-            >
-              프로젝트 삭제
-            </div>
+            className="confirm-edit"
+            index={index}
+            onClick={() =>
+              editProjectHandler(titleRef.current, descRef.current)
+            }
+          >
+            저장
+          </button>
+          <button
+            className="confirm-edit"
+            onClick={() => setIsEditOn(false)}
+            cancel={1}
+          >
+            취소
+          </button>
+          <div className="delete" onClick={() => modalHandler("deleteProject")}>
+            프로젝트 삭제
+          </div>
         </div>
       )}
       <div className="summary">
-        참여한 사람 4명, 만들어진 카드 46개, 매핑된 카드 39개
+        참여한 사람 {projectInfo.numUser}명, 만들어진 카드 {projectInfo.numCard}
+        개, 매핑된 카드 {projectInfo.numMindmap}개
       </div>
-
     </ProjectCover>
   );
 }

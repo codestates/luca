@@ -1,8 +1,7 @@
 import styled from "styled-components";
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { Navigator, Backdrop } from "../components/commons";
-
 
 export default function ChangePassword() {
   const Container = styled.div`
@@ -134,20 +133,22 @@ export default function ChangePassword() {
 
   const changePw = () => {};
   const checkCurPw = () => {};
+
   const newPw = () => {
     console.log("running");
     const pw = newPwRef.current.value;
-    console.log(pw);
-    let symbol = pw.search(/[~!@#$%^&*()_+|<>?:{}]/g);
-    console.log(symbol);
-    if (pw.length < 8) {
-      setNewPwAlert("비밀번호는 8자 이상입니다.");
-    } else if (symbol < 0) {
-      setNewPwAlert("비밀번호는 특수문자를 포함해야 합니다.");
+
+    const passwordRegex =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*?])[A -Za-z\d!@#$%^&*?]{8,}$/;
+    if (!passwordRegex.test(pw)) {
+      setNewPwAlert(
+        "비밀번호는 특수문자와 숫자를 포함해 8글자 이상이어야 합니다."
+      );
     } else {
       setNewPwAlert("");
     }
   };
+
   const checkNewPw = () => {
     const pwCheck = newPwCheckRef.current.value;
     if (pwCheck === newPwRef.current.value) {
@@ -156,10 +157,11 @@ export default function ChangePassword() {
       setNewPwCheckAlert("비밀번호가 일치하지 않습니다.");
     }
   };
+
   const CancleHandler = () => {
     // navigator("/mypage")
     navigate("/mypage");
-  }
+  };
 
   return (
     <div>
@@ -171,7 +173,7 @@ export default function ChangePassword() {
             <registrybox>
               <current>
                 <box>
-                  <div>현재 비밀변호</div>
+                  <div>현재 비밀번호</div>
                   <input
                     ref={curPwRef}
                     type="text"
@@ -198,6 +200,7 @@ export default function ChangePassword() {
                     ref={newPwCheckRef}
                     type="text"
                     placeholder="비밀번호를 확인하세요."
+                    onChange={checkNewPw}
                   />
                 </box>
                 {newPwCheckAlert ? (
@@ -205,9 +208,7 @@ export default function ChangePassword() {
                 ) : null}
               </confirm>
               <buttons>
-                <div
-                  onClick={CancleHandler}
-                >취소</div>
+                <div onClick={CancleHandler}>취소</div>
                 <div
                   onClick={() => {
                     checkCurPw();
