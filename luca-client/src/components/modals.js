@@ -101,8 +101,35 @@ const ModalView = styled.div`
       }
 
       > input:focus {
-        border-bottom-width: 2.5px;
+        /* border-bottom-width: 2.5px; */
         border-color: rgba(0, 0, 0, 0.5);
+      }
+      
+      > div.searchContainer {
+        flex: 1 0 auto;
+        display: flex;
+        flex-direction: row;
+
+        > input {
+          width: 100%;
+          height: 40px;
+          padding: 0.5rem;
+          font-size: 1rem;
+          border: 1px solid ${color.primaryBorder};
+          border-radius: ${radius};
+        }
+
+        > input:focus {
+          /* border-bottom-width: 2.5px; */
+          border-color: rgba(0, 0, 0, 0.5);
+        }
+
+        > button {
+          min-width: 58px;
+          margin-left: 1rem;
+          border: 1px solid ${color.primaryBorder};
+          border-radius: ${radius};
+        }
       }
 
       button.options {
@@ -130,6 +157,16 @@ const ModalView = styled.div`
         /* border: solid red; */
         color: blue;
         border-radius: 10px;
+      }
+    }
+
+    div.memberContainer {
+      border: 1px solid ${color.primaryBorder};
+      border-radius: ${radius};
+      padding: 1rem 0 1rem 0;
+      
+      > div {
+        font-size: 1.2em;
       }
     }
 
@@ -324,6 +361,7 @@ export function CreateProjectModal({ modalHandler }) {
         } else {
           setMemberId([...memberId, result.data.data.id]);
           setMemberEmail([...memberEmail, result.data.data.email]);
+          inviteRef.current.value = "";
         }
       } else if (result.data.message === "Not found user") {
         alert("존재하지 않는 유저입니다");
@@ -418,19 +456,21 @@ export function CreateProjectModal({ modalHandler }) {
             <input ref={keywordRef} placeholder="키워드" />
           </div>
           {isTeam ? (
-            <div>
-              <div className="query">
+            <div className="query">
+              <div className="searchContainer">
                 {/* <input onChange={(e)=>{newProjectHandler(e, "invite")}}/> */}
-                <input ref={inviteRef} placeholder="초대" />
+                <input ref={inviteRef} placeholder="초대 이메일" />
                 <button onClick={findMemberHandler}>추가</button>
               </div>
-              <div>
-                {memberEmail.map((el) => {
-                  return <div>{el}</div>;
-                })}
-              </div>
             </div>
-          ) : null}
+            ) : null}
+            {isTeam && memberEmail.length > 0 ? (
+            <div className="memberContainer">
+              {memberEmail.map((el, i) => {
+                return <div key={i}>{el}</div>;
+              })}
+            </div>
+            ) : null}
         </div>
         <div className="modal-footer">
           <div className="buttons">

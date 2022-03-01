@@ -7,10 +7,11 @@ module.exports = {
             {
                 parent: data.parentId,
                 storage: 'mindmap'
-            },{ where: {
-                    id: data.cardId
-                }
+            }, {
+            where: {
+                id: data.cardId
             }
+        }
         )
     },
 
@@ -25,27 +26,29 @@ module.exports = {
         const mindmapTree = treeModel(result, 0);
         const array = [data.cardId];
         const findId = (tree) => {
-            if(array.includes(tree.parent)) {
+            if (array.includes(tree.parent)) {
                 array.push(tree.id);
             }
-            if(tree.children !== undefined) {
-                for(let i=0; i<tree.children.length; i++){
+            if (tree.children !== undefined) {
+                for (let i = 0; i < tree.children.length; i++) {
                     findId(tree.children[i]);
                 }
             }
         };
+
         findId(mindmapTree[0]);
         await cards.update(
             {
                 parent: null,
                 storage: 'card'
-            },{ where: {
-                    id: array
-                }
+            }, {
+            where: {
+                id: array
             }
+        }
         )
-
     },
+
     get: async (projectId) => {
         const result = await cards.findAll({
             where: {
@@ -56,7 +59,7 @@ module.exports = {
         })
         const mindmapTree = treeModel(result, 0);
         return mindmapTree[0];
-    }
+    },
 };
 
 

@@ -33,6 +33,9 @@ const TimerImage = styled.div`
         background-color: rgb(160, 160, 160);
         color: white;
     }
+    button:active {
+    transform: translateY(2px);
+}
 `;
 
 const TimerDisplay = styled.div`
@@ -80,7 +83,7 @@ const TimerDisplay = styled.div`
     button:active {
         transform: translateY(2px);
     }`
-;
+    ;
 
 const Timer = () => {
     const curProjectId = window.location.href.split("/").reverse()[0]
@@ -90,7 +93,7 @@ const Timer = () => {
     const [timerOn, setTimeOn] = useState(false);
     const [settings, setSettings] = useState(false);
 
-    const increaseTime = () => socket.emit("increaseTime", time, roomName); 
+    const increaseTime = () => socket.emit("increaseTime", time, roomName);
     const decreaseTime = () => socket.emit("decreaseTime", time, roomName);
     const clickTimer = () => socket.emit("clickTimer", true, roomName);
     const startTimer = () => socket.emit("startTimer", true, roomName);
@@ -103,7 +106,7 @@ const Timer = () => {
     useEffect(() => {
         socket.emit("enterRoom", roomName);
     }, []);
-    
+
     useEffect(() => {
         socket.on("increaseTime", (data) => setTime(data + 300));
         socket.on("decreaseTime", (data) => setTime(data - 300));
@@ -143,18 +146,18 @@ const Timer = () => {
             <TimerImage>
                 <div>
                     {!settings && (
-                        <button className='start' onClick={() => clickTimer()}><i class="fa-solid fa-clock"></i></button>
+                        <button className='start' onClick={() => clickTimer()}><i className="fa-solid fa-clock"></i></button>
                     )}
                 </div>
             </TimerImage>
             <TimerDisplay>
                 <div className="Timer">
-                {settings === true && (
-                    <h3>
-                        <span>{("0" + Math.floor((time / 60) % 60)).slice(-2)}:</span>
-                        <span>{("0" + Math.floor(time % 60)).slice(-2)}</span>
-                    </h3>
-                )}
+                    {settings === true && (
+                        <h3>
+                            <span>{("0" + Math.floor((time / 60) % 60)).slice(-2)}:</span>
+                            <span>{("0" + Math.floor(time % 60)).slice(-2)}</span>
+                        </h3>
+                    )}
 
                     <div>
                         {time >= 5 && timerOn === false && settings === true && (
@@ -173,7 +176,7 @@ const Timer = () => {
                 </div>
             </TimerDisplay>
         </div>
-            
+
     );
 };
 

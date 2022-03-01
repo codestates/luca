@@ -38,6 +38,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: true,
     },
+    color: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     storage: {
       type: DataTypes.STRING,
       allowNull: false,

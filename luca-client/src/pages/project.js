@@ -6,7 +6,7 @@ import Cardboard from "../components/cardboard";
 import { useEffect, useCallback, useState } from "react";
 import io from "socket.io-client";
 import { useSelector, useDispatch } from "react-redux";
-import { setCardList, setMindmapTree, setBlockData } from "../redux/rootSlice";
+import { setCardList, setMindmapTree, setMindmapHistory, setBlockData } from "../redux/rootSlice";
 import { useNavigate } from "react-router-dom";
 
 export default function Project() {
@@ -51,8 +51,8 @@ export default function Project() {
   }, []);
 
   // 카드를 추가한다.
-  const createCard = (newCardContent) => {
-    socket.emit("createCard", userId, newCardContent, roomName);
+  const createCard = (newCardContent, color) => {
+    socket.emit("createCard", userId, newCardContent, color, roomName);
   };
 
   // 카드를 삭제한다.

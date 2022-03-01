@@ -25,6 +25,7 @@ export const rootSlice = createSlice({
     mindmapTree: {},
     projects: [],
     projectId: 0,
+    mindmapHistry: [],
     isLogin: false,
     isBlock: false,
     cardList: [],
@@ -53,6 +54,9 @@ export const rootSlice = createSlice({
     },
     setMindmapTree: (state, action) => {
       state.mindmapTree = action.payload;
+    },
+    setMindmapHistory: (state, action) => {
+      state.mindmapHistry = action.payload;
     },
     setProjectId: (state, action) => {
       console.log(action.payload);
@@ -100,6 +104,7 @@ export const {
   setIsLogin,
   setUserInfo,
   setProjectList,
+  setMindmapHistory,
   updateProjectList,
   setCardList,
   setMindmapTree,

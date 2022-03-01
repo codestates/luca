@@ -29,10 +29,13 @@ const ProjectCover = styled.div`
       font-size: 2em;
       font-weight: 600;
       margin-right: 5px;
+      > a {
+        cursor: pointer;
+      }
     }
 
     > input.title-edit {
-      width: 200px;
+      width: 350px;
       font-size: 2em;
       font-weight: 600;
       margin-right: 5px;
@@ -48,24 +51,6 @@ const ProjectCover = styled.div`
       border-color: #ff7f50;
     }
 
-    /* > div.unit-label {
-      padding: 0.5em 1em;
-      margin: auto 0 auto auto;
-      border-radius: 2em;
-      background-color: ${(props) => (props.team ? "lightgreen" : "lightpink")};
-    } */
-
-    > div.delete {
-      margin: auto 0 auto 20px;
-      font-weight: bold;
-      text-decoration: underline;
-      font-size: 0.9em;
-    }
-
-    > div.delete:hover {
-      color: red;
-    }
-
     > button.edit {
       margin-right: 30px;
       width: 20px;
@@ -76,16 +61,28 @@ const ProjectCover = styled.div`
         color: rgb(150, 150, 150);
       }
     }
-    > button.confirm-edit {
-      margin: auto 0px auto 10px;
-      width: 40px;
-      height: 30px;
-      font-weight: bold;
-      border-radius: 4px;
-      background-color: white;
+
+    > button.acceptbox {
+      margin: auto 0;
+      height: 100%;
       border: none;
-      box-shadow: 0 0 0.3em rgba(0, 0, 0, 0.5);
-      cursor: pointer;
+      background-color: white;
+      > i {
+        text-align: center;
+        font-size: 2.2em;
+        color: green;
+      }
+    }
+    > button.refusebox {
+      margin: auto 0;
+      height: 100%;
+      border: none;
+      background-color: white;
+      > i {
+        text-align: center;
+        font-size: 2.2em;
+        color: red;
+      }
     }
   }
 
@@ -97,7 +94,7 @@ const ProjectCover = styled.div`
   }
 
   > input.desc-edit {
-    width: 200px;
+    width: 350px;
     margin-left: 30px;
     margin-top: 0.5em;
     font-size: 1.2em;
@@ -115,11 +112,41 @@ const ProjectCover = styled.div`
   > div.origin {
     padding: 10px 30px;
     > p {
+      margin: 16px 0;
       > span {
         font-weight: bold;
       }
     }
   }
+
+  > div.edit-box {
+    padding: 10px 30px;
+
+    > button.confirm-edit {
+      margin: 16px 10px 0 0;
+      width: 40px;
+      height: 30px;
+      font-weight: bold;
+      border-radius: 4px;
+      background-color: white;
+      border: none;
+      box-shadow: 0 0 0.3em rgba(0, 0, 0, 0.5);
+      cursor: pointer;
+    }
+
+    > div.delete {
+      margin: 16px 20px 16px 0;
+      font-weight: bold;
+      text-decoration: underline;
+      font-size: 0.9em;
+    }
+
+    > div.delete:hover {
+      color: red;
+      cursor: pointer;
+    }
+  }
+
   > div.summary {
     font-size: 0.9em;
     font-weight: bold;
@@ -206,7 +233,7 @@ function Projectcard({ projectInfo, index }) {
           isAccept: true,
         })
         .then((res) => {
-          // console.log(res);
+          window.location.reload(); // 임시로 새로고침 합니다.
         })
         .catch((err) => {
           console.log(err);
@@ -219,7 +246,7 @@ function Projectcard({ projectInfo, index }) {
           isAccept: false,
         })
         .then((res) => {
-          console.log(res);
+          window.location.reload(); // 임시로 새로고침 합니다.
         })
         .catch((err) => {
           console.log(err);
@@ -234,26 +261,6 @@ function Projectcard({ projectInfo, index }) {
           modalHandler={(modalHandler)} deleteProjectHandler={deleteProjectHandler}
         />
       ) : null}
-      <>
-        {projectInfo.isAccept === 1 ? null : (
-          <div className="acceptbox">
-            <div
-              onClick={() => {
-                handlePartyRequest("accept");
-              }}
-            >
-              수락
-            </div>
-            <div
-              onClick={() => {
-                handlePartyRequest("refuse");
-              }}
-            >
-              거절
-            </div>
-          </div>
-        )}
-      </>
       {isEditOn ? (
         <>
           <div className="top">
@@ -262,7 +269,67 @@ function Projectcard({ projectInfo, index }) {
               placeholder={projectInfo.title}
               ref={titleRef}
             />
+          </div>
+          <input
+            className="desc-edit"
+            placeholder={projectInfo.desc}
+            ref={descRef}
+          />
+        </>
+        ) : (
+        <>
+          <div className="top">
+            <div className="title">
+              {(projectInfo.isAccept ? <Link to={`/project/${projectInfo.id}`}>{projectInfo.title}</Link> : <a>{projectInfo.title}</a>)}
+            </div>
             <button
+              className="edit"
+              index={index}
+              onClick={() => setIsEditOn(true)}
+            >
+              <i className="fa-solid fa-pen-to-square"></i>
+            </button>
+            {projectInfo.isAccept === 1 ? null : (
+              <button
+                className="acceptbox"
+                onClick={() => {
+                  handlePartyRequest("accept");
+                }}
+              >
+                <i className="fa-solid fa-circle-check"></i>
+              </button>
+            )}
+            {projectInfo.isAccept === 1 ? null : (
+              <button
+                className="refusebox"
+                onClick={() => {
+                  handlePartyRequest("refuse");
+                }}
+              >
+                <i className="fa-solid fa-circle-xmark"></i>
+              </button>
+            )}
+            <UnitLabel className="unit-label" team={projectInfo.isTeam}>
+              {projectInfo.isTeam ? "Team" : "Private"}
+            </UnitLabel>
+          </div>
+          <div className="desc">{projectInfo.desc}</div>
+        </>
+      )}
+      {!isEditOn ? (
+        <div className="origin">
+          <p>
+            <span>user{projectInfo.admin}</span> 님이{" "}
+            {projectInfo.createdAt.slice(0, 10)}
+            일에
+          </p>
+          <p>
+            <span>seed idea</span> 로 시작함
+          </p>
+        </div>
+      ) : (
+        <div className="edit-box">
+          <button
               className="confirm-edit"
               index={index}
               onClick={() =>
@@ -284,47 +351,12 @@ function Projectcard({ projectInfo, index }) {
             >
               프로젝트 삭제
             </div>
-          </div>
-          <input
-            className="desc-edit"
-            placeholder={projectInfo.desc}
-            ref={descRef}
-          />
-        </>
-      ) : (
-        <>
-          <div className="top">
-            <div className="title">
-              <Link to={`/project/${projectInfo.id}`}>{projectInfo.title}</Link>
-            </div>
-            <button
-              className="edit"
-              index={index}
-              onClick={() => setIsEditOn(true)}
-            >
-              <i className="fa-solid fa-pen-to-square"></i>
-            </button>
-            <UnitLabel className="unit-label" team={projectInfo.isTeam}>
-              {projectInfo.isTeam ? "Team" : "Private"}
-            </UnitLabel>
-          </div>
-          <div className="desc">{projectInfo.desc}</div>
-        </>
+        </div>
       )}
-
-      <div className="origin">
-        <p>
-          <span>user{projectInfo.admin}</span> 님이{" "}
-          {projectInfo.createdAt.slice(0, 10)}
-          일에
-        </p>
-        <p>
-          <span>seed idea</span> 로 시작함
-        </p>
-      </div>
       <div className="summary">
         {`참여한 사람 4명, 만들어진 카드 3개, 매핑된 카드 39개`}
       </div>
+
     </ProjectCover>
   );
 }
