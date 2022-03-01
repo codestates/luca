@@ -20,6 +20,7 @@ module.exports = {
                 projectId,
                 storage: 'card'
             },
+            order: [['id', 'DESC']],
             raw: true
         });
         return cardInfo;
