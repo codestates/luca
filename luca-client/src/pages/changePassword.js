@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import { useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { Navigator, Backdrop } from "../components/commons";
 import axios from "axios";
-import { color, radius, boxShadow } from '../styles';
+import { color, radius, boxShadow } from "../styles";
 
 const Container = styled.div`
   display: flex;
@@ -11,15 +11,16 @@ const Container = styled.div`
   align-items: center;
   height: 70vh;
   width: 70%;
-    
-    > div,title {
+
+  > div,
+  title {
     flex: 1 0 auto;
     margin-bottom: 1em;
     font-size: 2em;
     font-weight: bold;
     padding-top: 4em;
   }
-  `;
+`;
 const Registrybox = styled.div`
   width: 80%;
   height: 90%;
@@ -54,47 +55,42 @@ const Registrybox = styled.div`
     }
   }
   > buttons {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        > button {
-          margin-right: 20px;
-          margin-left: 20px;
-          width: 90px;
-          /* border: solid gray; */
-          height: 30px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin-bottom: 70px;
-          border-radius: 20px;
-          box-shadow: 0vh 0.5vh 1vh 0.1vh rgba(0, 0, 0, 0.2);
-        }
-        > button:hover {
-          background-color: orange;
-          color: white;
-        }
-        > button:active {
-          color: silver;
-        }
-      }
-  `;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    > button {
+      margin-right: 20px;
+      margin-left: 20px;
+      width: 90px;
+      /* border: solid gray; */
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 70px;
+      border-radius: 20px;
+      box-shadow: 0vh 0.5vh 1vh 0.1vh rgba(0, 0, 0, 0.2);
+    }
+    > button:hover {
+      background-color: orange;
+      color: white;
+    }
+    > button:active {
+      color: silver;
+    }
+  }
+`;
 
 const Input = styled.input`
-    width: 100%;
-    height: 40px;
-    padding: 0.5rem;
-    font-size: 1rem;
-    border: 1px solid ${color.primaryBorder};
-    border-radius: ${radius};
-  `;
+  width: 100%;
+  height: 40px;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid ${color.primaryBorder};
+  border-radius: ${radius};
+`;
 
-const InputForm = ({
-  value = '',
-  type = 'text',
-  placeholder,
-  handleValue,
-}) => {
+const InputForm = ({ value = "", type = "text", placeholder, handleValue }) => {
   const handleOnChange = (event) => {
     handleValue(event.target.value);
   };
@@ -106,20 +102,20 @@ const InputForm = ({
       onChange={handleOnChange}
     />
   );
-}
+};
 
 const InvalidMessage = styled.p`
-    margin: 0;
-    font-size: 0.875rem;
-    color: red;
+  margin: 0;
+  font-size: 0.875rem;
+  color: red;
 `;
 
 export default function ChangePassword() {
   const navigate = useNavigate();
 
-  const [password, setPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [passwordConfirm, setPasswordConfirm] = useState('');
+  const [password, setPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
 
   const [isValidPassword, setIsValidPassword] = useState(true);
   const [isValidNewPassword, setIsNewValidPassword] = useState(true);
@@ -155,18 +151,18 @@ export default function ChangePassword() {
     } else {
       setIsValidPasswordConfirm(true);
     }
-  }
+  };
 
   const cancleHandler = () => {
     navigate("/mypage");
-  }
+  };
 
   const changePasswordHandler = () => {
     if (
       // 입력칸이 하나라도 비어있는 경우
-      password === '' ||
-      newPassword === '' ||
-      passwordConfirm === ''
+      password === "" ||
+      newPassword === "" ||
+      passwordConfirm === ""
     ) {
       return;
     }
@@ -177,23 +173,26 @@ export default function ChangePassword() {
       isValidPasswordConfirm
     ) {
       axios
-        .patch(`${process.env.REACT_APP_API_URL}/profile/password`,
+        .patch(
+          `${process.env.REACT_APP_API_URL}/profile/password`,
           {
             curPassword: password,
-            newPassword: newPassword
-          }, {
-          "Content-Type": "application/json",
-          withCredentials: true,
-        })
+            newPassword: newPassword,
+          },
+          {
+            "Content-Type": "application/json",
+            withCredentials: true,
+          }
+        )
         .then((res) => {
           if (res.status === 200) {
-            navigate("/mypage")
+            navigate("/mypage");
           }
         })
         .catch((err) => {
           if (err.response.status === 400) {
-            setIsValidCurPassword(false)
-            console.log(err)
+            setIsValidCurPassword(false);
+            console.log(err);
           }
         });
     }
@@ -204,16 +203,15 @@ export default function ChangePassword() {
       <Navigator />
       <Backdrop>
         <Container>
-          <div className='title'>비밀번호 변경</div>
+          <div className="title">비밀번호 변경</div>
           <Registrybox>
-
             <div>
               <div>
                 <InputForm
                   value={password}
-                  placeholder='현재 비밀번호'
+                  placeholder="현재 비밀번호"
                   handleValue={onCheckPassword}
-                  type='password'
+                  type="password"
                 />
               </div>
             </div>
@@ -221,8 +219,8 @@ export default function ChangePassword() {
             <div>
               {isValidPassword ? null : (
                 <InvalidMessage>
-                  비밀번호는 최소 8자리 이상이어야 하며 영문자, 숫자,
-                  특수문자가 1개 이상 사용되어야 합니다.
+                  비밀번호는 최소 8자리 이상이어야 하며 영문자, 숫자, 특수문자가
+                  1개 이상 사용되어야 합니다.
                 </InvalidMessage>
               )}
             </div>
@@ -231,9 +229,9 @@ export default function ChangePassword() {
               <div>
                 <InputForm
                   value={newPassword}
-                  placeholder='새 비밀번호'
+                  placeholder="새 비밀번호"
                   handleValue={onChangePassword}
-                  type='password'
+                  type="password"
                 />
               </div>
             </div>
@@ -241,8 +239,8 @@ export default function ChangePassword() {
             <div>
               {isValidNewPassword ? null : (
                 <InvalidMessage>
-                  비밀번호는 최소 8자리 이상이어야 하며 영문자, 숫자,
-                  특수문자가 1개 이상 사용되어야 합니다.
+                  비밀번호는 최소 8자리 이상이어야 하며 영문자, 숫자, 특수문자가
+                  1개 이상 사용되어야 합니다.
                 </InvalidMessage>
               )}
             </div>
@@ -251,9 +249,9 @@ export default function ChangePassword() {
               <div>
                 <InputForm
                   value={passwordConfirm}
-                  placeholder='비밀번호 확인'
+                  placeholder="비밀번호 확인"
                   handleValue={onChangePasswordConfirm}
-                  type='password'
+                  type="password"
                 />
               </div>
             </div>
@@ -266,7 +264,9 @@ export default function ChangePassword() {
 
             <div>
               {isValidCurPassword ? null : (
-                <InvalidMessage>이메일과 일치하는 비밀번호가 없습니다.</InvalidMessage>
+                <InvalidMessage>
+                  이메일과 일치하는 비밀번호가 없습니다.
+                </InvalidMessage>
               )}
             </div>
 
@@ -277,6 +277,6 @@ export default function ChangePassword() {
           </Registrybox>
         </Container>
       </Backdrop>
-    </div >
+    </div>
   );
 }
