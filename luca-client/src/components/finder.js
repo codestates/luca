@@ -1,22 +1,43 @@
 import { useState } from "react";
 import styled from "styled-components";
 
-const Searchfinder = styled.input`
-  z-index: 700;
+const Searchfinder = styled.div`
+  z-index: 999;
   position: fixed;
-  top: 6vh;
-  left: 2vh;
-  width: 50px;
-  height: 50px;
+  top: 50px;
+  left: 20px;
+  width: 48px;
+  height: 48px;
   background-color: white;
-  border-radius: 6px;
+  border-radius: 24px;
   box-shadow: 0vh 0vh 1vh rgba(0, 0, 0, 0.3);
+  text-align: center;
+  overflow: hidden;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  > i {
+    flex: 1 0 auto;
+    font-size: 1.5em;
+    color: rgb(160, 160, 160);
+    margin: 12px;
+  }
+  > input {
+    margin-left: 20px;
+    flex: 1 0 auto;
+    border: none;
+    outline: 0;
+    text-align: left;
+  }
+  > div.closer {
+    flex: 1 0 auto;
+  }
 
   animation-name: ${(props) => {
     if (props.isSearchOn !== null && props.isSearchOn === true) {
-      return "seachbarOn1";
+      return "seachbarOn";
     } else if (props.isSearchOn !== null && props.isSearchOn === false) {
-      return "seachbarOut1";
+      return "seachbarOut";
     }
   }};
   animation-duration: 0.5s;
@@ -25,18 +46,18 @@ const Searchfinder = styled.input`
   animation-play-state: running;
   @keyframes seachbarOn {
     from {
-      width: 50px;
+      width: 48px;
     }
     to {
-      width: 200px;
+      width: 224px;
     }
   }
   @keyframes seachbarOut {
     from {
-      width: 200px;
+      width: 224px;
     }
     to {
-      width: 50px;
+      width: 48px;
     }
   }
 `;
@@ -44,7 +65,7 @@ const Searchfinder = styled.input`
 const Pathfinder = styled.div`
   z-index: 700;
   position: fixed;
-  top: 13vh;
+  top: 120px;
   left: 88px;
   background-color: white;
   border-radius: 6px;
@@ -54,11 +75,11 @@ const Pathfinder = styled.div`
 
 const PathContainer = styled.div`
   width: 94px;
-  height: 53.9vh;
+  max-height: 500px;
   padding: 6px 6px 0 6px;
   background-color: white;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: scroll;
 
   ::-webkit-scrollbar {
     -webkit-appearance: none;
@@ -128,12 +149,15 @@ export default function Finder({
 
   const searchHandler = (e) => {
     let word = e.target.value;
+    console.log("word", word);
     if (word.length > 0) {
       let resultArray = mapData.filter((node) => {
         return node.data.content.includes(word);
       });
       console.log("resultArray: ", resultArray);
       setHighlight({ list: resultArray, word: word });
+    } else {
+      setHighlight({ list: [], word: "" });
     }
   };
 
@@ -155,11 +179,22 @@ export default function Finder({
 
   return (
     <div>
-      <Searchfinder
-        isSearchOn={isSearchOn}
-        onClick={() => setIsSearchOn(!isSearchOn)}
-        onChange={searchHandler}
-      />
+      <Searchfinder isSearchOn={isSearchOn}>
+        {!isSearchOn ? (
+          <i
+            className="fa-solid fa-magnifying-glass-plus"
+            onClick={() => setIsSearchOn(true)}
+          ></i>
+        ) : (
+          <>
+            <input onChange={searchHandler}></input>
+            <div className="closer" onClick={() => setIsSearchOn(false)}>
+              x
+            </div>
+          </>
+        )}
+      </Searchfinder>
+
       <Pathfinder>
         <PathContainer>
           {pathData.map((path, i) => (

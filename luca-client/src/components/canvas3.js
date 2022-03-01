@@ -8,17 +8,17 @@ import { useSelector } from "react-redux";
 import Finder from "./finder";
 import Timer from "./timer";
 
-const Container = styled.div`
-  width: 99vw;
-  height: 99vh;
-  border: solid red 1px;
-  overflow: visible;
-`;
+// const Container = styled.div`
+//   width: 99vw;
+//   height: 99vh;
+//   border: solid red 1px;
+//   overflow: visible;
+// `;
 
 const Controller = styled.div`
   z-index: 999;
   position: fixed;
-  top: 13vh;
+  top: 120px;
   left: 20px;
   background-color: white;
   border-radius: 6px;
@@ -77,18 +77,27 @@ const Scaler = styled.div`
   }
 `;
 
-// 기존 코드
-// const Layout = styled.div`
-//   font-size: 16px;
-//   color: ${(props) => props.color};
-// `;
-
-// attrs를 사용한 코드
-// const Layout = styled.div.attrs((props) => ({
-//   color: props.color,
-// }))`
-//   font-size: 16px;
-// `;
+const Rootbox = styled.div`
+  z-index: 990;
+  position: fixed;
+  top: ${(props) => {
+    return String(props.coordY) + "px";
+  }};
+  left: ${(props) => {
+    return String(props.coordX) + "px";
+  }};
+  padding: 0.8em;
+  background-color: khaki;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 700;
+  box-shadow: ${(props) =>
+    props.highlights.includes(props.id)
+      ? "0 0 6px red"
+      : "0 0 8px rgba(0, 0, 0, 0.5)"};
+`;
 
 const Nodebox = styled.div`
   z-index: 990;
@@ -105,21 +114,12 @@ const Nodebox = styled.div`
   transform: translate(-50%, -50%);
   text-align: center;
   border-radius: 4px;
-  /* font-size: ${(props) =>
-    props.parent === 0
-      ? props.nodeScale + 2 + "px"
-      : props.nodeScale + "px"}; */
-  font-size: 16px;
+  font-size: 12px;
   font-weight: ${(props) => (props.parent === 0 ? "700" : "normal")};
   box-shadow: ${(props) =>
     props.highlights.includes(props.id)
       ? "0 0 6px red"
       : "0 0 8px rgba(0, 0, 0, 0.3)"};
-
-  /* > div.text {
-    background-color: ${(props) =>
-    props.highlights.includes(props.id) ? "yellow" : "transparent"};
-  } */
 
   > div.delete {
     display: none;
@@ -185,22 +185,28 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler }) {
   // onDragEnd 이벤트시에는 TransformWrapper 의 disabled = {false} 로 바꿔줘야 합니다.
 
   const root = hierarchy(rawData);
+
+  //console.log("1. root: ", root);
+
   const treeLayout = cluster()
-    .size([360, window.innerHeight * (mapScale / 5)]) // * 0.4
+    .size([360, (window.innerHeight * root.height * mapScale) / 10]) // * 0.4
     .separation((a, b) => (a.parent === b.parent ? 1 : 2) / a.depth);
   treeLayout(root);
 
   let nodes = root.descendants();
+  //console.log("2. nodes: ", nodes);
 
   let radialNodes = nodes.map((node) => {
     let angle = ((node.x - 90) / 180) * Math.PI;
     let radius = node.y;
     return {
       ...node,
-      x: radius * Math.cos(angle) + window.innerWidth / 2 - 100,
+      x: radius * Math.cos(angle) + window.innerWidth / 2,
       y: radius * Math.sin(angle) + window.innerHeight / 2,
     };
   });
+
+  //console.log("3. radialNodes: ", radialNodes);
 
   let links = root.links();
 
@@ -208,7 +214,7 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler }) {
     let angle = ((x - 90) / 180) * Math.PI;
     let radius = y;
     return {
-      x: radius * Math.cos(angle) + window.innerWidth / 2 - 100,
+      x: radius * Math.cos(angle) + window.innerWidth / 2,
       y: radius * Math.sin(angle) + window.innerHeight / 2,
     };
   }
@@ -272,7 +278,17 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler }) {
     setPathData(findParent(id, rawData));
   };
 
-  useEffect(() => {}, [mapScale]);
+  // $(".img").on(
+  //   "hover",
+  //   function () {
+  //     let setTimeoutConst = setTimeout(function () {
+  //       // do something
+  //     }, delay);
+  //   },
+  //   function () {
+  //     clearTimeout(setTimeoutConst);
+  //   }
+  // );
 
   return (
     <TransformWrapper
@@ -300,7 +316,7 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler }) {
               <i className="fa-solid fa-clock-rotate-left"></i>
             </button>
             <button onClick={() => setTransform(-500, -300, 2, 200, "linear")}>
-              t<i className="fa-solid fa-border-all"></i>
+              <i className="fa-solid fa-border-all"></i>
             </button>
             <button onClick={blockHandler}>
               <i className="fa-solid fa-border-none"></i>
@@ -318,14 +334,30 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler }) {
               <div className="index">map</div>
               <div className="mod">
                 <button onClick={() => setMapScale(mapScale - 1)}>-</button>
-                {mapScale}
                 <button onClick={() => setMapScale(mapScale + 1)}>+</button>
               </div>
             </div>
           </Scaler>
           <TransformComponent>
             {/* <Container> */}
-            {radialNodes.map((node, i) => (
+            <Rootbox
+              className="nodebox"
+              id={radialNodes[0].data.id}
+              coordY={radialNodes[0].y || window.innerHeight / 2}
+              coordX={radialNodes[0].x || window.innerWidth / 2}
+              highlights={highlight.list.map((node) => node.data.id)}
+              onClick={() => pathHandler(radialNodes[0].data.id)}
+              onDragOver={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log(`- dragover in node (id: ${e.target.id}) -`);
+              }}
+              // onDragOver -> onDrop
+              onDrop={dropHandler}
+            >
+              {radialNodes[0].data.content}
+            </Rootbox>
+            {radialNodes.slice(1).map((node, i) => (
               <Nodebox
                 className="nodebox"
                 key={i}
@@ -335,7 +367,6 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler }) {
                 coordX={node.x}
                 highlights={highlight.list.map((node) => node.data.id)}
                 //onClick={blockHandler}
-                word={highlight.word}
                 onClick={() => pathHandler(node.data.id)}
                 onDragOver={(e) => {
                   e.preventDefault();
