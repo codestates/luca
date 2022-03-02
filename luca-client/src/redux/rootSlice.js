@@ -40,6 +40,8 @@ export const rootSlice = createSlice({
       updatedAt: "",
     },
     cardData: null,
+    timerTimerOn: false,
+    timerSettings: false,
   },
 
   reducers: {
@@ -82,6 +84,12 @@ export const rootSlice = createSlice({
     setBlockData: (state, action) => {
       state.blockData = action.payload;
     },
+    setTimerTimeOn: (state, action) => {
+      state.timerTimerOn = action.payload;
+    },
+    setTimerSettings: (state, action) => {
+      state.timerSettings = action.payload;
+    }
   },
 });
 
@@ -109,6 +117,8 @@ export const {
   setCardList,
   setMindmapTree,
   setBlockData,
+  setTimerTimeOn,
+  setTimerSettings
 } = rootSlice.actions;
 
 export default rootSlice.reducer;
