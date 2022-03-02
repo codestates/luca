@@ -589,11 +589,12 @@ export function Savealert() {
 
 const WithdrawalBox = styled.div`
   position: absolute;
-  top: 200px;
+  top: -40px;
   left: 30%;
   width: 600px;
   height: 100px;
-  background-color: orange;
+  background-color: white;
+  border: solid darkorange;
   border-radius: 30px;
   display: flex;
   flex-direction: column;
@@ -612,21 +613,21 @@ const WithdrawalBox = styled.div`
     margin-top: 10px;
     > div {
       font-size: 1.2rem;
-      border: solid darkorange;
+      /* border: solid darkorange; */
       border-radius: 10px;
       width: 50px;
       height: 30px;
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: yellow;
+      background-color: orange;
     }
     >div:hover {
-      background-color: darkorange;
+      background-color: orange;
       color: white;
     }
     >div:active {
-      border: solid red;
+      background-color: darkorange;
     }
   }
 `
