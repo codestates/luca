@@ -1,6 +1,7 @@
-import { useState, useEffect, useCallback } from "react";
+import { useEffect } from "react";
 import styled from "styled-components";
-import io from "socket.io-client";
+import { useSelector, useDispatch } from "react-redux";
+import { setTimerTimeOn } from "../redux/rootSlice";
 
 const TimerImage = styled.div`
     display: flex;
@@ -85,48 +86,10 @@ const TimerDisplay = styled.div`
     }`
     ;
 
-const Timer = () => {
-    const curProjectId = window.location.href.split("/").reverse()[0]
-    const socket = io.connect(`${process.env.REACT_APP_API_URL}`)
-    const roomName = `${curProjectId}`
-    const [time, setTime] = useState(0);
-    const [timerOn, setTimeOn] = useState(false);
-    const [settings, setSettings] = useState(false);
-
-    const increaseTime = () => socket.emit("increaseTime", time, roomName);
-    const decreaseTime = () => socket.emit("decreaseTime", time, roomName);
-    const clickTimer = () => socket.emit("clickTimer", true, roomName);
-    const startTimer = () => socket.emit("startTimer", true, roomName);
-    const pauseTimer = () => socket.emit("pauseTimer", false, roomName);
-    const resetTimer = () => {
-        setTime(0);
-        socket.emit("resetTimer", false, roomName);
-    };
-
-    const disconnectSocket = useCallback(() => {
-        socket.disconnect();
-    }, [socket]);
-
-    useEffect(() => {
-        socket?.emit("enterRoom", roomName);
-
-        return () => {
-            disconnectSocket();
-        };
-    }, []);
-
-
-    useEffect(() => {
-        socket.on("increaseTime", (data) => setTime(data + 300));
-        socket.on("decreaseTime", (data) => setTime(data - 300));
-        socket.on("clickTimer", (data) => setSettings(data));
-        socket.on("startTimer", (data) => setTimeOn(data));
-        socket.on("pauseTimer", (data) => setTimeOn(data));
-        socket.on("resetTimer", (data) => {
-            setSettings(data);
-            setTime(0);
-        });
-    }, [])
+const Timer = ({ timerHandler, setTime, time }) => {
+    const dispatch = useDispatch();
+    const timerOn = useSelector((state) => state.user.timerTimerOn);
+    const settings = useSelector((state) => state.user.timerSettings);
 
     useEffect(() => {
         let interval = null;
@@ -145,8 +108,8 @@ const Timer = () => {
 
     if (timerOn) {
         if (time <= 0) {
-            setTimeOn(false);
-            resetTimer();
+            dispatch(setTimerTimeOn(false));
+            timerHandler("resetTimer");
         }
     }
 
@@ -155,7 +118,7 @@ const Timer = () => {
             <TimerImage>
                 <div>
                     {!settings && (
-                        <button className='start' onClick={() => clickTimer()}><i className="fa-solid fa-clock"></i></button>
+                        <button className='start' onClick={() => timerHandler("clickTimer")}><i className="fa-solid fa-clock"></i></button>
                     )}
                 </div>
             </TimerImage>
@@ -170,17 +133,17 @@ const Timer = () => {
 
                     <div>
                         {time >= 5 && timerOn === false && settings === true && (
-                            <button className='upDown' onClick={decreaseTime}><i className="fa-solid fa-minus"></i></button>
+                            <button className='upDown' onClick={() => timerHandler("decreaseTime")}><i className="fa-solid fa-minus"></i></button>
                         )}
                         {timerOn === false && settings === true && (
-                            <button className='upDown' onClick={increaseTime}><i className="fa-solid fa-plus"></i></button>
+                            <button className='upDown' onClick={() => timerHandler("increaseTime")}><i className="fa-solid fa-plus"></i></button>
                         )}
                     </div>
 
                     <div>
-                        {!timerOn && settings && time >= 5 && <button className='playPause' onClick={() => startTimer()}><i className="fa-solid fa-play"></i></button>}
-                        {timerOn && <button className='playPause' onClick={() => pauseTimer()}><i className="fa-solid fa-pause"></i></button>}
-                        {!timerOn && time > 0 && <button className='playPause' onClick={() => resetTimer()}><i className="fa-solid fa-circle-stop"></i></button>}
+                        {!timerOn && settings && time >= 5 && <button className='playPause' onClick={() => timerHandler("startTimer")}><i className="fa-solid fa-play"></i></button>}
+                        {timerOn && <button className='playPause' onClick={() => timerHandler("pauseTimer")}><i className="fa-solid fa-pause"></i></button>}
+                        {!timerOn && time > 0 && <button className='playPause' onClick={() => timerHandler("resetTimer")}><i className="fa-solid fa-circle-stop"></i></button>}
                     </div>
                 </div>
             </TimerDisplay>
