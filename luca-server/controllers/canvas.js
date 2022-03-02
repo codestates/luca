@@ -57,35 +57,45 @@ const socketCanvas = async (socket) => {
 
     socket.on("editBlockStart", async (data, roomName) => {
         socket.join(roomName);
+        
+        socket.emit("editBlockStart", data);
         socket.broadcast.to(roomName).emit("editBlockStart", data);
     })
 
     socket.on("editBlockEnd", async (data, roomName) => {
         socket.join(roomName);
+        socket.emit("editBlockEnd", data);
         socket.broadcast.to(roomName).emit("editBlockEnd", data);
     })
     socket.on("clickTimer", async (data, roomName) => {
         socket.join(roomName);
+        console.log(data);
+        socket.emit("clickTimer", data);
         socket.broadcast.to(roomName).emit("clickTimer", data);
     })
     socket.on("increaseTime", async (data, roomName) => {
         socket.join(roomName);
+        socket.emit("increaseTime", data);
         socket.broadcast.to(roomName).emit("increaseTime", data);
     })
     socket.on("decreaseTime", async (data, roomName) => {
         socket.join(roomName);
+        socket.emit("decreaseTime", data);
         socket.broadcast.to(roomName).emit("decreaseTime", data);
     })
     socket.on("startTimer", async (data, roomName) => {
         socket.join(roomName);
+        socket.emit("startTimer", data);
         socket.broadcast.to(roomName).emit("startTimer", data);
     })
     socket.on("pauseTimer", async (data, roomName) => {
         socket.join(roomName);
-        socket.broadcast.to(roomName).emit("startTimer", data);
+        socket.emit("pauseTimer", data);
+        socket.broadcast.to(roomName).emit("pauseTimer", data);
     })
     socket.on("resetTimer", async (data, roomName) => {
         socket.join(roomName);
+        socket.emit("resetTimer", data);
         socket.broadcast.to(roomName).emit("resetTimer", data);
     })
 }
