@@ -189,7 +189,7 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler }) {
   //console.log("1. root: ", root);
 
   const treeLayout = cluster()
-    .size([360, (window.innerHeight * root.height * mapScale) / 10]) // * 0.4
+    .size([360, (window.innerHeight * root.height * mapScale) / 20]) // * 0.4
     .separation((a, b) => (a.parent === b.parent ? 1 : 2) / a.depth);
   treeLayout(root);
 
@@ -309,7 +309,7 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler }) {
             <button onClick={() => zoomOut()}>
               <i className="fa-solid fa-magnifying-glass-minus"></i>
             </button>
-            <button onClick={() => centerView(1, 300, "easeOut")}>
+            <button onClick={() => centerView(0.7, 300, "easeOut")}>
               <i className="fa-solid fa-minimize"></i>
             </button>
             <button>
