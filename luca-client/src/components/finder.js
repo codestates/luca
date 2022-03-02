@@ -1,22 +1,47 @@
 import { useState } from "react";
 import styled from "styled-components";
 
-const Searchfinder = styled.input`
-  z-index: 700;
+const Searchfinder = styled.div`
+  z-index: 999;
   position: fixed;
-  top: 6vh;
-  left: 2vh;
-  width: 50px;
-  height: 50px;
+  top: 50px;
+  left: 20px;
+  width: 48px;
+  height: 48px;
   background-color: white;
-  border-radius: 6px;
+  border-radius: 24px;
   box-shadow: 0vh 0vh 1vh rgba(0, 0, 0, 0.3);
+  text-align: center;
+  overflow: hidden;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  > i {
+    flex: 1 0 auto;
+    font-size: 1.5em;
+    color: rgb(160, 160, 160);
+    margin: 12px;
+  }
+  > input {
+    margin-left: 20px;
+    flex: 1 0 auto;
+    border: none;
+    outline: 0;
+    text-align: left;
+  }
+  > div.result {
+    color: red;
+  }
+  > div.closer {
+    flex: 1 0 auto;
+    margin: 0 1em;
+  }
 
   animation-name: ${(props) => {
     if (props.isSearchOn !== null && props.isSearchOn === true) {
-      return "seachbarOn1";
+      return "seachbarOn";
     } else if (props.isSearchOn !== null && props.isSearchOn === false) {
-      return "seachbarOut1";
+      return "seachbarOut";
     }
   }};
   animation-duration: 0.5s;
@@ -25,18 +50,18 @@ const Searchfinder = styled.input`
   animation-play-state: running;
   @keyframes seachbarOn {
     from {
-      width: 50px;
+      width: 48px;
     }
     to {
-      width: 200px;
+      width: 248px;
     }
   }
   @keyframes seachbarOut {
     from {
-      width: 200px;
+      width: 248px;
     }
     to {
-      width: 50px;
+      width: 48px;
     }
   }
 `;
@@ -44,8 +69,8 @@ const Searchfinder = styled.input`
 const Pathfinder = styled.div`
   z-index: 700;
   position: fixed;
-  top: 13vh;
-  left: 10vh;
+  top: 120px;
+  left: 88px;
   background-color: white;
   border-radius: 6px;
   box-shadow: 0vh 0vh 1vh rgba(0, 0, 0, 0.3);
@@ -53,12 +78,12 @@ const Pathfinder = styled.div`
 `;
 
 const PathContainer = styled.div`
-  width: 10vh;
-  height: 53.9vh;
-  padding: 1vh 1vh 0 1vh;
+  width: 94px;
+  max-height: 500px;
+  padding: 6px 6px 0 6px;
   background-color: white;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: scroll;
 
   ::-webkit-scrollbar {
     -webkit-appearance: none;
@@ -67,37 +92,66 @@ const PathContainer = styled.div`
   }
 `;
 
-const Resizer = styled.div`
-  width: 12vh;
-  height: 20px;
-  background-color: lightgrey;
-  text-align: center;
-  cursor: pointer;
-`;
-
 const PathNode = styled.div`
   z-index: 750;
-  width: 8vh;
+  width: 78px;
   height: auto;
-  padding: 1vh 1vh 0 1vh;
-  margin-bottom: 1vh;
+  padding: 8px 8px 0 8px;
+  padding-bottom: ${(props) =>
+    props.data.length - 1 === props.index || props.index === 0 ? "8px" : "0"};
+  margin-bottom: 6px;
   border-radius: 4px;
+  color: rgb(80, 80, 80);
   background-color: white;
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
-  //font-size: 0.8em;
+  font-weight: ${(props) =>
+    props.data.length - 1 === props.index || props.index === 0
+      ? "700"
+      : "normal"};
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   text-align: center;
   word-break: break-word;
+  cursor: default;
   > div {
     > i {
-      color: grey;
+      font-size: 24px;
+      color: rgb(180, 180, 180);
       text-align: center;
     }
   }
 `;
 
-export default function Finder({ mapData, pathData, setHighlight }) {
+const Resizer = styled.div`
+  height: 20px;
+  background-color: lightgrey;
+  text-align: center;
+  cursor: pointer;
+  > i {
+    font-size: 1.2em;
+    color: grey;
+  }
+`;
+
+export default function Finder({
+  mapData,
+  pathData,
+  highlight,
+  setHighlight,
+  setTransform,
+}) {
   const [isSearchOn, setIsSearchOn] = useState(null);
+  const [touring, setTouring] = useState(0);
   const [height, setHeight] = useState("53.9vh");
+
+  //console.log(mapData);
+
+  const getFocused = (id) => {
+    let target = mapData.filter((node) => node.data.id === id)[0];
+    let focusX = Math.round(window.innerWidth / 2 - 2 * target.x);
+    let focusY = Math.round(window.innerHeight / 2 - 2 * target.y);
+    setTransform(focusX, focusY, 2, 300, "easeOut");
+    console.log("focusX: ", focusX);
+    console.log("focusY: ", focusY);
+  };
 
   const searchHandler = (e) => {
     let word = e.target.value;
@@ -105,7 +159,35 @@ export default function Finder({ mapData, pathData, setHighlight }) {
       let resultArray = mapData.filter((node) => {
         return node.data.content.includes(word);
       });
+      console.log("resultArray: ", resultArray);
       setHighlight({ list: resultArray, word: word });
+    } else {
+      setHighlight({ list: [], word: "" });
+    }
+    setTouring(0);
+  };
+
+  const tour = (e) => {
+    if (e.key === "Enter") {
+      if (touring + 1 < highlight.list.length) {
+        let focusX = Math.round(
+          window.innerWidth / 2 - 2 * highlight.list[touring].x
+        );
+        let focusY = Math.round(
+          window.innerHeight / 2 - 2 * highlight.list[touring].y
+        );
+        setTransform(focusX, focusY, 2, 300, "easeOut");
+        setTouring(touring + 1);
+      } else {
+        let focusX = Math.round(
+          window.innerWidth / 2 - 2 * highlight.list[touring].x
+        );
+        let focusY = Math.round(
+          window.innerHeight / 2 - 2 * highlight.list[touring].y
+        );
+        setTransform(focusX, focusY, 2, 300, "easeOut");
+        setTouring(0);
+      }
     }
   };
 
@@ -127,29 +209,60 @@ export default function Finder({ mapData, pathData, setHighlight }) {
 
   return (
     <div>
-      <Searchfinder
-        isSearchOn={isSearchOn}
-        onClick={() => setIsSearchOn(!isSearchOn)}
-        onChange={searchHandler}
-      />
+      <Searchfinder isSearchOn={isSearchOn}>
+        {!isSearchOn ? (
+          <i
+            className="fa-solid fa-magnifying-glass-plus"
+            onClick={() => setIsSearchOn(true)}
+          ></i>
+        ) : (
+          <>
+            <input onChange={searchHandler} onKeyPress={tour}></input>
+            <div className="result">
+              {highlight.list.length
+                ? touring + 1 + "/" + highlight.list.length
+                : "-"}
+            </div>
+            <div
+              className="closer"
+              onClick={() => {
+                setIsSearchOn(false);
+                setHighlight({ list: [], word: "" });
+                setTouring(0);
+              }}
+            >
+              x
+            </div>
+          </>
+        )}
+      </Searchfinder>
+
       <Pathfinder>
         <PathContainer>
           {pathData.map((path, i) => (
-            <PathNode key={i}>
+            <PathNode
+              key={i}
+              data={pathData}
+              index={i}
+              onClick={() => getFocused(path.id)}
+            >
               {path.content || mapData[0].data.content}
               <div>
-                <i className="fa-solid fa-chevron-down"></i>
+                {pathData.length - 1 === i || i === 0 ? null : (
+                  <i className="fa-solid fa-caret-down"></i>
+                )}
               </div>
             </PathNode>
           ))}
         </PathContainer>
         <Resizer
           draggable
+          onClick={() => setTransform(-200, -800, 2, 300, "easeOut")}
           onDragStart={resizeStart}
           onDrag={resize}
           onDragEnd={resizeEnd}
         >
-          ...
+          <i className="fa-solid fa-ellipsis"></i>
         </Resizer>
       </Pathfinder>
     </div>

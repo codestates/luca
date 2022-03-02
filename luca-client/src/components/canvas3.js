@@ -8,17 +8,18 @@ import { useSelector } from "react-redux";
 import Finder from "./finder";
 import Timer from "./timer";
 
-const Container = styled.div`
-  width: 99vw;
-  height: 99vh;
-  border: solid red 1px;
-`;
+// const Container = styled.div`
+//   width: 99vw;
+//   height: 99vh;
+//   border: solid red 1px;
+//   overflow: visible;
+// `;
 
 const Controller = styled.div`
   z-index: 999;
   position: fixed;
-  top: 13vh;
-  left: 2vh;
+  top: 120px;
+  left: 20px;
   background-color: white;
   border-radius: 6px;
   box-shadow: 0vh 0vh 1vh rgba(0, 0, 0, 0.3);
@@ -49,34 +50,76 @@ const Controller = styled.div`
   }
 `;
 
-const Nodebox = styled.div`
+const Scaler = styled.div`
+  z-index: 900;
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 150px;
+  height: 50px;
+  display: flex;
+  flex-direction: column;
+  background-color: cyan;
+  > div {
+    flex: 1 0 auto;
+    display: flex;
+
+    > div.index {
+      width: 50px;
+      background-color: green;
+    }
+    div.mod {
+      width: 100px;
+      background-color: blue;
+      display: flex;
+      justify-content: space-around;
+    }
+  }
+`;
+
+const Rootbox = styled.div`
   z-index: 990;
   position: fixed;
-  padding: 0.8em;
-  background-color: ${(props) =>
-    props.parent === 0 ? "lightyellow" : "white"};
-
   top: ${(props) => {
     return String(props.coordY) + "px";
   }};
   left: ${(props) => {
     return String(props.coordX) + "px";
   }};
+  padding: 0.8em;
+  background-color: white;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 700;
+  box-shadow: ${(props) =>
+    props.highlights.includes(props.id)
+      ? "0 0 6px red"
+      : "0 0 6px rgba(0, 0, 0, 0.7)"};
+`;
+
+const Nodebox = styled.div`
+  z-index: 990;
+  position: fixed;
+  top: ${(props) => {
+    return String(props.coordY) + "px";
+  }};
+  left: ${(props) => {
+    return String(props.coordX) + "px";
+  }};
+  padding: 0.8em;
+  background-color: ${(props) =>
+    props.parent === 0 ? "lightyellow" : "white"};
   transform: translate(-50%, -50%);
   text-align: center;
   border-radius: 4px;
-  font-size: ${(props) =>
-    props.parent === 0 ? props.nodeScale + 2 + "px" : props.nodeScale + "px"};
+  font-size: 12px;
   font-weight: ${(props) => (props.parent === 0 ? "700" : "normal")};
   box-shadow: ${(props) =>
     props.highlights.includes(props.id)
       ? "0 0 6px red"
-      : "0 0 4px rgba(0, 0, 0, 0.5)"};
-
-  /* > div.text {
-    background-color: ${(props) =>
-    props.highlights.includes(props.id) ? "yellow" : "transparent"};
-  } */
+      : "0 0 6px rgba(0, 0, 0, 0.7)"};
 
   > div.delete {
     display: none;
@@ -102,11 +145,13 @@ const Nodebox = styled.div`
 const Lines = styled.svg`
   width: 100vw;
   height: 100vh;
+  overflow: visible;
+
   > line {
-    stroke: lightgrey;
+    stroke: rgb(180, 180, 180);
     stroke-width: 1px;
   }
-  stroke-dasharray: 500;
+  //stroke-dasharray: 500;
   stroke-dashoffset: 0;
   animation: dashDraw 1s linear 1;
   // props.depth * delay(1s)
@@ -122,7 +167,13 @@ const Lines = styled.svg`
   }
 `;
 
-export default function Canvas3({ addMindmapHandler, deleteMindmapHandler, timerHandler, setTime, time }) {
+export default function Canvas3({
+  addMindmapHandler,
+  deleteMindmapHandler,
+  timerHandler,
+  setTime,
+  time,
+}) {
   // let projectIdRef = window.location.href.split("/").reverse()[0]; // projectIdRef === '12'(string)
   const rawData = useSelector((state) => state.user.mindmapTree);
 
@@ -130,8 +181,9 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler, timer
     { id: rawData.id, content: rawData.content },
   ]);
 
+  const [mapScale, setMapScale] = useState(2);
+
   const [highlight, setHighlight] = useState({ list: [], word: "" });
-  console.log("highlight: ", highlight);
 
   const [disabled, setDisabled] = useState(false);
   // 화면이 pan 되지 않으면서 마인드맵의 노드를 drag하기 위해 필요합니다.
@@ -139,22 +191,28 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler, timer
   // onDragEnd 이벤트시에는 TransformWrapper 의 disabled = {false} 로 바꿔줘야 합니다.
 
   const root = hierarchy(rawData);
+
+  //console.log("1. root: ", root);
+
   const treeLayout = cluster()
-    .size([360, window.innerHeight * 0.4])
+    .size([360, (window.innerHeight * root.height * mapScale) / 20]) // * 0.4
     .separation((a, b) => (a.parent === b.parent ? 1 : 2) / a.depth);
   treeLayout(root);
 
   let nodes = root.descendants();
+  //console.log("2. nodes: ", nodes);
 
   let radialNodes = nodes.map((node) => {
     let angle = ((node.x - 90) / 180) * Math.PI;
     let radius = node.y;
     return {
       ...node,
-      x: radius * Math.cos(angle) + window.innerWidth / 2 - 100,
+      x: radius * Math.cos(angle) + window.innerWidth / 2,
       y: radius * Math.sin(angle) + window.innerHeight / 2,
     };
   });
+
+  //console.log("3. radialNodes: ", radialNodes);
 
   let links = root.links();
 
@@ -162,7 +220,7 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler, timer
     let angle = ((x - 90) / 180) * Math.PI;
     let radius = y;
     return {
-      x: radius * Math.cos(angle) + window.innerWidth / 2 - 100,
+      x: radius * Math.cos(angle) + window.innerWidth / 2,
       y: radius * Math.sin(angle) + window.innerHeight / 2,
     };
   }
@@ -174,10 +232,9 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler, timer
     };
   });
 
-  const nodeScale = Math.pow(0.9, nodes[0].height) * 20;
-  // 기본적인 scaler 모델입니다. 비율은 추후 ui에 따라 변경가능
+  //const nodeScale = Math.pow(0.95, nodes[0].height) * 18;
+  // 기본적인 scale 모델입니다. 비율은 추후 ui에 따라 변경가능
 
-  console.log("nodeScale: ", nodeScale);
   //console.log("radialNodes: ", radialNodes);
   //console.log("radialLinkes: ", radialLinkes);
   //console.log("links: ", links);
@@ -227,14 +284,29 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler, timer
     setPathData(findParent(id, rawData));
   };
 
+  // $(".img").on(
+  //   "hover",
+  //   function () {
+  //     let setTimeoutConst = setTimeout(function () {
+  //       // do something
+  //     }, delay);
+  //   },
+  //   function () {
+  //     clearTimeout(setTimeoutConst);
+  //   }
+  // );
+
   return (
     <TransformWrapper
       initialScale={2}
-      initialPositionX={-window.innerWidth * 0.45}
-      initialPositionY={-window.innerHeight * 0.5}
+      initialPositionX={-window.innerWidth / 2}
+      initialPositionY={-window.innerHeight / 2}
+      limitToBounds={false}
+      minScale={0.3}
       disabled={disabled}
+      panning={{ excluded: ["nodebox"] }}
     >
-      {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
+      {({ zoomIn, zoomOut, setTransform, centerView }) => (
         <>
           <Controller>
             <button onClick={() => zoomIn()}>
@@ -243,7 +315,7 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler, timer
             <button onClick={() => zoomOut()}>
               <i className="fa-solid fa-magnifying-glass-minus"></i>
             </button>
-            <button onClick={() => resetTransform()}>
+            <button onClick={() => centerView(2 / mapScale, 300, "easeOut")}>
               <i className="fa-solid fa-minimize"></i>
             </button>
             <button>
@@ -255,62 +327,88 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler, timer
             <button onClick={blockHandler}>
               <i className="fa-solid fa-border-none"></i>
             </button>
-            <Timer timerHandler={timerHandler} setTime={setTime} time={time}/>
+            <Timer timerHandler={timerHandler} setTime={setTime} time={time} />
           </Controller>
           <Finder
             mapData={radialNodes}
             pathData={pathData}
+            highlight={highlight}
             setHighlight={setHighlight}
+            setTransform={setTransform}
           />
-
+          <Scaler>
+            <div>
+              <div className="index">map</div>
+              <div className="mod">
+                <button onClick={() => setMapScale(mapScale - 1)}>-</button>
+                <button onClick={() => setMapScale(mapScale + 1)}>+</button>
+              </div>
+            </div>
+          </Scaler>
           <TransformComponent>
-            <Container>
-              {radialNodes.map((node, i) => (
-                <Nodebox
-                  key={i}
-                  parent={node.data.parent}
-                  id={node.data.id}
-                  nodeScale={nodeScale}
-                  coordY={node.y}
-                  coordX={node.x}
-                  highlights={highlight.list.map((node) => node.data.id)}
-                  //onClick={blockHandler}
-                  word={highlight.word}
-                  onClick={() => pathHandler(node.data.id)}
-                  onDragOver={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log(`- dragover in node (id: ${e.target.id}) -`);
-                  }}
-                  // onDragOver -> onDrop
-                  onDrop={dropHandler}
-                >
-                  {!node.data.parent
-                    ? node.data.content
-                    : simplified(node.data.content)}
+            {/* <Container> */}
+            <Rootbox
+              className="nodebox"
+              id={radialNodes[0].data.id}
+              coordY={radialNodes[0].y || window.innerHeight / 2}
+              coordX={radialNodes[0].x || window.innerWidth / 2}
+              highlights={highlight.list.map((node) => node.data.id)}
+              onClick={() => pathHandler(radialNodes[0].data.id)}
+              onDragOver={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log(`- dragover in node (id: ${e.target.id}) -`);
+              }}
+              // onDragOver -> onDrop
+              onDrop={dropHandler}
+            >
+              {radialNodes[0].data.content}
+            </Rootbox>
+            {radialNodes.slice(1).map((node, i) => (
+              <Nodebox
+                className="nodebox"
+                key={i}
+                parent={node.data.parent}
+                id={node.data.id}
+                coordY={node.y}
+                coordX={node.x}
+                highlights={highlight.list.map((node) => node.data.id)}
+                //onClick={blockHandler}
+                onClick={() => pathHandler(node.data.id)}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log(`- dragover in node (id: ${e.target.id}) -`);
+                }}
+                // onDragOver -> onDrop
+                onDrop={dropHandler}
+              >
+                {!node.data.parent
+                  ? node.data.content
+                  : simplified(node.data.content)}
 
-                  <div
-                    className="delete"
-                    onClick={(e) => deleteMindmapHandler(e, node.data.id)}
-                  >
-                    <i className="fa-solid fa-rectangle-xmark"></i>
-                  </div>
-                </Nodebox>
-              ))}
-              <Lines>
-                {radialLinkes.map((link, i) => {
-                  return (
-                    <line
-                      key={i}
-                      x1={link.source.x}
-                      y1={link.source.y}
-                      x2={link.target.x}
-                      y2={link.target.y}
-                    />
-                  );
-                })}
-              </Lines>
-            </Container>
+                <div
+                  className="delete"
+                  onClick={(e) => deleteMindmapHandler(e, node.data.id)}
+                >
+                  <i className="fa-solid fa-rectangle-xmark"></i>
+                </div>
+              </Nodebox>
+            ))}
+            <Lines>
+              {radialLinkes.map((link, i) => {
+                return (
+                  <line
+                    key={i}
+                    x1={link.source.x}
+                    y1={link.source.y}
+                    x2={link.target.x}
+                    y2={link.target.y}
+                  />
+                );
+              })}
+            </Lines>
+            {/* </Container> */}
           </TransformComponent>
         </>
       )}
