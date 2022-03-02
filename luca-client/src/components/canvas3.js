@@ -167,7 +167,13 @@ const Lines = styled.svg`
   }
 `;
 
-export default function Canvas3({ addMindmapHandler, deleteMindmapHandler }) {
+export default function Canvas3({
+  addMindmapHandler,
+  deleteMindmapHandler,
+  timerHandler,
+  setTime,
+  time,
+}) {
   // let projectIdRef = window.location.href.split("/").reverse()[0]; // projectIdRef === '12'(string)
   const rawData = useSelector((state) => state.user.mindmapTree);
 
@@ -315,13 +321,13 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler }) {
             <button>
               <i className="fa-solid fa-clock-rotate-left"></i>
             </button>
-            <button onClick={() => setTransform(-500, -300, 2, 200, "linear")}>
+            <button>
               <i className="fa-solid fa-border-all"></i>
             </button>
             <button onClick={blockHandler}>
               <i className="fa-solid fa-border-none"></i>
             </button>
-            {/* <Timer /> */}
+            <Timer timerHandler={timerHandler} setTime={setTime} time={time} />
           </Controller>
           <Finder
             mapData={radialNodes}
