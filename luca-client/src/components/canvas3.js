@@ -309,7 +309,7 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler }) {
             <button onClick={() => zoomOut()}>
               <i className="fa-solid fa-magnifying-glass-minus"></i>
             </button>
-            <button onClick={() => centerView(0.7, 300, "easeOut")}>
+            <button onClick={() => centerView(2 / mapScale, 300, "easeOut")}>
               <i className="fa-solid fa-minimize"></i>
             </button>
             <button>
