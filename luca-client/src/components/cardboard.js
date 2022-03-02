@@ -197,7 +197,7 @@ const CardAdder = styled.div`
   cursor: pointer;
   font-size: 5vh;
   > i {
-    opacity: 40%;
+    opacity: 30%;
   }
   > input {
     font-size: 0.7em;

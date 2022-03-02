@@ -87,7 +87,7 @@ const Rootbox = styled.div`
     return String(props.coordX) + "px";
   }};
   padding: 0.8em;
-  background-color: khaki;
+  background-color: white;
   transform: translate(-50%, -50%);
   text-align: center;
   border-radius: 30px;
@@ -96,7 +96,7 @@ const Rootbox = styled.div`
   box-shadow: ${(props) =>
     props.highlights.includes(props.id)
       ? "0 0 6px red"
-      : "0 0 8px rgba(0, 0, 0, 0.5)"};
+      : "0 0 6px rgba(0, 0, 0, 0.7)"};
 `;
 
 const Nodebox = styled.div`
@@ -119,7 +119,7 @@ const Nodebox = styled.div`
   box-shadow: ${(props) =>
     props.highlights.includes(props.id)
       ? "0 0 6px red"
-      : "0 0 8px rgba(0, 0, 0, 0.3)"};
+      : "0 0 6px rgba(0, 0, 0, 0.7)"};
 
   > div.delete {
     display: none;
@@ -326,6 +326,7 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler }) {
           <Finder
             mapData={radialNodes}
             pathData={pathData}
+            highlight={highlight}
             setHighlight={setHighlight}
             setTransform={setTransform}
           />

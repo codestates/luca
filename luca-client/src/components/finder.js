@@ -29,8 +29,12 @@ const Searchfinder = styled.div`
     outline: 0;
     text-align: left;
   }
+  > div.result {
+    color: red;
+  }
   > div.closer {
     flex: 1 0 auto;
+    margin: 0 1em;
   }
 
   animation-name: ${(props) => {
@@ -49,12 +53,12 @@ const Searchfinder = styled.div`
       width: 48px;
     }
     to {
-      width: 224px;
+      width: 248px;
     }
   }
   @keyframes seachbarOut {
     from {
-      width: 224px;
+      width: 248px;
     }
     to {
       width: 48px;
@@ -130,26 +134,27 @@ const Resizer = styled.div`
 export default function Finder({
   mapData,
   pathData,
+  highlight,
   setHighlight,
   setTransform,
 }) {
   const [isSearchOn, setIsSearchOn] = useState(null);
+  const [touring, setTouring] = useState(0);
   const [height, setHeight] = useState("53.9vh");
 
   //console.log(mapData);
 
   const getFocused = (id) => {
     let target = mapData.filter((node) => node.data.id === id)[0];
-    let focusX = Math.round(-target.x);
-    let focusY = Math.round(-target.y);
-    setTransform(0, 200, 3, 300, "easeOut");
+    let focusX = Math.round(window.innerWidth / 2 - 2 * target.x);
+    let focusY = Math.round(window.innerHeight / 2 - 2 * target.y);
+    setTransform(focusX, focusY, 2, 300, "easeOut");
     console.log("focusX: ", focusX);
     console.log("focusY: ", focusY);
   };
 
   const searchHandler = (e) => {
     let word = e.target.value;
-    console.log("word", word);
     if (word.length > 0) {
       let resultArray = mapData.filter((node) => {
         return node.data.content.includes(word);
@@ -158,6 +163,31 @@ export default function Finder({
       setHighlight({ list: resultArray, word: word });
     } else {
       setHighlight({ list: [], word: "" });
+    }
+    setTouring(0);
+  };
+
+  const tour = (e) => {
+    if (e.key === "Enter") {
+      if (touring + 1 < highlight.list.length) {
+        let focusX = Math.round(
+          window.innerWidth / 2 - 2 * highlight.list[touring].x
+        );
+        let focusY = Math.round(
+          window.innerHeight / 2 - 2 * highlight.list[touring].y
+        );
+        setTransform(focusX, focusY, 2, 300, "easeOut");
+        setTouring(touring + 1);
+      } else {
+        let focusX = Math.round(
+          window.innerWidth / 2 - 2 * highlight.list[touring].x
+        );
+        let focusY = Math.round(
+          window.innerHeight / 2 - 2 * highlight.list[touring].y
+        );
+        setTransform(focusX, focusY, 2, 300, "easeOut");
+        setTouring(0);
+      }
     }
   };
 
@@ -187,8 +217,20 @@ export default function Finder({
           ></i>
         ) : (
           <>
-            <input onChange={searchHandler}></input>
-            <div className="closer" onClick={() => setIsSearchOn(false)}>
+            <input onChange={searchHandler} onKeyPress={tour}></input>
+            <div className="result">
+              {highlight.list.length
+                ? touring + 1 + "/" + highlight.list.length
+                : "-"}
+            </div>
+            <div
+              className="closer"
+              onClick={() => {
+                setIsSearchOn(false);
+                setHighlight({ list: [], word: "" });
+                setTouring(0);
+              }}
+            >
               x
             </div>
           </>
