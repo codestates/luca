@@ -113,6 +113,13 @@ const ProjectCover = styled.div`
     padding: 10px 30px;
     > p {
       margin: 16px 0;
+      > span.keyword {
+        border-radius: 4px;
+        background-color: lightyellow;
+        padding: 0.5em;
+        margin-right: 0.3em;
+        box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+      }
       > span {
         font-weight: bold;
       }
@@ -162,9 +169,10 @@ const UnitLabel = styled.div`
   margin: auto 0 auto auto;
   border-radius: 2em;
   background-color: ${(props) => (props.team ? "lightgreen" : "lightpink")};
-`
+`;
 
 function Projectcard({ projectInfo, index }) {
+  console.log("projectInfo: ", projectInfo);
   const dispatch = useDispatch();
   const projects = useSelector((state) => state.user.projects);
   const userInfo = useSelector((state) => state.user.userInfo);
@@ -258,7 +266,8 @@ function Projectcard({ projectInfo, index }) {
     <ProjectCover>
       {modal === "deleteProject" ? (
         <DeleteProjectModal
-          modalHandler={(modalHandler)} deleteProjectHandler={deleteProjectHandler}
+          modalHandler={modalHandler}
+          deleteProjectHandler={deleteProjectHandler}
         />
       ) : null}
       {isEditOn ? (
@@ -276,11 +285,17 @@ function Projectcard({ projectInfo, index }) {
             ref={descRef}
           />
         </>
-        ) : (
+      ) : (
         <>
           <div className="top">
             <div className="title">
-              {(projectInfo.isAccept ? <Link to={`/project/${projectInfo.id}`}>{projectInfo.title}</Link> : <a>{projectInfo.title}</a>)}
+              {projectInfo.isAccept ? (
+                <Link to={`/project/${projectInfo.id}`}>
+                  {projectInfo.title}
+                </Link>
+              ) : (
+                <a>{projectInfo.title}</a>
+              )}
             </div>
             <button
               className="edit"
@@ -319,44 +334,40 @@ function Projectcard({ projectInfo, index }) {
       {!isEditOn ? (
         <div className="origin">
           <p>
-            <span>user{projectInfo.admin}</span> 님이{" "}
-            {projectInfo.createdAt.slice(0, 10)}
-            일에
+            <span>user{projectInfo.username}</span> 님이{" "}
+            <span>{projectInfo.createdAt.slice(0, 10)}</span> 일에
           </p>
           <p>
-            <span>seed idea</span> 로 시작함
+            <span className="keyword">{projectInfo.keyword}</span> 로 시작함
           </p>
         </div>
       ) : (
         <div className="edit-box">
           <button
-              className="confirm-edit"
-              index={index}
-              onClick={() =>
-                editProjectHandler(titleRef.current, descRef.current)
-              }
-            >
-              저장
-            </button>
-            <button
-              className="confirm-edit"
-              onClick={() => setIsEditOn(false)}
-              cancel={1}
-            >
-              취소
-            </button>
-            <div
-              className="delete"
-              onClick={() => modalHandler("deleteProject")}
-            >
-              프로젝트 삭제
-            </div>
+            className="confirm-edit"
+            index={index}
+            onClick={() =>
+              editProjectHandler(titleRef.current, descRef.current)
+            }
+          >
+            저장
+          </button>
+          <button
+            className="confirm-edit"
+            onClick={() => setIsEditOn(false)}
+            cancel={1}
+          >
+            취소
+          </button>
+          <div className="delete" onClick={() => modalHandler("deleteProject")}>
+            프로젝트 삭제
+          </div>
         </div>
       )}
       <div className="summary">
-        참여한 사람 4명, 만들어진 카드 46개, 매핑된 카드 39개
+        참여한 사람 {projectInfo.numUser}명, 만들어진 카드 {projectInfo.numCard}
+        개, 매핑된 카드 {projectInfo.numMindmap}개
       </div>
-
     </ProjectCover>
   );
 }
