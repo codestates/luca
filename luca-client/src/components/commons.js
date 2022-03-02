@@ -146,7 +146,7 @@ function Navigator() {
         <img src="Luca_logo.png" />
       </Link>
       <div className="about">
-        <Link to="/">about</Link>
+        {/* <Link to="/">about</Link> */}
       </div>
       {isLogin ?
         (!userInfo.isGuest ?

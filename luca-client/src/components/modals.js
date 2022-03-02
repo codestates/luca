@@ -73,6 +73,7 @@ const ModalView = styled.div`
   border-radius: 1em;
   text-align: center;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+
   > div.modal-title {
     flex: 1 0 auto;
     margin-bottom: 1em;

@@ -12,7 +12,10 @@ import { Link } from "react-router-dom";
 
 const ProjectCover = styled.div`
   min-width: 200px;
-  background-color: white;
+  /* background: linear-gradient(to right bottom, #ff7f50, orange); */
+  /* background: linear-gradient(to right bottom, seashell, darkorange); */
+  background: NavajoWhite;
+  /* background: 	#FFC846; */
   border-radius: 6px;
   overflow: hidden;
   display: flex;
@@ -20,6 +23,7 @@ const ProjectCover = styled.div`
   white-space: nowrap;
   cursor: default;
   box-shadow: 0vh 0.5vh 1vh 0.1vh rgba(0, 0, 0, 0.3);
+  max-height: 250px;
 
   > div.top {
     padding: 20px 20px 0 30px;
@@ -29,6 +33,7 @@ const ProjectCover = styled.div`
       font-size: 2em;
       font-weight: 600;
       margin-right: 5px;
+      color: white;
       > a {
         cursor: pointer;
       }
@@ -56,7 +61,7 @@ const ProjectCover = styled.div`
       width: 20px;
       height: 20px;
       border: none;
-      background-color: white;
+      background: none;
       > i {
         color: rgb(150, 150, 150);
       }
@@ -66,7 +71,7 @@ const ProjectCover = styled.div`
       margin: auto 0;
       height: 100%;
       border: none;
-      background-color: white;
+      background: none;
       > i {
         text-align: center;
         font-size: 2.2em;
@@ -77,7 +82,7 @@ const ProjectCover = styled.div`
       margin: auto 0;
       height: 100%;
       border: none;
-      background-color: white;
+      background: none;
       > i {
         text-align: center;
         font-size: 2.2em;
@@ -115,7 +120,7 @@ const ProjectCover = styled.div`
       margin: 16px 0;
       > span.keyword {
         border-radius: 4px;
-        background-color: lightyellow;
+        background: none;
         padding: 0.5em;
         margin-right: 0.3em;
         box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
@@ -135,7 +140,7 @@ const ProjectCover = styled.div`
       height: 30px;
       font-weight: bold;
       border-radius: 4px;
-      background-color: white;
+      background-color: gray;
       border: none;
       box-shadow: 0 0 0.3em rgba(0, 0, 0, 0.5);
       cursor: pointer;
@@ -158,8 +163,8 @@ const ProjectCover = styled.div`
     font-size: 0.9em;
     font-weight: bold;
     padding: 10px 30px;
-    /* background-color: #f0b27a; */
-    background-color: rgb(150, 150, 150);
+    background-color: white;
+    /* background-color: rgb(150, 150, 150); */
     flex: 1 0 auto;
   }
 `;
@@ -334,7 +339,7 @@ function Projectcard({ projectInfo, index }) {
       {!isEditOn ? (
         <div className="origin">
           <p>
-            <span>user{projectInfo.username}</span> 님이{" "}
+            <span>{projectInfo.username}</span> 님이{" "}
             <span>{projectInfo.createdAt.slice(0, 10)}</span> 일에
           </p>
           <p>
