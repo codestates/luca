@@ -54,7 +54,7 @@ const Registrybox = styled.div`
       }
     }
   }
-  > buttons {
+  > div {
     width: 100%;
     display: flex;
     justify-content: center;
@@ -267,10 +267,10 @@ export default function ChangePassword() {
               )}
             </div>
 
-            <buttons>
+            <div>
               <button onClick={cancleHandler}>취소</button>
               <button onClick={changePasswordHandler}>저장</button>
-            </buttons>
+            </div>
           </Registrybox>
         </Container>
       </Backdrop>
