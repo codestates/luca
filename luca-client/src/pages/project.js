@@ -6,8 +6,14 @@ import Cardboard from "../components/cardboard";
 import { useEffect, useCallback, useState } from "react";
 import io from "socket.io-client";
 import { useSelector, useDispatch } from "react-redux";
-import { setCardList, setMindmapTree, setMindmapHistory, setBlockData } from "../redux/rootSlice";
+import {
+  setCardList,
+  setMindmapTree,
+  setMindmapHistory,
+  setBlockData,
+} from "../redux/rootSlice";
 import { useNavigate } from "react-router-dom";
+import Timer from '../components/timer';
 
 export default function Project() {
   const socket = io.connect(`${process.env.REACT_APP_API_URL}`);
@@ -80,10 +86,12 @@ export default function Project() {
   };
 
   const addMindmapHandler = (id) => {
+    console.log("@@@@:", id);
     socket.emit("addMindmap", { cardId: dragItemId, parentId: id }, roomName);
   };
 
-  const deleteMindmapHandler = (id) => {
+  const deleteMindmapHandler = (e, id) => {
+    e.stopPropagation();
     socket.emit("deleteMindmap", { cardId: id }, roomName);
   };
 

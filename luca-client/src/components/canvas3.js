@@ -1,10 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { useState } from "react";
 import styled from "styled-components";
 //import { radialNodes, radialLinkes } from "./d3coodinator/getDescendants";
 import { select, hierarchy, tree, linkRadial, cluster, selectAll } from "d3";
 import { useSelector } from "react-redux";
+import Finder from "./finder";
 import Timer from "./timer";
 
 const Container = styled.div`
@@ -16,8 +17,8 @@ const Container = styled.div`
 const Controller = styled.div`
   z-index: 999;
   position: fixed;
-  left: 2vh;
   top: 13vh;
+  left: 2vh;
   background-color: white;
   border-radius: 6px;
   box-shadow: 0vh 0vh 1vh rgba(0, 0, 0, 0.3);
@@ -54,7 +55,7 @@ const Nodebox = styled.div`
   padding: 0.8em;
   background-color: ${(props) =>
     props.parent === 0 ? "lightyellow" : "white"};
-  border-radius: ${(props) => (props.parent === 0 ? "2em" : "0.2em")};
+
   top: ${(props) => {
     return String(props.coordY) + "px";
   }};
@@ -63,10 +64,19 @@ const Nodebox = styled.div`
   }};
   transform: translate(-50%, -50%);
   text-align: center;
+  border-radius: 4px;
   font-size: ${(props) =>
     props.parent === 0 ? props.nodeScale + 2 + "px" : props.nodeScale + "px"};
   font-weight: ${(props) => (props.parent === 0 ? "700" : "normal")};
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+  box-shadow: ${(props) =>
+    props.highlights.includes(props.id)
+      ? "0 0 6px red"
+      : "0 0 4px rgba(0, 0, 0, 0.5)"};
+
+  /* > div.text {
+    background-color: ${(props) =>
+    props.highlights.includes(props.id) ? "yellow" : "transparent"};
+  } */
 
   > div.delete {
     display: none;
@@ -116,13 +126,17 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler }) {
   // let projectIdRef = window.location.href.split("/").reverse()[0]; // projectIdRef === '12'(string)
   const rawData = useSelector((state) => state.user.mindmapTree);
 
+  const [pathData, setPathData] = useState([
+    { id: rawData.id, content: rawData.content },
+  ]);
+
+  const [highlight, setHighlight] = useState({ list: [], word: "" });
+  console.log("highlight: ", highlight);
+
   const [disabled, setDisabled] = useState(false);
   // 화면이 pan 되지 않으면서 마인드맵의 노드를 drag하기 위해 필요합니다.
   // 마인드맵의 노드를 onDragStart 이벤트시에는 TransformWrapper 의 disabled={true},
   // onDragEnd 이벤트시에는 TransformWrapper 의 disabled = {false} 로 바꿔줘야 합니다.
-
-  const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
-  // 우클릭시 드롭다운메뉴 이벤트를 위한 마우스 좌표 객체입니다.
 
   const root = hierarchy(rawData);
   const treeLayout = cluster()
@@ -160,7 +174,7 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler }) {
     };
   });
 
-  const nodeScale = Math.pow(0.95, nodes[0].height) * 10;
+  const nodeScale = Math.pow(0.9, nodes[0].height) * 20;
   // 기본적인 scaler 모델입니다. 비율은 추후 ui에 따라 변경가능
 
   console.log("nodeScale: ", nodeScale);
@@ -177,7 +191,7 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler }) {
     e.stopPropagation();
     // console.log("dropped on node", e.target.id);
     addMindmapHandler(e.target.id);
-    console.log("dropped on node! node id: ", e.target.id);
+    console.log("dropped on node! node id: ", e.target);
     // 노드에 드롭 시 노드 id를 가져왔습니다. 이제 mindmap 데이터에서 노드 id를 찾아 자식노드로 추가해줘야합니다.
   };
 
@@ -188,6 +202,29 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler }) {
     } else {
       return str;
     }
+  };
+
+  const findParent = (id, treeData) => {
+    const rootContent = treeData.content;
+    const array = [{ id: id }];
+    const findId = (tree) => {
+      if (tree.children !== undefined) {
+        for (let i = 0; i < tree.children.length; i++) {
+          findId(tree.children[i]);
+        }
+      }
+      if (tree.id === array[0].id && tree.parent !== 0) {
+        array.unshift({ id: tree.parent });
+        array[1].content = tree.content;
+      }
+    };
+    findId(treeData);
+    array[0].content = rootContent;
+    return array;
+  };
+
+  const pathHandler = (id) => {
+    setPathData(findParent(id, rawData));
   };
 
   return (
@@ -220,6 +257,11 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler }) {
             </button>
             <Timer />
           </Controller>
+          <Finder
+            mapData={radialNodes}
+            pathData={pathData}
+            setHighlight={setHighlight}
+          />
 
           <TransformComponent>
             <Container>
@@ -231,7 +273,10 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler }) {
                   nodeScale={nodeScale}
                   coordY={node.y}
                   coordX={node.x}
+                  highlights={highlight.list.map((node) => node.data.id)}
                   //onClick={blockHandler}
+                  word={highlight.word}
+                  onClick={() => pathHandler(node.data.id)}
                   onDragOver={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -243,11 +288,12 @@ export default function Canvas3({ addMindmapHandler, deleteMindmapHandler }) {
                   {!node.data.parent
                     ? node.data.content
                     : simplified(node.data.content)}
+
                   <div
                     className="delete"
-                    onClick={() => deleteMindmapHandler(node.data.id)}
+                    onClick={(e) => deleteMindmapHandler(e, node.data.id)}
                   >
-                    맵에서 삭제
+                    <i className="fa-solid fa-rectangle-xmark"></i>
                   </div>
                 </Nodebox>
               ))}

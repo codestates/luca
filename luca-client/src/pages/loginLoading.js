@@ -4,8 +4,10 @@ import styled from 'styled-components';
 import { useSelector } from "react-redux";
 
 const LoadingPage = styled.div`
-  display: flex;
-  justify-content: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 100vh;
 `;
 
 const LoginLoading = () => {
