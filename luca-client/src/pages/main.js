@@ -58,7 +58,7 @@ const Banner = styled.div`
 `;
 
 const Section = styled.div`
-  background-color: white;
+  background-color: rgb(250, 250, 250);
   display: flex;
   flex-direction: column;
 `;
@@ -67,7 +67,7 @@ const Sorter = styled.div`
   z-index: 500;
   padding-top: 16px;
   min-height: 36px;
-  background-color: white;
+  background-color: rgb(250, 250, 250);
   /* box-shadow: 0vh 0vh 1vh 0.1vh rgba(0, 0, 0, 0.1); */
 
   > div.dropdowner {
@@ -100,7 +100,7 @@ const Sorter = styled.div`
 
 const Gallery = styled.div`
   margin: 0 24px;
-  background-color: white;
+  background-color: rgb(250, 250, 250);
   padding-top: 16px;
   padding-bottom: 60px;
   display: grid;
