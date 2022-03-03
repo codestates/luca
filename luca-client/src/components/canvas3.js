@@ -259,7 +259,7 @@ export default function Canvas3({
   });
 
   //const nodeScale = Math.pow(0.95, nodes[0].height) * 18;
-  // 기본적인 scale 모델입니다. 비율은 추후 ui에 따라 변경가능
+  // 기본적인 scale 모델입니다. 비율은 추후 ui에 따라 변경가능 -> 이제 mapScale 로 자동조정됩니다.
 
   //console.log("radialNodes: ", radialNodes);
   //console.log("radialLinkes: ", radialLinkes);
@@ -340,7 +340,7 @@ export default function Canvas3({
       initialPositionX={-window.innerWidth / 2}
       initialPositionY={-window.innerHeight / 2}
       limitToBounds={false}
-      minScale={0.3}
+      minScale={0.2}
       disabled={disabled}
       panning={{ excluded: ["nodebox"] }}
     >
@@ -367,7 +367,7 @@ export default function Canvas3({
               <i className="fa-solid fa-magnifying-glass-minus"></i>
             </button>
             <button
-              onClick={() => centerView(2 / mapScale, 300, "easeOut")}
+              onClick={() => centerView(1 / mapScale, 300, "easeOut")}
               onMouseEnter={(e) => pilotHandler(e, "in", "중앙 정렬")}
               onMouseLeave={(e) => pilotHandler(e, "out")}
             >
@@ -426,6 +426,7 @@ export default function Canvas3({
               <div className="index">map</div>
               <div className="mod">
                 <button onClick={() => setMapScale(mapScale - 1)}>-</button>
+                {mapScale}
                 <button onClick={() => setMapScale(mapScale + 1)}>+</button>
               </div>
             </div>
