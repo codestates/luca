@@ -24,6 +24,7 @@ const Banner = styled.div`
   min-height: 16vh;
   padding: 4vh 0;
   background: linear-gradient(to right bottom, #ff7f50, orange);
+  filter: saturate(100%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -67,7 +68,7 @@ const Sorter = styled.div`
   z-index: 500;
   padding-top: 16px;
   min-height: 36px;
-  background-color: rgb(250, 250, 250);
+  background-color: #faf8f6;
   /* box-shadow: 0vh 0vh 1vh 0.1vh rgba(0, 0, 0, 0.1); */
 
   > div.dropdowner {
@@ -77,7 +78,6 @@ const Sorter = styled.div`
     height: 20px;
     margin: 8px 10px;
     text-align: center;
-    background-color: white;
     cursor: pointer;
 
     > div.selection {
@@ -86,12 +86,16 @@ const Sorter = styled.div`
       border-radius: 6px;
       text-align: right;
       background-color: white;
+      border: solid lightgrey 1px;
+      overflow: hidden;
       > div {
         padding: 10px;
+        border-bottom: solid lightgrey 1px;
         cursor: pointer;
       }
       > div:hover {
-        color: orange;
+        color: peru;
+        background-color: #faf8f6;
       }
     }
   }
@@ -110,8 +114,7 @@ const Gallery = styled.div`
 
 const FooterContainer = styled.div`
   /* border: solid red; */
-
-`
+`;
 
 export default function Main() {
   let projects = useSelector((state) => state.user.projects);
@@ -138,8 +141,8 @@ export default function Main() {
           ? -1
           : parseInt(a.updatedAt.split("-").join("")) >
             parseInt(b.updatedAt.split("-").join(""))
-            ? 1
-            : 0;
+          ? 1
+          : 0;
       });
       dispatch(setProjectList(sortedProjects));
       setCurSort("업데이트 순");
@@ -150,8 +153,8 @@ export default function Main() {
           ? -1
           : parseInt(a.createdAt.split("-").join("")) >
             parseInt(b.createdAt.split("-").join(""))
-            ? 1
-            : 0;
+          ? 1
+          : 0;
       });
       dispatch(setProjectList(sortedProjects));
       setCurSort("생성일 순");
@@ -209,7 +212,6 @@ export default function Main() {
             </div>
           </Sorter>
           <Gallery>
-
             {projects.map((project, i) => (
               <Projectcard projectInfo={project} index={i} key={project.id} />
             ))}
