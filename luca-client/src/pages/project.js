@@ -1,6 +1,3 @@
-import { Navigator } from "../components/commons";
-import Canvas from "../components/canvas";
-import Canvas2 from "../components/canvas2";
 import Canvas3 from "../components/canvas3";
 import Cardboard from "../components/cardboard";
 import { useEffect, useCallback, useState } from "react";

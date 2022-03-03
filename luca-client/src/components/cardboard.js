@@ -409,10 +409,9 @@ export default function Cardboard({
       <CardContainer isCardContOpen={isCardContOpen} isSidebar={isSidebar}>
         {cardList.map((card, i) => {
           return blockData.isBlock && card.id === blockData.cardId ? (
-            <div>
+            <div key={card.id}>
               <div style={{ height: "2.5vh" }}></div>
               <Card
-                key={card.id}
                 id={card.id}
                 color={card.color}
                 blocked={true}
@@ -424,7 +423,7 @@ export default function Cardboard({
               </Card>
             </div>
           ) : (
-            <div>
+            <div key={card.id}>
               {card.userId === userInfo.id ? (
                 <CardDeleter
                   draggable={false}
@@ -436,7 +435,6 @@ export default function Cardboard({
                 <div style={{ height: "2.5vh" }}></div>
               )}
               <Card
-                key={card.id}
                 id={card.id}
                 color={card.color}
                 draggable

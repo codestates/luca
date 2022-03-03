@@ -99,27 +99,26 @@ const Rootbox = styled.div`
       : "0 0 6px rgba(0, 0, 0, 0.7)"};
 `;
 
-const Nodebox = styled.div`
+const Nodebox = styled.div.attrs(({ id, coordX, coordY, highlights }) => {
+  return {
+    style: {
+      position: "fixed",
+      left: coordX + "px",
+      top: coordY + "px",
+      boxShadow: highlights.includes(id)
+        ? "0 0 6px red"
+        : "0 0 6px rgba(0, 0, 0, 0.7)",
+    },
+  };
+})`
   z-index: 900;
-  position: fixed;
-  top: ${(props) => {
-    return String(props.coordY) + "px";
-  }};
-  left: ${(props) => {
-    return String(props.coordX) + "px";
-  }};
+  background-color: ${(props) => props.color};
   padding: 0.8em;
-  background-color: ${(props) =>
-    props.parent === 0 ? "lightyellow" : "white"};
+  background-color: white;
   transform: translate(-50%, -50%);
   text-align: center;
   border-radius: 4px;
   font-size: 12px;
-  font-weight: ${(props) => (props.parent === 0 ? "700" : "normal")};
-  box-shadow: ${(props) =>
-    props.highlights.includes(props.id)
-      ? "0 0 6px red"
-      : "0 0 6px rgba(0, 0, 0, 0.7)"};
 
   > div.delete {
     display: none;
@@ -375,8 +374,9 @@ export default function Canvas3({
           </Scaler>
           <TransformComponent>
             {/* <Container> */}
+
             <Rootbox
-              className="nodebox"
+              className="rootbox"
               id={radialNodes[0].data.id}
               coordY={radialNodes[0].y || window.innerHeight / 2}
               coordX={radialNodes[0].x || window.innerWidth / 2}
@@ -385,13 +385,12 @@ export default function Canvas3({
               onDragOver={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log(`- dragover in node (id: ${e.target.id}) -`);
               }}
-              // onDragOver -> onDrop
               onDrop={dropHandler}
             >
               {radialNodes[0].data.content}
             </Rootbox>
+
             {radialNodes.slice(1).map((node, i) => (
               <Nodebox
                 className="nodebox"
@@ -422,6 +421,7 @@ export default function Canvas3({
                 </div>
               </Nodebox>
             ))}
+
             <Lines>
               {radialLinkes.map((link, i) => {
                 return (
@@ -435,6 +435,7 @@ export default function Canvas3({
                 );
               })}
             </Lines>
+
             {/* </Container> */}
           </TransformComponent>
         </>

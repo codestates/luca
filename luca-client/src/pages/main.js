@@ -105,7 +105,7 @@ const Sorter = styled.div`
 const Gallery = styled.div`
   margin: 0 24px;
   background-color: rgb(250, 250, 250);
-  padding-top: 10px;
+  padding-top: 24px;
   padding-bottom: 60px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));

@@ -121,7 +121,7 @@ const Timer = ({ timerHandler, setTime, time }) => {
               className="start"
               onClick={() => timerHandler("clickTimer")}
             >
-              <i class="fa-solid fa-hourglass"></i>
+              <i className="fa-solid fa-hourglass"></i>
             </button>
           )}
         </div>
