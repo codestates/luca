@@ -42,11 +42,11 @@
 
 ## 🔗 &nbsp; Link
 
-`Main` > <a href="https://github.com/codestates/shelp">https://github.com/codestates/luca</a>
+`Main` > <a href="https://github.com/codestates/luca">https://github.com/codestates/luca</a>
 
-`Client` > <a href="https://github.com/codestates/shelp/tree/main/shelp-client">https://github.com/codestates/luca/tree/main/luca-client</a>
+`Client` > <a href="https://github.com/codestates/luca/tree/main/luca-client">https://github.com/codestates/luca/tree/main/luca-client</a>
 
-`Server`> <a href="https://github.com/codestates/shelp/tree/main/shelp-server">https://github.com/codestates/luca/tree/main/luca-server</a>
+`Server`> <a href="https://github.com/codestates/luca/tree/main/luca-server">https://github.com/codestates/luca/tree/main/luca-server</a>
 
 <br />
 

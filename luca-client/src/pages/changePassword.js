@@ -58,7 +58,7 @@ const Registrybox = styled.div`
     width: 100%;
     display: flex;
     justify-content: center;
-    > button {
+    > button.confirm {
       margin-right: 20px;
       margin-left: 20px;
       width: 90px;
@@ -72,12 +72,22 @@ const Registrybox = styled.div`
       background-color:${color.primaryLight};
       font-weight: bold;
     }
-    > button:hover {
-      /* background-color: orange; */
-      color: white;
+    > button.cancel {
+      margin-right: 20px;
+      margin-left: 20px;
+      width: 90px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 70px;
+      border-radius: ${radius};
+      box-shadow: 0vh 0.5vh 1vh 0.1vh rgba(0, 0, 0, 0.2);
+      background-color:${color.white};
+      font-weight: bold;
     }
     > button:active {
-      color: silver;
+      transform: translateY(2px);
     }
   }
 `;
@@ -269,8 +279,8 @@ export default function ChangePassword() {
             </div>
 
             <div>
-              <button onClick={cancleHandler}>취소</button>
-              <button onClick={changePasswordHandler}>저장</button>
+              <button className='cancel' onClick={cancleHandler}>취소</button>
+              <button className='confirm' onClick={changePasswordHandler}>저장</button>
             </div>
           </Registrybox>
         </Container>

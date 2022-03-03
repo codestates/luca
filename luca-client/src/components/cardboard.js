@@ -14,7 +14,7 @@ const CardContainer = styled.div`
   top: ${(props) => (props.isSidebar ? "13vh" : "none")};
   bottom: ${(props) => (props.isSidebar ? "none" : "1vh")};
   right: ${(props) => (props.isSidebar ? "2vh" : "20vh")};
-  width: ${(props) => (props.isSidebar ? "18vh" : "130vh")};
+  width: ${(props) => (props.isSidebar ? "18vh" : "65%")};
   height: ${(props) => (props.isSidebar ? "68vh" : "18vh")};
   background-color: white;
   border-radius: 0vh 1vh 1vh 0vh;
@@ -48,17 +48,17 @@ const CardContainer = styled.div`
   animation-play-state: running;
   @keyframes containerIn {
     from {
-      width: 18vh;
+      width: 20vh;
       overflow: scroll;
     }
     to {
-      width: 108vh;
+      width: 52vw;
       overflow: scroll;
     }
   }
   @keyframes containerOut {
     from {
-      width: 108vh;
+      width: 52vw;
       overflow: scroll;
       scroll-snap-type: x proximity;
     }
@@ -75,7 +75,7 @@ const Transform = styled.div`
   position: fixed;
   top: ${(props) => (props.isSidebar ? "10vh" : "none")};
   bottom: ${(props) => (props.isSidebar ? "none" : "20vh")};
-  right: ${(props) => (props.isSidebar ? "20vh" : "148vh")};
+  right: ${(props) => (props.isSidebar ? "20vh" : "75vw")};
   width: 2.5vh;
   height: 2.5vh;
   border-radius: 1vh 0 0 1vh;
@@ -126,15 +126,15 @@ const Opener = styled.div`
   animation-play-state: running;
   @keyframes openerIn {
     from {
-      right: 20vh;
+      right: 21vh;
     }
     to {
-      right: 110vh;
+      right: 53vw;
     }
   }
   @keyframes openerOut {
     from {
-      right: 110vh;
+      right: 53vw;
     }
     to {
       right: 20vh;
