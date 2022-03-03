@@ -73,6 +73,7 @@ const ModalView = styled.div`
   border-radius: 1em;
   text-align: center;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+
   > div.modal-title {
     flex: 1 0 auto;
     margin-bottom: 1em;
@@ -598,7 +599,52 @@ export function Savealert() {
   );
 }
 
-export function WithdrawalConfirm({ withdrawalModalHandler }) {
+const WithdrawalBox = styled.div`
+  position: absolute;
+  top: -40px;
+  left: 30%;
+  width: 600px;
+  height: 100px;
+  background-color: white;
+  border: solid darkorange;
+  border-radius: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.9);
+  > div.alertMessage {
+    font-size: 1.5rem;
+  }
+  > div.choiceBox {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+    width: 200px;
+    margin-top: 10px;
+    > div {
+      font-size: 1.2rem;
+      /* border: solid darkorange; */
+      border-radius: 10px;
+      width: 50px;
+      height: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: orange;
+    }
+    >div:hover {
+      background-color: orange;
+      color: white;
+    }
+    >div:active {
+      background-color: darkorange;
+    }
+  }
+`
+
+export function WithdrawalConfirm ({withdrawalModalHandler}) {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();

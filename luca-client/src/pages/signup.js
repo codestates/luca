@@ -16,7 +16,7 @@ import {
 } from "../api";
 
 const SignupPage = styled.div`
-  /* margin-top: 10vh; */
+  margin-top: 10vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -32,16 +32,17 @@ const SignupPage = styled.div`
 `;
 const Registrybox = styled.div`
   width: 80%;
-  height: 90%;
-  border: solid gray;
+  /* height: 90%; */
+  /* border: solid gray; */
   border-radius: 30px;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  /* justify-content: space-around; */
   > div {
     width: auto;
     display: flex;
     justify-content: center;
+    margin-top: 20px;
     > div.emailbox {
       margin-left: 100px;
     }
@@ -308,13 +309,13 @@ export default function Signup() {
 
             <div>
               <div>
-                {emailCode === '' ? null : (
+                {/* {emailCode === '' ? null : ( */}
                   <InputForm
                     value={emailConfirm}
                     placeholder='코드'
                     handleValue={onChangeEmailConfirm}
                   />
-                )}
+                {/* // )} */}
               </div>
             </div>
 
