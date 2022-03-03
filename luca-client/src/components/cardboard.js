@@ -153,6 +153,13 @@ const Card = styled.div`
   filter: ${(props) => (props.blocked ? "brightness(50%)" : "none")};
   box-shadow: 0vh 0.5vh 1vh 0vh rgba(0, 0, 0, 0.3);
   > div.content {
+    margin: -1.5vh 1.5vh;
+    font-size: 2vh;
+    text-align: left;
+    word-break: break-word;
+    overflow: hidden;
+  }
+  > div.delete {
     position: relative;
     font-size: 1.6vh;
     line-height: 2vh;

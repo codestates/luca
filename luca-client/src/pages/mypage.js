@@ -141,9 +141,6 @@ export default function Mypage() {
   const cards = useSelector((state) => state.user.cardList);
   const [isEditOn, setIsEditOn] = useState(false);
   const editnameRef = useRef();
-  const [withdrawalModal, setWithdrawalModal] = useState(false);
-
-  console.log("userInfo: ", userInfo);
 
   const handlerEditname = () => {
     let newName = editnameRef.current.value;
@@ -164,22 +161,24 @@ export default function Mypage() {
         .catch((err) => {
           alert("error");
         });
-    } else {
-      setIsEditOn(false);
+    }else{
+      setIsEditOn(false)
     }
   };
 
-  const withdrawalModalHandler = () => {
-    setWithdrawalModal(!withdrawalModal);
-  };
+  const UploadImage = () => {
+    
+  }
 
   useEffect(() => {
+    console.log(userInfo, projects, cards);
     axios
       .get(`${process.env.REACT_APP_API_URL}/profile`, {
         "Content-Type": "application/json",
         withCredentials: true,
       })
       .then((res) => {
+        console.log(res);
         dispatch(setUserInfo(res.data.data));
       })
       .catch((err) => {
@@ -193,9 +192,6 @@ export default function Mypage() {
     <div>
       <Navigator />
       <Container>
-        {withdrawalModal ? (
-          <WithdrawalConfirm withdrawalModalHandler={withdrawalModalHandler} />
-        ) : null}
         <Left>
           {/* {isEditOn ? <i onClick={UploadImage} className="fa-regular fa-pen-to-square"></i>: null} */}
         </Left>
@@ -208,18 +204,12 @@ export default function Mypage() {
               </div>
               <div className="edit">
                 <Button onClick={handlerEditname}>저장</Button>
-                <Button
-                  warn={true}
-                  onClick={() => {
-                    setWithdrawalModal(true);
-                  }}
-                >
-                  회원탈퇴
-                </Button>
+                <Button warn={true}>회원탈퇴</Button>
               </div>
             </Upper>
             <Lower>
-              <div>{`만든 프로젝트 ${userInfo.countAdminProject}개, 참여한 프로젝트 ${userInfo.countJoinProject}개`}</div>
+              <div>{`만든 프로젝트 ${projects.length}개, 참여한 프로젝트 3개`}</div>
+              <div>{`만든 카드 ${cards.length}개, 매핑된 카드 27개`}</div>
             </Lower>
           </Right>
         ) : (
@@ -235,8 +225,8 @@ export default function Mypage() {
               </div>
             </Upper>
             <Lower>
-              <div>{`만든 프로젝트 ${userInfo.countAdminProject}개`}</div>
-              <div>{`참여한 프로젝트 ${userInfo.countJoinProject}개`}</div>
+              <div>{`만든 프로젝트 ${projects.length}개, 참여한 프로젝트 3개`}</div>
+              <div>{`만든 카드 ${cards.length}개, 매핑된 카드 27개`}</div>
             </Lower>
           </Right>
         )}
