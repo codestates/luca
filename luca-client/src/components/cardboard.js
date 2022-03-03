@@ -154,7 +154,7 @@ const Card = styled.div`
   > div.content {
     margin: -1.5vh 1.5vh;
     font-size: 2vh;
-    text-align: ${(props) => (props.blocked ? "center" : "left")};
+    text-align: left;
     word-break: break-word;
     overflow: hidden;
   }

@@ -154,7 +154,7 @@ export default function Project() {
     });
 
     socket.on("resetTimer", (data) => {
-      setTimerSettings(data);
+      dispatch(setTimerSettings(data));
       setTime(0);
     });
   }, []);
