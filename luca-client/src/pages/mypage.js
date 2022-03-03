@@ -1,21 +1,25 @@
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { Savealert } from "../components/modals";
-import { Navigator, Backdrop } from "../components/commons";
+import { Navigator, Footer, Backdrop } from "../components/commons";
 import { useSelector, useDispatch } from "react-redux";
 import { setIsLogin, setUserInfo } from "../redux/rootSlice.js";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import Footer from '../components/footer';
+import { WithdrawalConfirm } from "../components/modals";
+import { color, device, contentWidth } from '../styles';
 
 const Container = styled.div`
-  /* min-width: 90vw; */
-  width: 100%;
-  /* min-height: 50vh; */
-  height: 100%;
+  grid-column: 1 / span 2;
+  @media ${device.laptop} {
+    min-width: 90vw;
+  /* width: 90%; */
+  min-height: 50vh;
+  /* height: 50%; */
   margin: 20vh 10vh 10vh 10vh;
   display: flex;
   position: relative;
+}
 `;
 
 const Section = styled.div`
@@ -24,30 +28,42 @@ const Section = styled.div`
 `;
 
 const Left = styled(Section)`
-  min-width: 55vh;
-  height: 55vh;
-  margin: 0 15vh;
-  background: url("https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/damien-hirst-1-1538661596.jpg");
-  background-size: cover;
-  background-repeat: no-repeat;
-  border-radius: 30vh;
+    min-width: 35vh;
+    height: 35vh;
+    margin: 20vh 15vh 0;
+    background: url("https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/damien-hirst-1-1538661596.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-radius: 30vh;
+  @media ${device.laptop} {
+    min-width: 55vh;
+    height: 55vh;
+    margin: 0 15vh;
   > i {
     position: relative;
     top: 50vh;
     left: 50vh;
     font-size: 3vh;
     color: silver;
-  }
+    }
   > i:hover {
     color: gray;
-  }
+    }
   > i:active {
     color: orange;
+    }
   }
 `;
 
 const Right = styled(Section)`
-  flex: 2 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-left: 3rem;
+  @media ${device.laptop} {
+    flex: 2 0 auto;
+    margin: 0;
+  }
 `;
 
 const Upper = styled.div`
@@ -94,7 +110,7 @@ const Lower = styled.div`
   font-weight: bold;
 
   > div {
-    margin: 0.5em 0;
+    padding: 0.5em;
   }
 `;
 

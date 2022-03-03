@@ -69,27 +69,27 @@ export default function Project() {
   };
 
   const timerHandler = (timeEventName) => {
-    if(timeEventName === "increaseTime") {
+    if (timeEventName === "increaseTime") {
       socket.emit("increaseTime", time, roomName);
     }
 
-    if(timeEventName === "decreaseTime") {
+    if (timeEventName === "decreaseTime") {
       socket.emit("decreaseTime", time, roomName);
     }
 
-    if(timeEventName === "clickTimer") {
+    if (timeEventName === "clickTimer") {
       socket.emit("clickTimer", true, roomName);
     }
 
-    if(timeEventName === "startTimer") {
+    if (timeEventName === "startTimer") {
       socket.emit("startTimer", true, roomName);
     }
 
-    if(timeEventName === "pauseTimer") {
+    if (timeEventName === "pauseTimer") {
       socket.emit("pauseTimer", false, roomName);
     }
 
-    if(timeEventName === "resetTimer") {
+    if (timeEventName === "resetTimer") {
       setTime(0);
       socket.emit("resetTimer", false, roomName);
     }
@@ -110,7 +110,7 @@ export default function Project() {
     socket.on("createCard", (data) => {
       dispatch(setCardList(data));
     });
-    
+
     socket.on("deleteCard", (data) => {
       dispatch(setCardList(data));
     });
