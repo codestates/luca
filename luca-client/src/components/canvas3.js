@@ -16,7 +16,7 @@ import Timer from "./timer";
 // `;
 
 const Controller = styled.div`
-  z-index: 920;
+  z-index: 930;
   position: fixed;
   top: 120px;
   left: 20px;
@@ -51,7 +51,7 @@ const Controller = styled.div`
 `;
 
 const Scaler = styled.div`
-  z-index: 920;
+  z-index: 930;
   position: fixed;
   bottom: 20px;
   left: 20px;
@@ -124,7 +124,7 @@ const Nodebox = styled.div.attrs(({ id, coordX, coordY, highlights }) => {
     display: none;
   }
   &:hover {
-    z-index: 999;
+    z-index: 920;
     transform: translate(-50%, -50%) scale(1.5);
     > div.delete {
       display: ${(props) => (props.parent === 0 ? "none" : "block")};
@@ -167,20 +167,16 @@ const Lines = styled.svg`
 `;
 
 const ControllerPilot = styled.div`
-  z-index: 990;
-  display: ${(props) => (props.pilotOn ? "block" : "none")};
-  position: fixed;
   z-index: 999;
-  left: ${(props) => props.x + "px"};
+  position: fixed;
+  left: ${(props) => props.x + 10 + "px"};
   top: ${(props) => props.y + "px"};
-  width: auto;
-  height: 20px;
-  padding: 6px 10px;
-  border-radius: 16px;
-  background-color: grey;
-  color: white;
-  border: black solid 1px;
-  font-weight: bold;
+  font-size: 0.8em;
+  padding: 0.3em;
+  border-radius: 0.1em;
+  background-color: lightgrey;
+  color: black;
+  box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.5);
 `;
 
 export default function Canvas3({
@@ -201,9 +197,12 @@ export default function Canvas3({
   const [mapScale, setMapScale] = useState(2); // 마인드맵의 지름 비율
   const [highlight, setHighlight] = useState({ list: [], word: "" }); // 검색 시 하이라이트
   const [disabled, setDisabled] = useState(false); // 캔버스에서의 마우스 액션 허용/금지
-  const [pilotCoord, setPilotCoord] = useState({ x: 0, y: 0 }); // 컨트롤러에 마우스 호버할 때의 안내 파일럿 위치
-  const [pilotOn, setPilotOn] = useState(false); // 안내 파일럿 on-off
-  const [pilotMessage, setPilotMessage] = useState("");
+  const [pilot, setPilot] = useState({
+    // 일정시간 마우스 오버시 안내 파일럿
+    on: false,
+    coord: { x: 0, y: 0 },
+    message: "",
+  });
 
   const root = hierarchy(rawData);
 
@@ -279,19 +278,26 @@ export default function Canvas3({
     // 노드에 드롭 시 노드 id를 가져왔습니다. 이제 mindmap 데이터에서 노드 id를 찾아 자식노드로 추가해줘야합니다.
   };
 
+  let pilotTimerId = undefined;
+
   const pilotHandler = (e, dir, index) => {
     if (dir === "in") {
-      setTimeout(() => {
-        setPilotCoord({ x: e.clientX, y: e.clientY });
-        setPilotMessage(index);
-        console.log("target ", e.target);
-        setPilotOn(true);
-      }, 500);
+      pilotTimerId = setTimeout(() => {
+        setPilot({
+          on: true,
+          coord: { x: e.clientX, y: e.clientY },
+          message: index,
+        });
+      }, 700);
     }
+
     if (dir === "out") {
-      clearTimeout();
-      setPilotCoord({ x: 0, y: 0 });
-      setPilotOn(false);
+      clearTimeout(pilotTimerId);
+      setPilot({
+        on: false,
+        coord: { x: 0, y: 0 },
+        message: "",
+      });
     }
     return;
   };
@@ -340,43 +346,38 @@ export default function Canvas3({
     >
       {({ zoomIn, zoomOut, setTransform, centerView }) => (
         <>
-          <ControllerPilot pilotOn={pilotOn} x={pilotCoord.x} y={pilotCoord.y}>
-            {pilotMessage}
-          </ControllerPilot>
+          {pilot.on ? (
+            <ControllerPilot x={pilot.coord.x} y={pilot.coord.y}>
+              {pilot.message}
+            </ControllerPilot>
+          ) : null}
           <Controller>
             <button
               onClick={() => zoomIn()}
-              onMouseEnter={(e) => pilotHandler(e, "in")}
+              onMouseEnter={(e) => pilotHandler(e, "in", "확대")}
               onMouseLeave={(e) => pilotHandler(e, "out")}
             >
               <i className="fa-solid fa-magnifying-glass-plus"></i>
             </button>
             <button
               onClick={() => zoomOut()}
-              onMouseEnter={(e) => pilotHandler(e, "in")}
+              onMouseEnter={(e) => pilotHandler(e, "in", "축소")}
               onMouseLeave={(e) => pilotHandler(e, "out")}
             >
               <i className="fa-solid fa-magnifying-glass-minus"></i>
             </button>
             <button
-              onClick={() =>
-                centerView(
-                  mapForm === "cluster" ? 1 : 1.8 / mapScale,
-                  300,
-                  "easeOut"
-                )
-              }
-              onMouseEnter={(e) => pilotHandler(e, "in")}
+              onClick={() => centerView(2 / mapScale, 300, "easeOut")}
+              onMouseEnter={(e) => pilotHandler(e, "in", "중앙 정렬")}
               onMouseLeave={(e) => pilotHandler(e, "out")}
             >
               <i className="fa-solid fa-expand"></i>
-              {/* <i className="fa-solid fa-house"></i> */}
             </button>
 
             {mapForm === "cluster" ? (
               <button
                 onClick={() => setMapForm("tree")}
-                onMouseEnter={(e) => pilotHandler(e, "in")}
+                onMouseEnter={(e) => pilotHandler(e, "in", "바깥쪽 맞춤")}
                 onMouseLeave={(e) => pilotHandler(e, "out")}
               >
                 <i className="fa-solid fa-maximize"></i>
@@ -384,7 +385,7 @@ export default function Canvas3({
             ) : (
               <button
                 onClick={() => setMapForm("cluster")}
-                onMouseEnter={(e) => pilotHandler(e, "in")}
+                onMouseEnter={(e) => pilotHandler(e, "in", "안쪽 맞춤")}
                 onMouseLeave={(e) => pilotHandler(e, "out")}
               >
                 <i className="fa-solid fa-minimize"></i>
@@ -393,7 +394,7 @@ export default function Canvas3({
 
             <button
               onClick={blockHandler}
-              onMouseEnter={(e) => pilotHandler(e, "in")}
+              onMouseEnter={(e) => pilotHandler(e, "in", "캔버스 고정")}
               onMouseLeave={(e) => pilotHandler(e, "out")}
             >
               {disabled ? (
@@ -403,7 +404,7 @@ export default function Canvas3({
               )}
             </button>
             <div
-              onMouseEnter={(e) => pilotHandler(e, "in", "timer")}
+              onMouseEnter={(e) => pilotHandler(e, "in", "타이머")}
               onMouseLeave={(e) => pilotHandler(e, "out")}
             >
               <Timer
