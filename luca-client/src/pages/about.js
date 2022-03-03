@@ -5,9 +5,9 @@ import Footer from '../components/footer';
 
 const dummyIntro = [
   {
-    title: "Lorem ipsum",
-    desc: "Dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    button: "Exercitation",
+    title: "모든 것은 아이디어에서 시작됩니다. ",
+    desc: "Luca와 함께 아이디어를 기록하고, 구조화하세요. 팀원을 초대해 브레인스토밍을 함께 하세요.",
+    button: "체험하기",
   },
   {
     title: "Excepteur sint occaecat",
@@ -66,8 +66,31 @@ const IntroContainer = styled.div`
         cursor: pointer;
       }
     }
+    > div.animationbox {
+      position: absolute;
+      top: 30%;
+      left: 49%;
+      transform: translate(-50%,-50%);
+      > ul {
+        list-style: none;
+        >li{
+          display: inline-block;
+          margin-right: 20px;
+          font-size: 5em;
+          color: #fff;
+          opacity: 1;
+          transition: all 3s ease;
+        }
+    }
+    > ul li:nth-child(1) { transform: translate3d(-60, 0, 0); };
+    > ul li:nth-child(2) { transform: translate3d(-30, 0, 0); };
+    > ul li:nth-child(3) { transform: translate3d(30, 0, 0); };
+    > ul li:nth-child(4) { transform: translate3d(60, 0, 0); };
+    }
   }
 `;
+
+
 
 const guestLoginHandler = () => {
   axios.get(`${process.env.REACT_APP_API_URL}/user/guest`)
@@ -91,6 +114,14 @@ export default function About() {
       {dummyIntro.map((lorem, i) => (
         <IntroContainer key={i} color={i}>
           <div className="floater">
+            <div className="animationbox">
+              <ul>
+                <li>L</li>
+                <li>U</li>
+                <li>C</li>
+                <li>A</li>
+              </ul>
+            </div>
             <div className="title">{lorem.title}</div>
             <div className="desc">{lorem.desc}</div>
             <div className="action">
@@ -98,7 +129,6 @@ export default function About() {
             </div>
           </div>
         </IntroContainer>
-
       ))}
       <Footer />
     </div>
