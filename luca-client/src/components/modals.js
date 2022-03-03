@@ -219,6 +219,175 @@ const ModalView = styled.div`
   }
 `;
 
+const LoginModalView = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin: auto;
+  padding: 3em 1.5em 3em 3em;
+  background-color: white;
+  border-radius: 1em;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  align-items: center;
+
+  > div {
+    flex: 1 0 auto;
+    width: 400px;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    
+    > div.modal-title {
+      flex: 1 0 auto;
+      margin-bottom: 1em;
+      font-size: 2em;
+      font-weight: bold;
+    }
+
+    > div.modal-body {
+      flex: 4 0 auto;
+
+      > div.query {
+        display: flex;
+        margin: 1.5em 0;
+        > div.index {
+          flex: 1 0 auto;
+          text-align: right;
+          font-size: 1.2em;
+        }
+        > input {
+          width: 100%;
+          height: 40px;
+          padding: 0.5rem;
+          font-size: 1rem;
+          border: 1px solid ${color.primaryBorder};
+          border-radius: ${radius};
+        }
+
+        > input:focus {
+          /* border-bottom-width: 2.5px; */
+          border-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        > div.searchContainer {
+          flex: 1 0 auto;
+          display: flex;
+          flex-direction: row;
+
+          > input {
+            width: 100%;
+            height: 40px;
+            padding: 0.5rem;
+            font-size: 1rem;
+            border: 1px solid ${color.primaryBorder};
+            border-radius: ${radius};
+          }
+
+          > input:focus {
+            /* border-bottom-width: 2.5px; */
+            border-color: rgba(0, 0, 0, 0.5);
+          }
+
+          > button {
+            min-width: 58px;
+            margin-left: 1rem;
+            border: 1px solid ${color.primaryBorder};
+            border-radius: ${radius};
+          }
+        }
+
+        button.private {
+          flex: 1 0 auto;
+          font-size: 1.2em;
+          margin: 0.5em;
+          // 탭으로 구현할 것
+          border-radius: 10px;
+          background-color: ${(props) => (props.isTeam ? "none" : `${color.primaryLight};`)};;
+          cursor: pointer;
+        }
+
+        button.team {
+          flex: 1 0 auto;
+          font-size: 1.2em;
+          margin: 0.5em;
+          // 탭으로 구현할 것
+          border-radius: 10px;
+          background-color: ${(props) => (props.isTeam ? `${color.primaryLight};` : "none")};;;
+          cursor: pointer;
+        }
+        
+        button.block {
+          flex: 1 0 auto;
+          font-size: 1.2em;
+          margin: 0.5em;
+          // 탭으로 구현할 것
+          border-radius: 10px;
+          background-color: grey;
+          cursor: not-allowed;
+        }
+
+        button.options:visited {
+          // 버튼을 클릭했을때 시각적으로 구분할수 잇어야 할듯함
+          /* border: solid red; */
+          color: blue;
+          border-radius: 10px;
+        }
+      }
+
+      div.memberContainer {
+        border: 1px solid ${color.primaryBorder};
+        border-radius: ${radius};
+        padding: 1rem 0 1rem 0;
+        
+        > div {
+          font-size: 1.2em;
+        }
+      }
+
+      > span {
+        margin-right: 1em;
+        color: rgba(0, 0, 0, 0.5);
+      }
+    }
+    > div.modal-footer {
+      flex: 1 0 auto;
+      margin-top: 1em;
+
+      > div.buttons {
+        display: flex;
+        margin: 0 2em;
+        > button {
+          flex: 1 0 auto;
+          padding: 1em;
+          margin: 1em;
+          border-radius: 1em;
+          font-size: 1.2em;
+        }
+        > button.confirm {
+          font-weight: bold;
+          background-color: ${color.primaryLight};
+          cursor: pointer;
+        }
+      }
+      img {
+        width: 60px;
+        height: 60px;
+        margin: 0.5rem;
+        border-radius: 50%;
+        align-items: center;
+        cursor: pointer;
+      }
+    }
+  }
+
+  > img {
+    width: 0;
+    @media ${device.laptop} {
+      width: 500px;
+    }
+  }
+`;
+
 export function LoginModal({ modalHandler }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -263,65 +432,68 @@ export function LoginModal({ modalHandler }) {
 
   return (
     <ModalBackdrop onClick={() => modalHandler(false)}>
-      <ModalView onClick={(e) => e.stopPropagation()}>
-        <div className="modal-title">로그인</div>
-        <div className="modal-body">
-          <div className="query">
-            {/* <div className="index">이메일</div> */}
-            <input
-              onChange={(e) => handleInputValue(e, "email")}
-              placeholder="이메일"
-              onKeyPress={(e) => {
-                if (e.key === "Enter") {
-                  return LoginHandler();
-                }
-              }}
-            />
+      <LoginModalView onClick={(e) => e.stopPropagation()}>
+        <div>
+          <div className="modal-title">로그인</div>
+          <div className="modal-body">
+            <div className="query">
+              {/* <div className="index">이메일</div> */}
+              <input
+                onChange={(e) => handleInputValue(e, "email")}
+                placeholder="이메일"
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") {
+                    return LoginHandler();
+                  }
+                }}
+              />
+            </div>
+            <div className="query">
+              {/* <div className="index">비밀번호</div> */}
+              <input
+                onChange={(e) => handleInputValue(e, "password")}
+                placeholder="비밀번호"
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") {
+                    return LoginHandler();
+                  }
+                }}
+                type="password"
+              />
+            </div>
+            <div style={{ color: "red" }}>{errorMessage}</div>
+            <span>계정이 없으신가요?</span>
+            <a href="/signup">
+              <span impact>회원가입</span>
+            </a>
           </div>
-          <div className="query">
-            {/* <div className="index">비밀번호</div> */}
-            <input
-              onChange={(e) => handleInputValue(e, "password")}
-              placeholder="비밀번호"
-              onKeyPress={(e) => {
-                if (e.key === "Enter") {
-                  return LoginHandler();
-                }
-              }}
-              type="password"
-            />
+          <div className="modal-footer">
+            <div className="buttons">
+              <button className="confirm" onClick={LoginHandler}>
+                로그인
+              </button>
+            </div>
+            <div>
+              <img
+                src={kakaoIcon}
+                alt="카카오 아이콘"
+                onClick={requestKakaoLogin}
+              ></img>
+              <img
+                src={googleIcon}
+                alt="카카오 아이콘"
+                onClick={requestGoogleLogin}
+              ></img>
+              <img
+                src={naverIcon}
+                alt="카카오 아이콘"
+                onClick={requestNaverLogin}
+              ></img>
+            </div>
           </div>
-          <div style={{ color: "red" }}>{errorMessage}</div>
-          <span>계정이 없으신가요?</span>
-          <a href="/signup">
-            <span impact>회원가입</span>
-          </a>
         </div>
-        <div className="modal-footer">
-          <div className="buttons">
-            <button className="confirm" onClick={LoginHandler}>
-              로그인
-            </button>
-          </div>
-          <div>
-            <img
-              src={kakaoIcon}
-              alt="카카오 아이콘"
-              onClick={requestKakaoLogin}
-            ></img>
-            <img
-              src={googleIcon}
-              alt="카카오 아이콘"
-              onClick={requestGoogleLogin}
-            ></img>
-            <img
-              src={naverIcon}
-              alt="카카오 아이콘"
-              onClick={requestNaverLogin}
-            ></img>
-          </div>
-        </div>
-      </ModalView>
+        <img src="loginimage.webp" />
+      </LoginModalView>
     </ModalBackdrop>
   );
 }
