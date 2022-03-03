@@ -58,7 +58,7 @@ const Banner = styled.div`
 `;
 
 const Section = styled.div`
-  background-color: seashell;
+  background-color: rgb(250, 250, 250);
   display: flex;
   flex-direction: column;
 `;
@@ -67,8 +67,8 @@ const Sorter = styled.div`
   z-index: 500;
   padding-top: 16px;
   min-height: 36px;
-  background-color: white;
-  box-shadow: 0vh 0vh 1vh 0.1vh rgba(0, 0, 0, 0.1);
+  background-color: rgb(250, 250, 250);
+  /* box-shadow: 0vh 0vh 1vh 0.1vh rgba(0, 0, 0, 0.1); */
 
   > div.dropdowner {
     position: absolute;
@@ -100,13 +100,19 @@ const Sorter = styled.div`
 
 const Gallery = styled.div`
   margin: 0 24px;
-  background-color: seashell;
-  padding-top: 60px;
+  background-color: rgb(250, 250, 250);
+  padding-top: 16px;
   padding-bottom: 60px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   gap: 24px;
+  min-height: 500px;
 `;
+
+const FooterContainer = styled.div`
+  /* border: solid red; */
+
+`
 
 export default function Main() {
   let projects = useSelector((state) => state.user.projects);
@@ -204,11 +210,15 @@ export default function Main() {
             </div>
           </Sorter>
           <Gallery>
+
             {projects.map((project, i) => (
               <Projectcard projectInfo={project} index={i} key={project.id} />
             ))}
           </Gallery>
         </Section>
+        <FooterContainer>
+          <Footer/>
+        </FooterContainer>
       </Container>
     </div>
   );

@@ -9,8 +9,9 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 70vh;
+  height: 60vh;
   width: 70%;
+  margin-top: 10vh;
 
   > div,
   title {
@@ -18,13 +19,12 @@ const Container = styled.div`
     margin-bottom: 1em;
     font-size: 2em;
     font-weight: bold;
-    padding-top: 4em;
+    padding-top: 32px;
   }
 `;
 const Registrybox = styled.div`
   width: 80%;
   height: 90%;
-  border: solid gray;
   border-radius: 30px;
   display: flex;
   flex-direction: column;
@@ -62,17 +62,18 @@ const Registrybox = styled.div`
       margin-right: 20px;
       margin-left: 20px;
       width: 90px;
-      /* border: solid gray; */
-      height: 30px;
+      height: 52px;
       display: flex;
       align-items: center;
       justify-content: center;
       margin-bottom: 70px;
-      border-radius: 20px;
+      border-radius: ${radius};
       box-shadow: 0vh 0.5vh 1vh 0.1vh rgba(0, 0, 0, 0.2);
+      background-color:${color.primaryLight};
+      font-weight: bold;
     }
     > button:hover {
-      background-color: orange;
+      /* background-color: orange; */
       color: white;
     }
     > button:active {

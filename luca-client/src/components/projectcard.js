@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { color, device, radius, boxShadow } from '../styles';
 import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { DeleteProjectModal } from "./modals";
@@ -12,14 +13,19 @@ import { Link } from "react-router-dom";
 
 const ProjectCover = styled.div`
   min-width: 200px;
-  background-color: white;
+  /* background: linear-gradient(to right bottom, #ff7f50, orange); */
+  /* background: linear-gradient(to right bottom, seashell, darkorange); */
+  /* background: NavajoWhite; */
+  background: white;
   border-radius: 6px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   white-space: nowrap;
   cursor: default;
-  box-shadow: 0vh 0.5vh 1vh 0.1vh rgba(0, 0, 0, 0.3);
+  border: solid 1px lightgray;
+  /* box-shadow: 0vh 0.5vh 1vh 0.1vh rgba(0, 0, 0, 0.3); */
+  max-height: 250px;
 
   > div.top {
     padding: 20px 20px 0 30px;
@@ -29,8 +35,10 @@ const ProjectCover = styled.div`
       font-size: 2em;
       font-weight: 600;
       margin-right: 5px;
+      color: white;
       > a {
         cursor: pointer;
+        color: ${color.primaryDark};
       }
     }
 
@@ -56,7 +64,7 @@ const ProjectCover = styled.div`
       width: 20px;
       height: 20px;
       border: none;
-      background-color: white;
+      background: none;
       > i {
         color: rgb(150, 150, 150);
       }
@@ -66,7 +74,7 @@ const ProjectCover = styled.div`
       margin: auto 0;
       height: 100%;
       border: none;
-      background-color: white;
+      background: none;
       > i {
         text-align: center;
         font-size: 2.2em;
@@ -77,7 +85,7 @@ const ProjectCover = styled.div`
       margin: auto 0;
       height: 100%;
       border: none;
-      background-color: white;
+      background: none;
       > i {
         text-align: center;
         font-size: 2.2em;
@@ -113,12 +121,14 @@ const ProjectCover = styled.div`
     padding: 10px 30px;
     > p {
       margin: 16px 0;
+      color: rgb(150, 150, 150);
       > span.keyword {
         border-radius: 4px;
-        background-color: lightyellow;
+        background: none;
         padding: 0.5em;
         margin-right: 0.3em;
         box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+        background-color: rgb(240, 240, 240);
       }
       > span {
         font-weight: bold;
@@ -135,7 +145,7 @@ const ProjectCover = styled.div`
       height: 30px;
       font-weight: bold;
       border-radius: 4px;
-      background-color: white;
+      background-color: gray;
       border: none;
       box-shadow: 0 0 0.3em rgba(0, 0, 0, 0.5);
       cursor: pointer;
@@ -158,19 +168,26 @@ const ProjectCover = styled.div`
     font-size: 0.9em;
     font-weight: bold;
     padding: 10px 30px;
-    /* background-color: #f0b27a; */
-    background-color: rgb(150, 150, 150);
+    /* background-color: white; */
+    /* background-color: rgb(240, 240, 240); */
+    background-color: ${color.primary};
     flex: 1 0 auto;
+    color: white;
   }
 `;
 
 const UnitLabel = styled.div`
-  padding: 0.5em 1em;
-  margin: auto 0 auto auto;
+  //padding: 0.5em 1em;
+  //margin: auto 0 auto auto;
+  padding: 0.5em;
+  margin: 0 0 auto auto;
+  font-size: 0.8em;
+  font-weight: 600;
   border-radius: 2em;
-  background-color: ${(props) => (props.team ? "lightgreen" : "lightpink")};
+  color: rgb(70, 70, 70);
+  background-color: ${(props) => (props.team ? "PaleTurquoise" : "PeachPuff")};
+  filter: saturate(35%);
 `;
-
 function Projectcard({ projectInfo, index }) {
   console.log("projectInfo: ", projectInfo);
   const dispatch = useDispatch();
@@ -334,7 +351,7 @@ function Projectcard({ projectInfo, index }) {
       {!isEditOn ? (
         <div className="origin">
           <p>
-            <span>user{projectInfo.username}</span> 님이{" "}
+            <span>{projectInfo.username}</span> 님이{" "}
             <span>{projectInfo.createdAt.slice(0, 10)}</span> 일에
           </p>
           <p>
