@@ -129,12 +129,12 @@ const Opener = styled.div`
       right: 21vh;
     }
     to {
-      right: 53vw;
+      right: 52.9vw;
     }
   }
   @keyframes openerOut {
     from {
-      right: 53vw;
+      right: 52.9vw;
     }
     to {
       right: 20vh;
@@ -375,7 +375,7 @@ export default function Cardboard({
 
   const cardDragStart = (e) => {
     // const img = new Image();
-    // e.dataTransfer.setDragImage(img, 0, 0);
+    // e.dataTransfer.setDragImage(img, "7vh", "7vh");
 
     setDragItemId(e.target.id);
     // setIsAdderOpen(false)
@@ -503,9 +503,9 @@ export default function Cardboard({
                 maxLength={60}
                 // 한/영 글자 수 차이남
               />
-              <button className="submit" onClick={createCardHandler}>
+              {/* <button className="submit" onClick={createCardHandler}>
                 추가
-              </button>
+              </button> */}
             </>
           ) : (
             <i

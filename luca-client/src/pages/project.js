@@ -12,7 +12,7 @@ import {
   setMindmapHistory,
   setBlockData,
   setTimerTimeOn,
-  setTimerSettings
+  setTimerSettings,
 } from "../redux/rootSlice";
 
 export default function Project() {
@@ -53,10 +53,18 @@ export default function Project() {
   };
 
   const mouseDown = (id) => {
-    socket.emit("editBlockStart", { cardId: Number(id), isBlock: true }, roomName);
+    socket.emit(
+      "editBlockStart",
+      { cardId: Number(id), isBlock: true },
+      roomName
+    );
   };
   const mouseUp = (id) => {
-    socket.emit("editBlockEnd", { cardId: Number(id), isBlock: false }, roomName);
+    socket.emit(
+      "editBlockEnd",
+      { cardId: Number(id), isBlock: false },
+      roomName
+    );
   };
 
   const addMindmapHandler = (id) => {
@@ -93,7 +101,7 @@ export default function Project() {
       setTime(0);
       socket.emit("resetTimer", false, roomName);
     }
-  }
+  };
 
   // 배열이 업데이트될 때마다 계속해서 추가로 리스너가 등록되는 것을 방지하기 위해 useEffect 사용)
   useEffect(() => {

@@ -16,7 +16,7 @@ import Timer from "./timer";
 // `;
 
 const Controller = styled.div`
-  z-index: 999;
+  z-index: 920;
   position: fixed;
   top: 120px;
   left: 20px;
@@ -51,7 +51,7 @@ const Controller = styled.div`
 `;
 
 const Scaler = styled.div`
-  z-index: 900;
+  z-index: 920;
   position: fixed;
   bottom: 20px;
   left: 20px;
@@ -78,7 +78,7 @@ const Scaler = styled.div`
 `;
 
 const Rootbox = styled.div`
-  z-index: 990;
+  z-index: 910;
   position: fixed;
   top: ${(props) => {
     return String(props.coordY) + "px";
@@ -100,7 +100,7 @@ const Rootbox = styled.div`
 `;
 
 const Nodebox = styled.div`
-  z-index: 990;
+  z-index: 900;
   position: fixed;
   top: ${(props) => {
     return String(props.coordY) + "px";
@@ -167,6 +167,23 @@ const Lines = styled.svg`
   }
 `;
 
+const ControllerPilot = styled.div`
+  z-index: 990;
+  display: ${(props) => (props.pilotOn ? "block" : "none")};
+  position: fixed;
+  z-index: 999;
+  left: ${(props) => props.x + "px"};
+  top: ${(props) => props.y + "px"};
+  width: auto;
+  height: 20px;
+  padding: 6px 10px;
+  border-radius: 16px;
+  background-color: grey;
+  color: white;
+  border: black solid 1px;
+  font-weight: bold;
+`;
+
 export default function Canvas3({
   addMindmapHandler,
   deleteMindmapHandler,
@@ -182,13 +199,13 @@ export default function Canvas3({
   ]);
 
   const [mapScale, setMapScale] = useState(2);
-
   const [highlight, setHighlight] = useState({ list: [], word: "" });
-
   const [disabled, setDisabled] = useState(false);
   // 화면이 pan 되지 않으면서 마인드맵의 노드를 drag하기 위해 필요합니다.
   // 마인드맵의 노드를 onDragStart 이벤트시에는 TransformWrapper 의 disabled={true},
   // onDragEnd 이벤트시에는 TransformWrapper 의 disabled = {false} 로 바꿔줘야 합니다.
+  const [pilotCoord, setPilotCoord] = useState({ x: 0, y: 0 });
+  const [pilotOn, setPilotOn] = useState(false);
 
   const root = hierarchy(rawData);
 
@@ -252,6 +269,22 @@ export default function Canvas3({
     // 노드에 드롭 시 노드 id를 가져왔습니다. 이제 mindmap 데이터에서 노드 id를 찾아 자식노드로 추가해줘야합니다.
   };
 
+  const pilotHandler = (e, dir) => {
+    // if (dir === "in") {
+    //   setTimeout(() => {
+    //     setPilotCoord({ x: e.clientX, y: e.clientY });
+    //     setPilotOn(true);
+    //     //console.log("pilotCoord: ", pilotCoord);
+    //   }, 1000);
+    // }
+    // if (dir === "out") {
+    //   clearTimeout();
+    //   setPilotCoord({ x: 0, y: 0 });
+    //   setPilotOn(false);
+    // }
+    return;
+  };
+
   const simplified = (str) => {
     let viewLength = 10;
     if (str.length > viewLength) {
@@ -284,18 +317,6 @@ export default function Canvas3({
     setPathData(findParent(id, rawData));
   };
 
-  // $(".img").on(
-  //   "hover",
-  //   function () {
-  //     let setTimeoutConst = setTimeout(function () {
-  //       // do something
-  //     }, delay);
-  //   },
-  //   function () {
-  //     clearTimeout(setTimeoutConst);
-  //   }
-  // );
-
   return (
     <TransformWrapper
       initialScale={2}
@@ -308,7 +329,13 @@ export default function Canvas3({
     >
       {({ zoomIn, zoomOut, setTransform, centerView }) => (
         <>
-          <Controller>
+          {/* <ControllerPilot pilotOn={pilotOn} x={pilotCoord.x} y={pilotCoord.y}>
+            hello
+          </ControllerPilot> */}
+          <Controller
+            onMouseEnter={(e) => pilotHandler(e, "in")}
+            onMouseLeave={(e) => pilotHandler(e, "out")}
+          >
             <button onClick={() => zoomIn()}>
               <i className="fa-solid fa-magnifying-glass-plus"></i>
             </button>
@@ -321,11 +348,12 @@ export default function Canvas3({
             <button>
               <i className="fa-solid fa-clock-rotate-left"></i>
             </button>
-            <button>
-              <i className="fa-solid fa-border-all"></i>
-            </button>
             <button onClick={blockHandler}>
-              <i className="fa-solid fa-border-none"></i>
+              {disabled ? (
+                <i className="fa-solid fa-lock"></i>
+              ) : (
+                <i className="fa-solid fa-lock-open"></i>
+              )}
             </button>
             <Timer timerHandler={timerHandler} setTime={setTime} time={time} />
           </Controller>
@@ -373,7 +401,6 @@ export default function Canvas3({
                 coordY={node.y}
                 coordX={node.x}
                 highlights={highlight.list.map((node) => node.data.id)}
-                //onClick={blockHandler}
                 onClick={() => pathHandler(node.data.id)}
                 onDragOver={(e) => {
                   e.preventDefault();

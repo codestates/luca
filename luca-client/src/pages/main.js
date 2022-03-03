@@ -66,9 +66,10 @@ const Section = styled.div`
 
 const Sorter = styled.div`
   z-index: 500;
-  padding-top: 16px;
+  padding-top: 10px;
   min-height: 36px;
   background-color: #faf8f6;
+  border-bottom: lightgrey solid 1px;
   /* box-shadow: 0vh 0vh 1vh 0.1vh rgba(0, 0, 0, 0.1); */
 
   > div.dropdowner {
@@ -104,7 +105,7 @@ const Sorter = styled.div`
 const Gallery = styled.div`
   margin: 0 24px;
   background-color: rgb(250, 250, 250);
-  padding-top: 16px;
+  padding-top: 10px;
   padding-bottom: 60px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
