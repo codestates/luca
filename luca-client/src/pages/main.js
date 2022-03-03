@@ -24,6 +24,7 @@ const Banner = styled.div`
   min-height: 16vh;
   padding: 4vh 0;
   background: linear-gradient(to right bottom, #ff7f50, orange);
+  filter: saturate(100%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -111,8 +112,7 @@ const Gallery = styled.div`
 
 const FooterContainer = styled.div`
   /* border: solid red; */
-
-`
+`;
 
 export default function Main() {
   let projects = useSelector((state) => state.user.projects);
@@ -139,8 +139,8 @@ export default function Main() {
           ? -1
           : parseInt(a.updatedAt.split("-").join("")) >
             parseInt(b.updatedAt.split("-").join(""))
-            ? 1
-            : 0;
+          ? 1
+          : 0;
       });
       dispatch(setProjectList(sortedProjects));
       setCurSort("업데이트 순");
@@ -151,8 +151,8 @@ export default function Main() {
           ? -1
           : parseInt(a.createdAt.split("-").join("")) >
             parseInt(b.createdAt.split("-").join(""))
-            ? 1
-            : 0;
+          ? 1
+          : 0;
       });
       dispatch(setProjectList(sortedProjects));
       setCurSort("생성일 순");
@@ -210,14 +210,13 @@ export default function Main() {
             </div>
           </Sorter>
           <Gallery>
-
             {projects.map((project, i) => (
               <Projectcard projectInfo={project} index={i} key={project.id} />
             ))}
           </Gallery>
         </Section>
         <FooterContainer>
-          <Footer/>
+          <Footer />
         </FooterContainer>
       </Container>
     </div>

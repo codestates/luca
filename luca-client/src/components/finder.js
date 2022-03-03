@@ -120,17 +120,6 @@ const PathNode = styled.div`
   }
 `;
 
-const Resizer = styled.div`
-  height: 20px;
-  background-color: lightgrey;
-  text-align: center;
-  cursor: pointer;
-  > i {
-    font-size: 1.2em;
-    color: grey;
-  }
-`;
-
 export default function Finder({
   mapData,
   pathData,
@@ -191,22 +180,6 @@ export default function Finder({
     }
   };
 
-  const resizeStart = (e) => {
-    console.log(e.clientY);
-    const img = new Image();
-    e.dataTransfer.setDragImage(img, 0, 0);
-    let posY = e.clientY;
-  };
-
-  const resize = (e) => {
-    console.log(e.clientY);
-    const curEdge = window.innerHeight / 10;
-  };
-
-  const resizeEnd = (e) => {
-    console.log(e.clientY);
-  };
-
   return (
     <div>
       <Searchfinder isSearchOn={isSearchOn}>
@@ -255,15 +228,6 @@ export default function Finder({
             </PathNode>
           ))}
         </PathContainer>
-        <Resizer
-          draggable
-          onClick={() => setTransform(-200, -800, 2, 300, "easeOut")}
-          onDragStart={resizeStart}
-          onDrag={resize}
-          onDragEnd={resizeEnd}
-        >
-          <i className="fa-solid fa-ellipsis"></i>
-        </Resizer>
       </Pathfinder>
     </div>
   );
