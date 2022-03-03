@@ -75,9 +75,8 @@ const Sorter = styled.div`
     width: 120px;
     right: 24px;
     height: 20px;
-    margin: 8px 0;
-    padding: 0 10px;
-    text-align: right;
+    margin: 8px 10px;
+    text-align: center;
     background-color: white;
     cursor: pointer;
 
@@ -85,7 +84,7 @@ const Sorter = styled.div`
       margin-top: 5px;
       width: 100px;
       border-radius: 6px;
-
+      text-align: right;
       background-color: white;
       > div {
         padding: 10px;
@@ -217,7 +216,7 @@ export default function Main() {
           </Gallery>
         </Section>
         <FooterContainer>
-          <Footer/>
+          <Footer />
         </FooterContainer>
       </Container>
     </div>

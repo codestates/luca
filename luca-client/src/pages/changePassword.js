@@ -54,11 +54,11 @@ const Registrybox = styled.div`
       }
     }
   }
-  > buttons {
+  > div {
     width: 100%;
     display: flex;
     justify-content: center;
-    > button {
+    > button.confirm {
       margin-right: 20px;
       margin-left: 20px;
       width: 90px;
@@ -72,12 +72,22 @@ const Registrybox = styled.div`
       background-color:${color.primaryLight};
       font-weight: bold;
     }
-    > button:hover {
-      /* background-color: orange; */
-      color: white;
+    > button.cancel {
+      margin-right: 20px;
+      margin-left: 20px;
+      width: 90px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 70px;
+      border-radius: ${radius};
+      box-shadow: 0vh 0.5vh 1vh 0.1vh rgba(0, 0, 0, 0.2);
+      background-color:${color.white};
+      font-weight: bold;
     }
     > button:active {
-      color: silver;
+      transform: translateY(2px);
     }
   }
 `;
@@ -161,9 +171,9 @@ export default function ChangePassword() {
   const changePasswordHandler = () => {
     if (
       // 입력칸이 하나라도 비어있는 경우
-      password === "" ||
-      newPassword === "" ||
-      passwordConfirm === ""
+      password === '' ||
+      newPassword === '' ||
+      passwordConfirm === ''
     ) {
       return;
     }
@@ -174,26 +184,23 @@ export default function ChangePassword() {
       isValidPasswordConfirm
     ) {
       axios
-        .patch(
-          `${process.env.REACT_APP_API_URL}/profile/password`,
+        .patch(`${process.env.REACT_APP_API_URL}/profile/password`,
           {
             curPassword: password,
-            newPassword: newPassword,
-          },
-          {
-            "Content-Type": "application/json",
-            withCredentials: true,
-          }
-        )
+            newPassword: newPassword
+          }, {
+          "Content-Type": "application/json",
+          withCredentials: true,
+        })
         .then((res) => {
           if (res.status === 200) {
-            navigate("/mypage");
+            navigate("/mypage")
           }
         })
         .catch((err) => {
           if (err.response.status === 400) {
-            setIsValidCurPassword(false);
-            console.log(err);
+            setIsValidCurPassword(false)
+            console.log(err)
           }
         });
     }
@@ -271,13 +278,13 @@ export default function ChangePassword() {
               )}
             </div>
 
-            <buttons>
-              <button onClick={cancleHandler}>취소</button>
-              <button onClick={changePasswordHandler}>저장</button>
-            </buttons>
+            <div>
+              <button className='cancel' onClick={cancleHandler}>취소</button>
+              <button className='confirm' onClick={changePasswordHandler}>저장</button>
+            </div>
           </Registrybox>
         </Container>
       </Backdrop>
-    </div>
+    </div >
   );
 }

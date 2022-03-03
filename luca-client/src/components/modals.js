@@ -47,7 +47,7 @@ import {
 // const ModalContainer = styled.div``;
 
 const ModalBackdrop = styled.div`
-  z-index: 900;
+  z-index: 950;
   width: 100vw;
   top: 0;
   height: 100vh;
@@ -62,9 +62,10 @@ const ModalBackdrop = styled.div`
 `;
 
 const ModalView = styled.div`
+  z-index: 950;
   flex: 1 0 auto;
   max-width: 600px;
-  //min-height: 400px;
+  /* min-height: 400px; */
   margin: auto;
   padding: 3em;
   background-color: white;
@@ -816,7 +817,7 @@ const WithdrawalBox = styled.div`
   }
 `
 
-export function WithdrawalConfirm ({withdrawalModalHandler}) {
+export function WithdrawalConfirm({ withdrawalModalHandler }) {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();

@@ -1,7 +1,7 @@
 import axios from "axios";
 import styled from "styled-components";
 import { Navigator } from "../components/commons";
-import Footer from '../components/footer';
+import { Footer } from '../components/commons';
 
 const dummyIntro = [
   {
