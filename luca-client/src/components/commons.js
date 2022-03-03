@@ -19,22 +19,16 @@ const NavigatorContainer = styled.div`
   text-align: center;
   align-items: center;
   display: flex;
+  justify-content: space-between;
   box-shadow: 0vh 0.5vh 1vh 0.1vh rgba(0, 0, 0, 0.1);
 
   > a.logo {
-    margin: 0 10vh;
+    margin-left: 10vh;
 
     > img {
       height: 2em;
       margin: 2.5vh 0;
     }
-  }
-  > div.about {
-    font-family: "Poppins", sans-serif;
-    flex: 2 0 auto;
-    font-size: 1.4em;
-    text-align: left;
-    margin: 1em;
   }
 
   > div.profile {
@@ -227,10 +221,10 @@ const FooterContainer = styled.footer`
   z-index: 999;
   width: 100vw;
   background-color: ${color.white};
-  border-top: 1px solid ${color.primaryDark};
   padding: 1rem;
   color: ${color.primary};
   @media ${device.laptop} {
+    border-top: 1px solid ${color.primaryDark};
     padding: 2rem 0;
   }
 `;
@@ -248,7 +242,7 @@ const ContentContainer = styled.div`
 
 const LogoSection = styled.div`
   grid-column: 1 / span 2;
-  border-bottom: 1px solid ${color.primaryBorder};
+  border-bottom: 1px solid ${color.primaryLight};
   img {
     padding-top: 18px;
   }
@@ -265,10 +259,12 @@ const LogoSection = styled.div`
 const LinksContainer = styled.div`
   p {
     font-weight: bold;
+    display: flex;
   }
   ul {
     display: flex;
     flex-direction: column;
+
     gap: 0.5rem;
   }
   svg {
@@ -282,7 +278,7 @@ const LinksContainer = styled.div`
     }
   }
   @media ${device.laptop} {
-    border-left: 1px solid ${color.primaryBorder};
+    border-left: 1px solid ${color.primaryLight};
     padding-left: 1rem;
     ul {
       flex-direction: row;

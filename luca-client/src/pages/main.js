@@ -68,7 +68,7 @@ const Sorter = styled.div`
   z-index: 500;
   padding-top: 16px;
   min-height: 36px;
-  background-color: rgb(250, 250, 250);
+  background-color: #faf8f6;
   /* box-shadow: 0vh 0vh 1vh 0.1vh rgba(0, 0, 0, 0.1); */
 
   > div.dropdowner {
@@ -76,24 +76,26 @@ const Sorter = styled.div`
     width: 120px;
     right: 24px;
     height: 20px;
-    margin: 8px 0;
-    padding: 0 10px;
-    text-align: right;
-    background-color: white;
+    margin: 8px 10px;
+    text-align: center;
     cursor: pointer;
 
     > div.selection {
       margin-top: 5px;
       width: 100px;
       border-radius: 6px;
-
+      text-align: right;
       background-color: white;
+      border: solid lightgrey 1px;
+      overflow: hidden;
       > div {
         padding: 10px;
+        border-bottom: solid lightgrey 1px;
         cursor: pointer;
       }
       > div:hover {
-        color: orange;
+        color: peru;
+        background-color: #faf8f6;
       }
     }
   }

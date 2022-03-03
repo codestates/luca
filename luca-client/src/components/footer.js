@@ -73,44 +73,44 @@ const LinksContainer = styled.div`
 `;
 
 const Footer = () => {
-    return (
-        <FooterContainer>
-            <ContentContainer>
-                <LogoSection>
-                    <img src="Luca_logo.png" height='32px' />
-                    <p>Copyright © 2022 Luca</p>
-                </LogoSection>
-                <LinksContainer>
-                    <p>About Luca</p>
-                    <ul>
-                        <li>
-                            <a href='https://github.com/codestates/luca'>Repository</a>
-                        </li>
-                        <li>
-                            <a href='https://github.com/codestates/luca/wiki'>Wiki</a>
-                        </li>
-                    </ul>
-                </LinksContainer>
-                <LinksContainer>
-                    <p>Contact</p>
-                    <ul>
-                        <li>
-                            <a href='https://github.com/codestates/luca'>김코딩</a>
-                        </li>
-                        <li>
-                            <a href='https://github.com/codestates/luca'>김코딩</a>
-                        </li>
-                        <li>
-                            <a href='https://github.com/codestates/luca'>김코딩</a>
-                        </li>
-                        <li>
-                            <a href='https://github.com/codestates/luca'>김코딩</a>
-                        </li>
-                    </ul>
-                </LinksContainer>
-            </ContentContainer>
-        </FooterContainer>
-    );
+  return (
+    <FooterContainer>
+      <ContentContainer>
+        <LogoSection>
+          <img src="Luca_logo.png" height='32px' />
+          <p>Copyright © 2022 Luca</p>
+        </LogoSection>
+        <LinksContainer>
+          <p>About Luca</p>
+          <ul>
+            <li>
+              <a href='https://github.com/codestates/luca'>Repository</a>
+            </li>
+            <li>
+              <a href='https://github.com/codestates/luca/wiki'>Wiki</a>
+            </li>
+          </ul>
+        </LinksContainer>
+        <LinksContainer>
+          <p>Contact</p>
+          <ul>
+            <li>
+              <a href='https://github.com/codestates/luca'>김코딩</a>
+            </li>
+            <li>
+              <a href='https://github.com/codestates/luca'>김코딩</a>
+            </li>
+            <li>
+              <a href='https://github.com/codestates/luca'>김코딩</a>
+            </li>
+            <li>
+              <a href='https://github.com/codestates/luca'>김코딩</a>
+            </li>
+          </ul>
+        </LinksContainer>
+      </ContentContainer>
+    </FooterContainer>
+  );
 };
 
 export default Footer;

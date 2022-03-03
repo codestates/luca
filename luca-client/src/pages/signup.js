@@ -42,7 +42,7 @@ const Registrybox = styled.div`
     width: auto;
     display: flex;
     justify-content: center;
-    margin-top: 20px;
+    margin-top: 10px;
     > div.emailbox {
       margin-left: 100px;
     }
@@ -89,9 +89,6 @@ const Registrybox = styled.div`
         border-radius: 50%;
         align-items: center;
         cursor: pointer;
-      }
-      > img:hover {
-        border: solid 3px orange;
       }
       > img:active {
         border: solid 3px darkorange;
@@ -310,11 +307,11 @@ export default function Signup() {
             <div>
               <div>
                 {/* {emailCode === '' ? null : ( */}
-                  <InputForm
-                    value={emailConfirm}
-                    placeholder='코드'
-                    handleValue={onChangeEmailConfirm}
-                  />
+                <InputForm
+                  value={emailConfirm}
+                  placeholder='코드'
+                  handleValue={onChangeEmailConfirm}
+                />
                 {/* // )} */}
               </div>
             </div>
