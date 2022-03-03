@@ -107,7 +107,7 @@ function Navigator() {
 
   const exitGuestModalHandler = () => {
     setExitGuestModal(!exitGuestModal);
-  }
+  };
 
   const logoutHandler = () => {
     axios
@@ -134,52 +134,63 @@ function Navigator() {
 
   return (
     <NavigatorContainer>
-      {exitGuestModal ? <ExitGuestModal exitGuestModalHandler={exitGuestModalHandler} logoutHandler={logoutHandler} /> : null}
+      {exitGuestModal ? (
+        <ExitGuestModal
+          exitGuestModalHandler={exitGuestModalHandler}
+          logoutHandler={logoutHandler}
+        />
+      ) : null}
       {modal === "login" ? <LoginModal modalHandler={modalHandler} /> : null}
       <Link to="/" className="logo">
         <img src="Luca_logo.png" />
       </Link>
-      {isLogin ?
-        (!userInfo.isGuest ?
-          (
-            <div className="profile">
-              <img
-                className="profile"
-                src="https://picsum.photos/300/300?random=1"
-              />
-              <div className="dropdown">
-                <div className="username">{userInfo.name}</div>
-                <Link to="/mypage" className="dropdown-index">
-                  <i className="fa-solid fa-user"></i>
-                  <div>마이페이지</div>
-                </Link>
-                <Link to="/mypage" className="dropdown-index">
-                  <i className="fa-solid fa-gear"></i>
-                  <div>설정</div>
-                </Link>
-                <a className="dropdown-index" onClick={logoutHandler}>
-                  <i
-                    className="fa-solid fa-right-from-bracket"
-                    style={{ color: "#FF5D50" }}
-                  ></i>
-                  <div style={{ color: "#FF5D50" }}>로그아웃</div>
-                </a>
-              </div>
+      <div className="about">{/* <Link to="/">about</Link> */}</div>
+      {isLogin ? (
+        !userInfo.isGuest ? (
+          <div className="profile">
+            <img
+              className="profile"
+              src="https://picsum.photos/300/300?random=1"
+            />
+            <div className="dropdown">
+              <div className="username">{userInfo.name}</div>
+              <Link to="/mypage" className="dropdown-index">
+                <i className="fa-solid fa-user"></i>
+                <div>마이페이지</div>
+              </Link>
+              <Link to="/mypage" className="dropdown-index">
+                <i className="fa-solid fa-gear"></i>
+                <div>설정</div>
+              </Link>
+              <a className="dropdown-index" onClick={logoutHandler}>
+                <i
+                  className="fa-solid fa-right-from-bracket"
+                  style={{ color: "#FF5D50" }}
+                ></i>
+                <div style={{ color: "#FF5D50" }}>로그아웃</div>
+              </a>
             </div>
-          ) :
-          <div style={{ margin: "0 8vh" }}>
-            <Guest impact onClick={() => { exitGuestModalHandler(true) }}>체험 종료</Guest>
           </div>
-        ) :
-        (
+        ) : (
           <div style={{ margin: "0 8vh" }}>
-            <Guest href="/signup">회원가입</Guest>
-            <Guest impact onClick={() => modalHandler("login")}>
-              로그인
+            <Guest
+              impact
+              onClick={() => {
+                exitGuestModalHandler(true);
+              }}
+            >
+              체험 종료
             </Guest>
           </div>
         )
-      }
+      ) : (
+        <div style={{ margin: "0 8vh" }}>
+          <Guest href="/signup">회원가입</Guest>
+          <Guest impact onClick={() => modalHandler("login")}>
+            로그인
+          </Guest>
+        </div>
+      )}
     </NavigatorContainer>
   );
 }
@@ -253,7 +264,7 @@ const LinksContainer = styled.div`
   ul {
     display: flex;
     flex-direction: column;
-    
+
     gap: 0.5rem;
   }
   svg {

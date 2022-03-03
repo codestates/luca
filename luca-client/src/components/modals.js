@@ -106,7 +106,7 @@ const ModalView = styled.div`
         /* border-bottom-width: 2.5px; */
         border-color: rgba(0, 0, 0, 0.5);
       }
-      
+
       > div.searchContainer {
         flex: 1 0 auto;
         display: flex;
@@ -140,7 +140,8 @@ const ModalView = styled.div`
         margin: 0.5em;
         // 탭으로 구현할 것
         border-radius: 10px;
-        background-color: ${(props) => (props.isTeam ? "none" : `${color.primaryLight};`)};;
+        background-color: ${(props) =>
+          props.isTeam ? "none" : `${color.primaryLight};`};
         cursor: pointer;
       }
 
@@ -150,10 +151,11 @@ const ModalView = styled.div`
         margin: 0.5em;
         // 탭으로 구현할 것
         border-radius: 10px;
-        background-color: ${(props) => (props.isTeam ? `${color.primaryLight};` : "none")};;;
+        background-color: ${(props) =>
+          props.isTeam ? `${color.primaryLight};` : "none"};
         cursor: pointer;
       }
-      
+
       button.block {
         flex: 1 0 auto;
         font-size: 1.2em;
@@ -176,7 +178,7 @@ const ModalView = styled.div`
       border: 1px solid ${color.primaryBorder};
       border-radius: ${radius};
       padding: 1rem 0 1rem 0;
-      
+
       > div {
         font-size: 1.2em;
       }
@@ -236,7 +238,7 @@ const LoginModalView = styled.div`
     display: flex;
     flex-direction: column;
     text-align: center;
-    
+
     > div.modal-title {
       flex: 1 0 auto;
       margin-bottom: 1em;
@@ -268,7 +270,7 @@ const LoginModalView = styled.div`
           /* border-bottom-width: 2.5px; */
           border-color: rgba(0, 0, 0, 0.5);
         }
-        
+
         > div.searchContainer {
           flex: 1 0 auto;
           display: flex;
@@ -302,7 +304,8 @@ const LoginModalView = styled.div`
           margin: 0.5em;
           // 탭으로 구현할 것
           border-radius: 10px;
-          background-color: ${(props) => (props.isTeam ? "none" : `${color.primaryLight};`)};;
+          background-color: ${(props) =>
+            props.isTeam ? "none" : `${color.primaryLight};`};
           cursor: pointer;
         }
 
@@ -312,10 +315,11 @@ const LoginModalView = styled.div`
           margin: 0.5em;
           // 탭으로 구현할 것
           border-radius: 10px;
-          background-color: ${(props) => (props.isTeam ? `${color.primaryLight};` : "none")};;;
+          background-color: ${(props) =>
+            props.isTeam ? `${color.primaryLight};` : "none"};
           cursor: pointer;
         }
-        
+
         button.block {
           flex: 1 0 auto;
           font-size: 1.2em;
@@ -338,7 +342,7 @@ const LoginModalView = styled.div`
         border: 1px solid ${color.primaryBorder};
         border-radius: ${radius};
         padding: 1rem 0 1rem 0;
-        
+
         > div {
           font-size: 1.2em;
         }
@@ -498,6 +502,22 @@ export function LoginModal({ modalHandler }) {
   );
 }
 
+const Pilot = styled.div`
+  display: ${(props) => (props.pilotOn ? "block" : "none")};
+  position: fixed;
+  z-index: 999;
+  left: ${(props) => props.x - 150 + "px"};
+  top: ${(props) => props.y + 10 + "px"};
+  width: auto;
+  height: 20px;
+  padding: 6px 10px;
+  border-radius: 16px;
+  background-color: grey;
+  color: white;
+  border: black solid 1px;
+  font-weight: bold;
+`;
+
 export function CreateProjectModal({ modalHandler }) {
   const nameRef = useRef();
   const descRef = useRef();
@@ -510,12 +530,19 @@ export function CreateProjectModal({ modalHandler }) {
   const [isTeam, setIsTeam] = useState(false);
   const [memberId, setMemberId] = useState([]);
   const [memberEmail, setMemberEmail] = useState([]);
+  const [pilotOn, setPilotOn] = useState(false);
+  const [pilotCoord, setPilotCoord] = useState([0, 0]);
+
+  const pilotHandler = (e) => {
+    setPilotCoord([e.clientX, e.clientY]);
+    setPilotOn(!pilotOn);
+  };
 
   const handleTeam = (e) => {
     setMemberId([]);
     setMemberEmail([]);
     setIsTeam(e);
-    console.log(isTeam)
+    console.log(isTeam);
   };
 
   const findMemberHandler = async () => {
@@ -600,84 +627,95 @@ export function CreateProjectModal({ modalHandler }) {
   };
 
   return (
-    <ModalBackdrop onClick={() => modalHandler(false)}>
-      <ModalView onClick={(e) => e.stopPropagation()} isTeam={isTeam}>
-        <div className="modal-title">새 프로젝트</div>
-        <div className="modal-body">
-          <div className="query">
-            <button
-              className="private"
-              onClick={() => {
-                handleTeam(false);
-              }}
-            >
-              개인
-            </button>
-            {!userInfo.isGuest ? (
+    <>
+      <Pilot pilotOn={pilotOn} x={pilotCoord[0]} y={pilotCoord[1]}>
+        팀 프로젝트는 로그인 후 사용하실 수 있습니다
+      </Pilot>
+      <ModalBackdrop onClick={() => modalHandler(false)}>
+        <ModalView onClick={(e) => e.stopPropagation()} isTeam={isTeam}>
+          <div className="modal-title">새 프로젝트</div>
+          <div className="modal-body">
+            <div className="query">
               <button
-                className="team"
+                className="private"
                 onClick={() => {
-                  handleTeam(true);
+                  handleTeam(false);
                 }}
               >
-                팀
+                개인
               </button>
-            ) : (
-              <button className="block">
-                팀
-              </button>
-            )}
-          </div>
-          <div className="query">
-            {/* <input onChange={(e)=>{newProjectHandler(e, "name")}}/> */}
-            <input ref={nameRef} placeholder="이름" />
-          </div>
-          <div className="query">
-            {/* <input onChange={(e)=>{newProjectHandler(e, "desc")}}/> */}
-            <input ref={descRef} placeholder="설명" />
-          </div>
-          <div className="query">
-            {/* <input onChange={(e)=>{newProjectHandler(e, "desc")}}/> */}
-            <input ref={keywordRef} placeholder="키워드" />
-          </div>
-          {isTeam ? (
+              {!userInfo.isGuest ? (
+                <button
+                  className="team"
+                  onClick={() => {
+                    handleTeam(true);
+                  }}
+                >
+                  팀
+                </button>
+              ) : (
+                <>
+                  <button
+                    className="block"
+                    onMouseEnter={pilotHandler}
+                    onMouseLeave={pilotHandler}
+                  >
+                    팀
+                  </button>
+                </>
+              )}
+            </div>
             <div className="query">
-              <div className="searchContainer">
-                {/* <input onChange={(e)=>{newProjectHandler(e, "invite")}}/> */}
-                <input ref={inviteRef} placeholder="초대 이메일" />
-                <button onClick={findMemberHandler}>추가</button>
+              {/* <input onChange={(e)=>{newProjectHandler(e, "name")}}/> */}
+              <input ref={nameRef} placeholder="이름" />
+            </div>
+            <div className="query">
+              {/* <input onChange={(e)=>{newProjectHandler(e, "desc")}}/> */}
+              <input ref={descRef} placeholder="설명" />
+            </div>
+            <div className="query">
+              {/* <input onChange={(e)=>{newProjectHandler(e, "desc")}}/> */}
+              <input ref={keywordRef} placeholder="키워드" />
+            </div>
+            {isTeam ? (
+              <div className="query">
+                <div className="searchContainer">
+                  {/* <input onChange={(e)=>{newProjectHandler(e, "invite")}}/> */}
+                  <input ref={inviteRef} placeholder="초대 이메일" />
+                  <button onClick={findMemberHandler}>추가</button>
+                </div>
               </div>
-            </div>
-          ) : null}
-          {isTeam && memberEmail.length > 0 ? (
-            <div className="memberContainer">
-              {memberEmail.map((el, i) => {
-                return <div key={i}>{el}</div>;
-              })}
-            </div>
-          ) : null}
-        </div>
-        <div className="modal-footer">
-          <div className="buttons">
-            <button onClick={modalHandler}>취소</button>
-            <button
-              className="confirm"
-              onClick={() => {
-                // newProjectHandler(
-                //   nameRef.current,
-                //   descRef.current,
-                //   inviteRef.current,
-                //   type
-                // );
-                createNewProject();
-              }}
-            >
-              생성
-            </button>
+            ) : null}
+            {isTeam && memberEmail.length > 0 ? (
+              <div className="memberContainer">
+                {memberEmail.map((el, i) => {
+                  return <div key={i}>{el}</div>;
+                })}
+              </div>
+            ) : null}
           </div>
-        </div>
-      </ModalView>
-    </ModalBackdrop>
+          <div className="modal-footer">
+            <div className="buttons">
+              <button onClick={modalHandler}>취소</button>
+              <button
+                className="confirm"
+                onClick={() => {
+                  // newProjectHandler(
+                  //   nameRef.current,
+                  //   descRef.current,
+                  //   inviteRef.current,
+                  //   type
+                  // );
+                  createNewProject();
+                }}
+              >
+                생성
+              </button>
+            </div>
+          </div>
+        </ModalView>
+      </ModalBackdrop>
+    </>
   );
 }
 
@@ -807,38 +845,38 @@ const WithdrawalBox = styled.div`
       align-items: center;
       background-color: orange;
     }
-    >div:hover {
+    > div:hover {
       background-color: orange;
       color: white;
     }
-    >div:active {
+    > div:active {
       background-color: darkorange;
     }
   }
-`
+`;
 
 export function WithdrawalConfirm({ withdrawalModalHandler }) {
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleWithdrawal = (el) => {
     if (el === "confirm") {
-      axios.delete(`${process.env.REACT_APP_API_URL}/profile`)
+      axios
+        .delete(`${process.env.REACT_APP_API_URL}/profile`)
         .then((res) => {
-          console.log(res)
+          console.log(res);
           dispatch(setIsLogin(false));
           dispatch(setUserInfo({}));
           navigate("/");
         })
         .catch((err) => {
-          console.log(err)
-        })
+          console.log(err);
+        });
     }
     if (el === "cancel") {
       withdrawalModalHandler(false);
     }
-  }
+  };
 
   return (
     <ModalBackdrop onClick={() => withdrawalModalHandler(false)}>
@@ -847,10 +885,19 @@ export function WithdrawalConfirm({ withdrawalModalHandler }) {
         <div>모든 프로젝트가 삭제되며 복구할 수 없습니다</div>
         <div className="modal-footer">
           <div className="buttons">
-            <button onClick={() => { handleWithdrawal("cancel") }}>취소</button>
+            <button
+              onClick={() => {
+                handleWithdrawal("cancel");
+              }}
+            >
+              취소
+            </button>
             <button
               className="confirm"
-              onClick={() => { handleWithdrawal("confirm") }}>
+              onClick={() => {
+                handleWithdrawal("confirm");
+              }}
+            >
               확인
             </button>
           </div>
@@ -869,10 +916,7 @@ export function ExitGuestModal({ exitGuestModalHandler, logoutHandler }) {
         <div className="modal-footer">
           <div className="buttons">
             <button onClick={() => exitGuestModalHandler(false)}>취소</button>
-            <button
-              className="confirm"
-              onClick={logoutHandler}
-            >
+            <button className="confirm" onClick={logoutHandler}>
               확인
             </button>
           </div>
