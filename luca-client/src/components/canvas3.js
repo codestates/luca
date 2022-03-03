@@ -197,23 +197,34 @@ export default function Canvas3({
     { id: rawData.id, content: rawData.content },
   ]);
 
-  const [mapScale, setMapScale] = useState(2);
-  const [highlight, setHighlight] = useState({ list: [], word: "" });
-  const [disabled, setDisabled] = useState(false);
-  // 화면이 pan 되지 않으면서 마인드맵의 노드를 drag하기 위해 필요합니다.
-  // 마인드맵의 노드를 onDragStart 이벤트시에는 TransformWrapper 의 disabled={true},
-  // onDragEnd 이벤트시에는 TransformWrapper 의 disabled = {false} 로 바꿔줘야 합니다.
-  const [pilotCoord, setPilotCoord] = useState({ x: 0, y: 0 });
-  const [pilotOn, setPilotOn] = useState(false);
+  const [mapForm, setMapForm] = useState("cluster");
+  const [mapScale, setMapScale] = useState(2); // 마인드맵의 지름 비율
+  const [highlight, setHighlight] = useState({ list: [], word: "" }); // 검색 시 하이라이트
+  const [disabled, setDisabled] = useState(false); // 캔버스에서의 마우스 액션 허용/금지
+  const [pilotCoord, setPilotCoord] = useState({ x: 0, y: 0 }); // 컨트롤러에 마우스 호버할 때의 안내 파일럿 위치
+  const [pilotOn, setPilotOn] = useState(false); // 안내 파일럿 on-off
+  const [pilotMessage, setPilotMessage] = useState("");
 
   const root = hierarchy(rawData);
 
-  //console.log("1. root: ", root);
+  function switchMapFormation(form) {
+    if (form === "cluster") {
+      const treeLayout = cluster()
+        .size([360, (window.innerHeight * root.height * mapScale) / 20]) // * 0.4
+        .separation((a, b) => (a.parent === b.parent ? 1 : 2) / a.depth);
 
-  const treeLayout = cluster()
-    .size([360, (window.innerHeight * root.height * mapScale) / 20]) // * 0.4
-    .separation((a, b) => (a.parent === b.parent ? 1 : 2) / a.depth);
-  treeLayout(root);
+      return treeLayout(root);
+    }
+    if (form === "tree") {
+      const treeLayout = tree()
+        .size([360, (window.innerHeight * root.height * mapScale) / 10]) // * 0.4
+        .separation((a, b) => (a.parent === b.parent ? 1 : 2) / a.depth);
+
+      return treeLayout(root);
+    }
+  }
+
+  switchMapFormation(mapForm);
 
   let nodes = root.descendants();
   //console.log("2. nodes: ", nodes);
@@ -268,19 +279,20 @@ export default function Canvas3({
     // 노드에 드롭 시 노드 id를 가져왔습니다. 이제 mindmap 데이터에서 노드 id를 찾아 자식노드로 추가해줘야합니다.
   };
 
-  const pilotHandler = (e, dir) => {
-    // if (dir === "in") {
-    //   setTimeout(() => {
-    //     setPilotCoord({ x: e.clientX, y: e.clientY });
-    //     setPilotOn(true);
-    //     //console.log("pilotCoord: ", pilotCoord);
-    //   }, 1000);
-    // }
-    // if (dir === "out") {
-    //   clearTimeout();
-    //   setPilotCoord({ x: 0, y: 0 });
-    //   setPilotOn(false);
-    // }
+  const pilotHandler = (e, dir, index) => {
+    if (dir === "in") {
+      setTimeout(() => {
+        setPilotCoord({ x: e.clientX, y: e.clientY });
+        setPilotMessage(index);
+        console.log("target ", e.target);
+        setPilotOn(true);
+      }, 500);
+    }
+    if (dir === "out") {
+      clearTimeout();
+      setPilotCoord({ x: 0, y: 0 });
+      setPilotOn(false);
+    }
     return;
   };
 
@@ -328,33 +340,78 @@ export default function Canvas3({
     >
       {({ zoomIn, zoomOut, setTransform, centerView }) => (
         <>
-          {/* <ControllerPilot pilotOn={pilotOn} x={pilotCoord.x} y={pilotCoord.y}>
-            hello
-          </ControllerPilot> */}
-          <Controller
-            onMouseEnter={(e) => pilotHandler(e, "in")}
-            onMouseLeave={(e) => pilotHandler(e, "out")}
-          >
-            <button onClick={() => zoomIn()}>
+          <ControllerPilot pilotOn={pilotOn} x={pilotCoord.x} y={pilotCoord.y}>
+            {pilotMessage}
+          </ControllerPilot>
+          <Controller>
+            <button
+              onClick={() => zoomIn()}
+              onMouseEnter={(e) => pilotHandler(e, "in")}
+              onMouseLeave={(e) => pilotHandler(e, "out")}
+            >
               <i className="fa-solid fa-magnifying-glass-plus"></i>
             </button>
-            <button onClick={() => zoomOut()}>
+            <button
+              onClick={() => zoomOut()}
+              onMouseEnter={(e) => pilotHandler(e, "in")}
+              onMouseLeave={(e) => pilotHandler(e, "out")}
+            >
               <i className="fa-solid fa-magnifying-glass-minus"></i>
             </button>
-            <button onClick={() => centerView(2 / mapScale, 300, "easeOut")}>
-              <i className="fa-solid fa-minimize"></i>
+            <button
+              onClick={() =>
+                centerView(
+                  mapForm === "cluster" ? 1 : 1.8 / mapScale,
+                  300,
+                  "easeOut"
+                )
+              }
+              onMouseEnter={(e) => pilotHandler(e, "in")}
+              onMouseLeave={(e) => pilotHandler(e, "out")}
+            >
+              <i className="fa-solid fa-expand"></i>
+              {/* <i className="fa-solid fa-house"></i> */}
             </button>
-            <button>
-              <i className="fa-solid fa-clock-rotate-left"></i>
-            </button>
-            <button onClick={blockHandler}>
+
+            {mapForm === "cluster" ? (
+              <button
+                onClick={() => setMapForm("tree")}
+                onMouseEnter={(e) => pilotHandler(e, "in")}
+                onMouseLeave={(e) => pilotHandler(e, "out")}
+              >
+                <i className="fa-solid fa-maximize"></i>
+              </button>
+            ) : (
+              <button
+                onClick={() => setMapForm("cluster")}
+                onMouseEnter={(e) => pilotHandler(e, "in")}
+                onMouseLeave={(e) => pilotHandler(e, "out")}
+              >
+                <i className="fa-solid fa-minimize"></i>
+              </button>
+            )}
+
+            <button
+              onClick={blockHandler}
+              onMouseEnter={(e) => pilotHandler(e, "in")}
+              onMouseLeave={(e) => pilotHandler(e, "out")}
+            >
               {disabled ? (
                 <i className="fa-solid fa-lock"></i>
               ) : (
                 <i className="fa-solid fa-lock-open"></i>
               )}
             </button>
-            <Timer timerHandler={timerHandler} setTime={setTime} time={time} />
+            <div
+              onMouseEnter={(e) => pilotHandler(e, "in", "timer")}
+              onMouseLeave={(e) => pilotHandler(e, "out")}
+            >
+              <Timer
+                timerHandler={timerHandler}
+                setTime={setTime}
+                time={time}
+              />
+            </div>
           </Controller>
           <Finder
             mapData={radialNodes}
