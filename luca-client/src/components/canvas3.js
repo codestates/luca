@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import styled from "styled-components";
 //import { radialNodes, radialLinkes } from "./d3coodinator/getDescendants";
@@ -15,10 +16,30 @@ import Timer from "./timer";
 //   overflow: visible;
 // `;
 
+const Exit = styled.div`
+  > button {
+    flex: 1 0 auto;
+    margin: 4px 4px 0 4px;
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    background-color: white;
+    border: none;
+    color: rgb(160, 160, 160);
+    cursor: pointer;
+
+    > i {
+      font-size: 1.5em;
+    }
+  }
+  > button:active {
+    transform: translateY(2px);
+  }
+`;
 const Controller = styled.div`
   z-index: 930;
   position: fixed;
-  top: 120px;
+  top: 150px;
   left: 20px;
   background-color: white;
   border-radius: 6px;
@@ -27,6 +48,7 @@ const Controller = styled.div`
   padding-bottom: 4px;
   flex-direction: column;
   justify-content: space-between;
+
   > button {
     flex: 1 0 auto;
     margin: 4px 4px 0 4px;
@@ -59,20 +81,38 @@ const Scaler = styled.div`
   height: 50px;
   display: flex;
   flex-direction: column;
-  background-color: cyan;
-  > div {
-    flex: 1 0 auto;
-    display: flex;
+  /* background-color: cyan; */
+  input[type="range"] {
+    -webkit-appearance: none;
+    width: 60%;
+    border-radius: 14px;
+    height: 4px;
+    border: 1px solid #bdc3c7;
+    background: rgb(160, 160, 160);
+  }
 
-    > div.index {
-      width: 50px;
-      background-color: green;
-    }
-    div.mod {
-      width: 100px;
-      background-color: blue;
-      display: flex;
-      justify-content: space-around;
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    background-color: #ecf0f1;
+    border: 1px solid #bdc3c7;
+    width: 15px;
+    height: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  ul.range-labels {
+    margin: 18px -41px 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      position: relative;
+      float: left;
+      width: 90.25px;
+      text-align: center;
+      color: #b2b2b2;
+      font-size: 14px;
+      cursor: pointer;
     }
   }
 `;
@@ -86,17 +126,23 @@ const Rootbox = styled.div`
   left: ${(props) => {
     return String(props.coordX) + "px";
   }};
-  padding: 0.8em;
-  background-color: white;
   transform: translate(-50%, -50%);
+  background-color: white;
   text-align: center;
-  border-radius: 30px;
-  font-size: 16px;
-  font-weight: 700;
+  line-height: 0.9em;
+  inline-size: 8em;
+  border-radius: 8em;
   box-shadow: ${(props) =>
     props.highlights.includes(props.id)
       ? "0 0 6px red"
       : "0 0 6px rgba(0, 0, 0, 0.7)"};
+
+  > div.rootcontent {
+    font-size: 0.6em;
+    font-weight: 700;
+    margin: 1em;
+    word-break: keep-all;
+  }
 `;
 
 const Nodebox = styled.div.attrs(({ id, coordX, coordY, highlights }) => {
@@ -105,38 +151,58 @@ const Nodebox = styled.div.attrs(({ id, coordX, coordY, highlights }) => {
       position: "fixed",
       left: coordX + "px",
       top: coordY + "px",
-      boxShadow: highlights.includes(id)
-        ? "0 0 6px red"
-        : "0 0 6px rgba(0, 0, 0, 0.7)",
+      boxShadow: highlights.includes(id) ? "0 0 6px red" : "none",
     },
   };
 })`
   z-index: 900;
-  background-color: ${(props) => props.color};
-  padding: 0.8em;
+  font-size: 0.5em;
+  padding: 1em;
+  border-radius: 2em;
   background-color: white;
   transform: translate(-50%, -50%);
   text-align: center;
-  border-radius: 4px;
-  font-size: 12px;
+  border: solid grey 1px;
 
-  > div.delete {
+  > div.small {
+    display: block;
+  }
+
+  > div.large {
     display: none;
   }
+
   &:hover {
     z-index: 920;
     transform: translate(-50%, -50%) scale(1.5);
-    > div.delete {
-      display: ${(props) => (props.parent === 0 ? "none" : "block")};
-      margin-top: 0.5em;
-      font-size: 0.5em;
-      border-radius: 0.3em;
-      background-color: lightgrey;
-      cursor: pointer;
+    > div.small {
+      display: none;
     }
-    > div.delete:hover {
-      font-weight: bold;
-      color: red;
+
+    > div.large {
+      display: block;
+      inline-size: 8em;
+      line-height: 1.5em;
+      word-break: break-word;
+
+      > div.delete-node {
+        position: absolute;
+        top: -2px;
+        right: -2px;
+        width: 1.45em;
+        height: 1.45em;
+        border-radius: 1em;
+        background-color: white;
+
+        > i {
+          height: 100%;
+          color: grey;
+          cursor: pointer;
+        }
+        > i:hover {
+          color: coral;
+        }
+      }
     }
   }
 `;
@@ -186,6 +252,8 @@ export default function Canvas3({
   setTime,
   time,
 }) {
+  const navigate = useNavigate();
+
   // let projectIdRef = window.location.href.split("/").reverse()[0]; // projectIdRef === '12'(string)
   const rawData = useSelector((state) => state.user.mindmapTree);
 
@@ -197,6 +265,7 @@ export default function Canvas3({
   const [mapScale, setMapScale] = useState(2); // 마인드맵의 지름 비율
   const [highlight, setHighlight] = useState({ list: [], word: "" }); // 검색 시 하이라이트
   const [disabled, setDisabled] = useState(false); // 캔버스에서의 마우스 액션 허용/금지
+  const [adjustScale, setAdjustScale] = useState(false); // 스케일 조절
   const [pilot, setPilot] = useState({
     // 일정시간 마우스 오버시 안내 파일럿
     on: false,
@@ -288,7 +357,7 @@ export default function Canvas3({
           coord: { x: e.clientX, y: e.clientY },
           message: index,
         });
-      }, 700);
+      }, 0);
     }
 
     if (dir === "out") {
@@ -300,6 +369,14 @@ export default function Canvas3({
       });
     }
     return;
+  };
+
+  const scaleHandler = (value) => {
+    setMapScale(value);
+  };
+
+  const adjustScaleHandler = () => {
+    setAdjustScale(!adjustScale);
   };
 
   const simplified = (str) => {
@@ -342,7 +419,7 @@ export default function Canvas3({
       limitToBounds={false}
       minScale={0.2}
       disabled={disabled}
-      panning={{ excluded: ["nodebox"] }}
+      panning={{ excluded: [] }}
     >
       {({ zoomIn, zoomOut, setTransform, centerView }) => (
         <>
@@ -351,6 +428,13 @@ export default function Canvas3({
               {pilot.message}
             </ControllerPilot>
           ) : null}
+
+          <Exit>
+            <button onClick={() => navigate("/main")}>
+              <i className="fa-solid fa-arrow-left"></i>
+            </button>
+          </Exit>
+
           <Controller>
             <button
               onClick={() => zoomIn()}
@@ -367,7 +451,7 @@ export default function Canvas3({
               <i className="fa-solid fa-magnifying-glass-minus"></i>
             </button>
             <button
-              onClick={() => centerView(1 / mapScale, 300, "easeOut")}
+              onClick={() => centerView(1 / mapScale, 300, "easeOut")} // radialNodes[0].height ? mapScale
               onMouseEnter={(e) => pilotHandler(e, "in", "중앙 정렬")}
               onMouseLeave={(e) => pilotHandler(e, "out")}
             >
@@ -377,18 +461,18 @@ export default function Canvas3({
             {mapForm === "cluster" ? (
               <button
                 onClick={() => setMapForm("tree")}
-                onMouseEnter={(e) => pilotHandler(e, "in", "바깥쪽 맞춤")}
+                onMouseEnter={(e) => pilotHandler(e, "in", "동일한 간격")}
                 onMouseLeave={(e) => pilotHandler(e, "out")}
               >
-                <i className="fa-solid fa-maximize"></i>
+                <i className="fa-solid fa-equals"></i>
               </button>
             ) : (
               <button
                 onClick={() => setMapForm("cluster")}
-                onMouseEnter={(e) => pilotHandler(e, "in", "안쪽 맞춤")}
+                onMouseEnter={(e) => pilotHandler(e, "in", "모양 유지")}
                 onMouseLeave={(e) => pilotHandler(e, "out")}
               >
-                <i className="fa-solid fa-minimize"></i>
+                <i className="fa-solid fa-maximize"></i>
               </button>
             )}
 
@@ -403,6 +487,31 @@ export default function Canvas3({
                 <i className="fa-solid fa-lock-open"></i>
               )}
             </button>
+            <button
+              onClick={adjustScaleHandler}
+              onMouseEnter={(e) => pilotHandler(e, "in", "스케일")}
+              onMouseLeave={(e) => pilotHandler(e, "out")}
+            >
+              <i className="fa-solid fa-ruler-horizontal"></i>
+            </button>
+            {adjustScale ? (
+              <div>
+                <Scaler>
+                  <ul class="range-labels">
+                    <li>-</li>
+                    <li>+</li>
+                  </ul>
+                  <input
+                    type="range"
+                    defaultValue={2}
+                    min="2"
+                    max="5"
+                    step="1"
+                    onChange={(e) => scaleHandler(e.target.value)}
+                  />
+                </Scaler>
+              </div>
+            ) : null}
             <div
               onMouseEnter={(e) => pilotHandler(e, "in", "타이머")}
               onMouseLeave={(e) => pilotHandler(e, "out")}
@@ -421,16 +530,6 @@ export default function Canvas3({
             setHighlight={setHighlight}
             setTransform={setTransform}
           />
-          <Scaler>
-            <div>
-              <div className="index">map</div>
-              <div className="mod">
-                <button onClick={() => setMapScale(mapScale - 1)}>-</button>
-                {mapScale}
-                <button onClick={() => setMapScale(mapScale + 1)}>+</button>
-              </div>
-            </div>
-          </Scaler>
           <TransformComponent>
             {/* <Container> */}
 
@@ -447,14 +546,15 @@ export default function Canvas3({
               }}
               onDrop={dropHandler}
             >
-              {radialNodes[0].data.content}
+              <div className="rootcontent" id={radialNodes[0].data.id}>
+                {radialNodes[0].data.content}
+              </div>
             </Rootbox>
 
             {radialNodes.slice(1).map((node, i) => (
               <Nodebox
                 className="nodebox"
                 key={i}
-                parent={node.data.parent}
                 id={node.data.id}
                 coordY={node.y}
                 coordX={node.x}
@@ -468,16 +568,25 @@ export default function Canvas3({
                 // onDragOver -> onDrop
                 onDrop={dropHandler}
               >
-                {!node.data.parent
-                  ? node.data.content
-                  : simplified(node.data.content)}
+                <div className="small" id={node.data.id}>
+                  {simplified(node.data.content)}
+                </div>
+                <div className="large">
+                  <div
+                    className="delete-node"
+                    onClick={(e) => deleteMindmapHandler(e, node.data.id)}
+                  >
+                    <i className="fa-solid fa-circle-xmark"></i>
+                  </div>
+                  {node.data.content}
+                </div>
 
-                <div
+                {/* <div
                   className="delete"
                   onClick={(e) => deleteMindmapHandler(e, node.data.id)}
                 >
                   <i className="fa-solid fa-rectangle-xmark"></i>
-                </div>
+                </div> */}
               </Nodebox>
             ))}
 
