@@ -59,7 +59,7 @@ const Scaler = styled.div`
   height: 50px;
   display: flex;
   flex-direction: column;
-  background-color: cyan;
+  /* background-color: cyan; */
   > div {
     flex: 1 0 auto;
     display: flex;
@@ -73,6 +73,25 @@ const Scaler = styled.div`
       background-color: blue;
       display: flex;
       justify-content: space-around;
+    }
+
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 60%;
+      border-radius: 14px;
+      height: 4px;
+      border: 1px solid #bdc3c7;
+      background: rgb(160, 160, 160);
+    }
+
+    input[type='range']::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      background-color: #ecf0f1;
+      border: 1px solid #bdc3c7;
+      width: 20px;
+      height: 20px;
+      border-radius: 10px;
+      cursor: pointer;
     }
   }
 `;
@@ -167,6 +186,8 @@ const Lines = styled.svg`
   }
 `;
 
+
+
 export default function Canvas3({
   addMindmapHandler,
   deleteMindmapHandler,
@@ -198,6 +219,10 @@ export default function Canvas3({
     .size([360, (window.innerHeight * root.height * mapScale) / 20]) // * 0.4
     .separation((a, b) => (a.parent === b.parent ? 1 : 2) / a.depth);
   treeLayout(root);
+
+  const scaleHandler = (value) => {
+    setMapScale(value)
+  }
 
   let nodes = root.descendants();
   //console.log("2. nodes: ", nodes);
@@ -338,11 +363,14 @@ export default function Canvas3({
           />
           <Scaler>
             <div>
-              <div className="index">map</div>
-              <div className="mod">
-                <button onClick={() => setMapScale(mapScale - 1)}>-</button>
-                <button onClick={() => setMapScale(mapScale + 1)}>+</button>
-              </div>
+              <input
+                type="range"
+                defaultValue={2}
+                min="2"
+                max="5"
+                step="1"
+                onChange={e => scaleHandler(e.target.value)}
+              />
             </div>
           </Scaler>
           <TransformComponent>
