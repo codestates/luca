@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import styled from "styled-components";
 //import { radialNodes, radialLinkes } from "./d3coodinator/getDescendants";
@@ -35,7 +35,7 @@ const Exit = styled.div`
   > button:active {
     transform: translateY(2px);
   }
-`
+`;
 const Controller = styled.div`
   z-index: 930;
   position: fixed;
@@ -82,29 +82,29 @@ const Scaler = styled.div`
   display: flex;
   flex-direction: column;
   /* background-color: cyan; */
-    input[type="range"] {
-      -webkit-appearance: none;
-      width: 60%;
-      border-radius: 14px;
-      height: 4px;
-      border: 1px solid #bdc3c7;
-      background: rgb(160, 160, 160);
-    }
+  input[type="range"] {
+    -webkit-appearance: none;
+    width: 60%;
+    border-radius: 14px;
+    height: 4px;
+    border: 1px solid #bdc3c7;
+    background: rgb(160, 160, 160);
+  }
 
-    input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      background-color: #ecf0f1;
-      border: 1px solid #bdc3c7;
-      width: 15px;
-      height: 15px;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-    ul.range-labels {
-      margin: 18px -41px 0;
-      padding: 0;
-      list-style: none;
-  
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    background-color: #ecf0f1;
+    border: 1px solid #bdc3c7;
+    width: 15px;
+    height: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  ul.range-labels {
+    margin: 18px -41px 0;
+    padding: 0;
+    list-style: none;
+
     li {
       position: relative;
       float: left;
@@ -126,17 +126,23 @@ const Rootbox = styled.div`
   left: ${(props) => {
     return String(props.coordX) + "px";
   }};
-  padding: 0.8em;
-  background-color: white;
   transform: translate(-50%, -50%);
+  background-color: white;
   text-align: center;
-  border-radius: 30px;
-  font-size: 16px;
-  font-weight: 700;
+  line-height: 0.9em;
+  inline-size: 8em;
+  border-radius: 8em;
   box-shadow: ${(props) =>
     props.highlights.includes(props.id)
       ? "0 0 6px red"
       : "0 0 6px rgba(0, 0, 0, 0.7)"};
+
+  > div.rootcontent {
+    font-size: 0.6em;
+    font-weight: 700;
+    margin: 1em;
+    word-break: keep-all;
+  }
 `;
 
 const Nodebox = styled.div.attrs(({ id, coordX, coordY, highlights }) => {
@@ -145,38 +151,58 @@ const Nodebox = styled.div.attrs(({ id, coordX, coordY, highlights }) => {
       position: "fixed",
       left: coordX + "px",
       top: coordY + "px",
-      boxShadow: highlights.includes(id)
-        ? "0 0 6px red"
-        : "0 0 6px rgba(0, 0, 0, 0.7)",
+      boxShadow: highlights.includes(id) ? "0 0 6px red" : "none",
     },
   };
 })`
   z-index: 900;
-  background-color: ${(props) => props.color};
-  padding: 0.8em;
+  font-size: 0.5em;
+  padding: 1em;
+  border-radius: 2em;
   background-color: white;
   transform: translate(-50%, -50%);
   text-align: center;
-  border-radius: 4px;
-  font-size: 12px;
+  border: solid grey 1px;
 
-  > div.delete {
+  > div.small {
+    display: block;
+  }
+
+  > div.large {
     display: none;
   }
+
   &:hover {
     z-index: 920;
     transform: translate(-50%, -50%) scale(1.5);
-    > div.delete {
-      display: ${(props) => (props.parent === 0 ? "none" : "block")};
-      margin-top: 0.5em;
-      font-size: 0.5em;
-      border-radius: 0.3em;
-      background-color: lightgrey;
-      cursor: pointer;
+    > div.small {
+      display: none;
     }
-    > div.delete:hover {
-      font-weight: bold;
-      color: red;
+
+    > div.large {
+      display: block;
+      inline-size: 8em;
+      line-height: 1.5em;
+      word-break: break-word;
+
+      > div.delete-node {
+        position: absolute;
+        top: -2px;
+        right: -2px;
+        width: 1.45em;
+        height: 1.45em;
+        border-radius: 1em;
+        background-color: white;
+
+        > i {
+          height: 100%;
+          color: grey;
+          cursor: pointer;
+        }
+        > i:hover {
+          color: coral;
+        }
+      }
     }
   }
 `;
@@ -331,7 +357,7 @@ export default function Canvas3({
           coord: { x: e.clientX, y: e.clientY },
           message: index,
         });
-      }, 700);
+      }, 0);
     }
 
     if (dir === "out") {
@@ -346,12 +372,12 @@ export default function Canvas3({
   };
 
   const scaleHandler = (value) => {
-    setMapScale(value)
-  }
+    setMapScale(value);
+  };
 
   const adjustScaleHandler = () => {
-    setAdjustScale(!adjustScale)
-  }
+    setAdjustScale(!adjustScale);
+  };
 
   const simplified = (str) => {
     let viewLength = 10;
@@ -393,7 +419,7 @@ export default function Canvas3({
       limitToBounds={false}
       minScale={0.2}
       disabled={disabled}
-      panning={{ excluded: ["nodebox"] }}
+      panning={{ excluded: [] }}
     >
       {({ zoomIn, zoomOut, setTransform, centerView }) => (
         <>
@@ -404,9 +430,7 @@ export default function Canvas3({
           ) : null}
 
           <Exit>
-            <button
-              onClick={() => navigate("/main")}
-            >
+            <button onClick={() => navigate("/main")}>
               <i className="fa-solid fa-arrow-left"></i>
             </button>
           </Exit>
@@ -427,7 +451,7 @@ export default function Canvas3({
               <i className="fa-solid fa-magnifying-glass-minus"></i>
             </button>
             <button
-              onClick={() => centerView(1 / mapScale, 300, "easeOut")}
+              onClick={() => centerView(1 / mapScale, 300, "easeOut")} // radialNodes[0].height ? mapScale
               onMouseEnter={(e) => pilotHandler(e, "in", "중앙 정렬")}
               onMouseLeave={(e) => pilotHandler(e, "out")}
             >
@@ -483,13 +507,11 @@ export default function Canvas3({
                     min="2"
                     max="5"
                     step="1"
-                    onChange={e => scaleHandler(e.target.value)}
+                    onChange={(e) => scaleHandler(e.target.value)}
                   />
                 </Scaler>
               </div>
-            ) : (
-              null
-            )}
+            ) : null}
             <div
               onMouseEnter={(e) => pilotHandler(e, "in", "타이머")}
               onMouseLeave={(e) => pilotHandler(e, "out")}
@@ -524,14 +546,15 @@ export default function Canvas3({
               }}
               onDrop={dropHandler}
             >
-              {radialNodes[0].data.content}
+              <div className="rootcontent" id={radialNodes[0].data.id}>
+                {radialNodes[0].data.content}
+              </div>
             </Rootbox>
 
             {radialNodes.slice(1).map((node, i) => (
               <Nodebox
                 className="nodebox"
                 key={i}
-                parent={node.data.parent}
                 id={node.data.id}
                 coordY={node.y}
                 coordX={node.x}
@@ -545,16 +568,25 @@ export default function Canvas3({
                 // onDragOver -> onDrop
                 onDrop={dropHandler}
               >
-                {!node.data.parent
-                  ? node.data.content
-                  : simplified(node.data.content)}
+                <div className="small" id={node.data.id}>
+                  {simplified(node.data.content)}
+                </div>
+                <div className="large">
+                  <div
+                    className="delete-node"
+                    onClick={(e) => deleteMindmapHandler(e, node.data.id)}
+                  >
+                    <i className="fa-solid fa-circle-xmark"></i>
+                  </div>
+                  {node.data.content}
+                </div>
 
-                <div
+                {/* <div
                   className="delete"
                   onClick={(e) => deleteMindmapHandler(e, node.data.id)}
                 >
                   <i className="fa-solid fa-rectangle-xmark"></i>
-                </div>
+                </div> */}
               </Nodebox>
             ))}
 
