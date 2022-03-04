@@ -505,6 +505,30 @@ export default function Cardboard({
                     changeColorHandler({ color: "(249, 206, 218)" })
                   }
                 />
+                {/* {(changeColor === "(253, 251, 209)" ? null : (
+                  <button
+                    className="yellow"
+                    onClick={() =>
+                      changeColorHandler({ color: "(253, 251, 209)" })
+                    }
+                  />
+                ))}
+                {(changeColor === "(183, 229, 237)" ? null : (
+                  <button
+                    className="blue"
+                    onClick={() =>
+                      changeColorHandler({ color: "(183, 229, 237)" })
+                    }
+                  />
+                ))}
+                {(changeColor === "(249, 206, 218)" ? null : (
+                  <button
+                    className="pink"
+                    onClick={() =>
+                      changeColorHandler({ color: "(249, 206, 218)" })
+                    }
+                  />
+                ))} */}
               </div>
               <input
                 color={changeColor}
