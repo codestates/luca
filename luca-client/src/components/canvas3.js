@@ -126,23 +126,17 @@ const Rootbox = styled.div`
   left: ${(props) => {
     return String(props.coordX) + "px";
   }};
-  transform: translate(-50%, -50%);
+  padding: 0.8em;
   background-color: white;
+  transform: translate(-50%, -50%);
   text-align: center;
-  line-height: 0.9em;
-  inline-size: 8em;
-  border-radius: 8em;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 700;
   box-shadow: ${(props) =>
     props.highlights.includes(props.id)
       ? "0 0 6px red"
       : "0 0 6px rgba(0, 0, 0, 0.7)"};
-
-  > div.rootcontent {
-    font-size: 0.6em;
-    font-weight: 700;
-    margin: 1em;
-    word-break: keep-all;
-  }
 `;
 
 const Nodebox = styled.div.attrs(({ id, coordX, coordY, highlights }) => {
@@ -151,58 +145,38 @@ const Nodebox = styled.div.attrs(({ id, coordX, coordY, highlights }) => {
       position: "fixed",
       left: coordX + "px",
       top: coordY + "px",
-      boxShadow: highlights.includes(id) ? "0 0 6px red" : "none",
+      boxShadow: highlights.includes(id)
+        ? "0 0 6px red"
+        : "0 0 6px rgba(0, 0, 0, 0.7)",
     },
   };
 })`
   z-index: 900;
-  font-size: 0.5em;
-  padding: 1em;
-  border-radius: 2em;
+  background-color: ${(props) => props.color};
+  padding: 0.8em;
   background-color: white;
   transform: translate(-50%, -50%);
   text-align: center;
-  border: solid grey 1px;
+  border-radius: 4px;
+  font-size: 12px;
 
-  > div.small {
-    display: block;
-  }
-
-  > div.large {
+  > div.delete {
     display: none;
   }
-
   &:hover {
     z-index: 920;
     transform: translate(-50%, -50%) scale(1.5);
-    > div.small {
-      display: none;
+    > div.delete {
+      display: ${(props) => (props.parent === 0 ? "none" : "block")};
+      margin-top: 0.5em;
+      font-size: 0.5em;
+      border-radius: 0.3em;
+      background-color: lightgrey;
+      cursor: pointer;
     }
-
-    > div.large {
-      display: block;
-      inline-size: 8em;
-      line-height: 1.5em;
-      word-break: break-word;
-
-      > div.delete-node {
-        position: absolute;
-        top: -2px;
-        right: -2px;
-        width: 1.45em;
-        height: 1.45em;
-        border-radius: 1em;
-        background-color: white;
-
-        > i {
-          height: 100%;
-          color: grey;
-          cursor: pointer;
-        }
-        > i:hover {
-          color: coral;
-        }
-      }
+    > div.delete:hover {
+      font-weight: bold;
+      color: red;
     }
   }
 `;
@@ -278,14 +252,14 @@ export default function Canvas3({
   function switchMapFormation(form) {
     if (form === "cluster") {
       const treeLayout = cluster()
-        .size([360, (window.innerHeight * root.height * mapScale) / 10]) // * 0.4
+        .size([360, (window.innerHeight * root.height * mapScale) / 20]) // * 0.4
         .separation((a, b) => (a.parent === b.parent ? 1 : 2) / a.depth);
 
       return treeLayout(root);
     }
     if (form === "tree") {
       const treeLayout = tree()
-        .size([360, (window.innerHeight * root.height * mapScale) / 5]) // * 0.4
+        .size([360, (window.innerHeight * root.height * mapScale) / 10]) // * 0.4
         .separation((a, b) => (a.parent === b.parent ? 1 : 2) / a.depth);
 
       return treeLayout(root);
@@ -357,12 +331,11 @@ export default function Canvas3({
           coord: { x: e.clientX, y: e.clientY },
           message: index,
         });
-      }, 0);
+      }, 700);
     }
 
     if (dir === "out") {
       clearTimeout(pilotTimerId);
-      console.log("pilotTimerId:", pilotTimerId);
       setPilot({
         on: false,
         coord: { x: 0, y: 0 },
@@ -420,7 +393,7 @@ export default function Canvas3({
       limitToBounds={false}
       minScale={0.2}
       disabled={disabled}
-      panning={{ excluded: [] }}
+      panning={{ excluded: ["nodebox"] }}
     >
       {({ zoomIn, zoomOut, setTransform, centerView }) => (
         <>
@@ -454,13 +427,7 @@ export default function Canvas3({
               <i className="fa-solid fa-magnifying-glass-minus"></i>
             </button>
             <button
-              onClick={() =>
-                centerView(
-                  4 / radialNodes[0].height || 1, // radialNodes[0].height ? mapScale
-                  300,
-                  "easeOut"
-                )
-              } // radialNodes[0].height ?
+              onClick={() => centerView(1 / mapScale, 300, "easeOut")}
               onMouseEnter={(e) => pilotHandler(e, "in", "중앙 정렬")}
               onMouseLeave={(e) => pilotHandler(e, "out")}
             >
@@ -557,15 +524,14 @@ export default function Canvas3({
               }}
               onDrop={dropHandler}
             >
-              <div className="rootcontent" id={radialNodes[0].data.id}>
-                {radialNodes[0].data.content}
-              </div>
+              {radialNodes[0].data.content}
             </Rootbox>
 
             {radialNodes.slice(1).map((node, i) => (
               <Nodebox
                 className="nodebox"
                 key={i}
+                parent={node.data.parent}
                 id={node.data.id}
                 coordY={node.y}
                 coordX={node.x}
@@ -579,25 +545,16 @@ export default function Canvas3({
                 // onDragOver -> onDrop
                 onDrop={dropHandler}
               >
-                <div className="small" id={node.data.id}>
-                  {simplified(node.data.content)}
-                </div>
-                <div className="large">
-                  <div
-                    className="delete-node"
-                    onClick={(e) => deleteMindmapHandler(e, node.data.id)}
-                  >
-                    <i className="fa-solid fa-circle-xmark"></i>
-                  </div>
-                  {node.data.content}
-                </div>
+                {!node.data.parent
+                  ? node.data.content
+                  : simplified(node.data.content)}
 
-                {/* <div
+                <div
                   className="delete"
                   onClick={(e) => deleteMindmapHandler(e, node.data.id)}
                 >
                   <i className="fa-solid fa-rectangle-xmark"></i>
-                </div> */}
+                </div>
               </Nodebox>
             ))}
 

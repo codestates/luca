@@ -81,7 +81,7 @@ const Pathfinder = styled.div`
 `;
 
 const PathContainer = styled.div`
-  width: 100px;
+  width: 94px;
   max-height: 500px;
   padding: 6px 6px 0 6px;
   background-color: white;
@@ -96,8 +96,7 @@ const PathContainer = styled.div`
 `;
 
 const PathNode = styled.div`
-  font-size: 0.8em;
-  width: 84px;
+  width: 78px;
   height: auto;
   padding: 8px 8px 0 8px;
   padding-bottom: ${(props) =>
@@ -107,10 +106,12 @@ const PathNode = styled.div`
   color: rgb(80, 80, 80);
   background-color: white;
   font-weight: ${(props) =>
-    props.data.length - 1 === props.index || props.index === 0 ? "700" : "500"};
+    props.data.length - 1 === props.index || props.index === 0
+      ? "700"
+      : "normal"};
   box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   text-align: center;
-  word-break: keep-all;
+  word-break: break-word;
   cursor: default;
   > div {
     > i {
