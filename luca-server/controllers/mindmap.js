@@ -6,7 +6,7 @@ module.exports = {
         await cards.update(
             {
                 parent: data.parentId,
-                storage: 'mindmap'
+                storage: "mindmap"
             }, {
             where: {
                 id: data.cardId
@@ -35,12 +35,11 @@ module.exports = {
                 }
             }
         };
-
         findId(mindmapTree[0]);
         await cards.update(
             {
                 parent: null,
-                storage: 'card'
+                storage: "card"
             }, {
             where: {
                 id: array
@@ -61,19 +60,3 @@ module.exports = {
         return mindmapTree[0];
     },
 };
-
-
-// module.exports = {
-//     connect: (req, res) => {
-//         res.send('ok');
-//     },
-//     disconnect: (req, res) => {
-//         res.send('ok');
-//     },
-//     alone: (req, res) => {
-//         res.send('ok');
-//     },
-//     get: (req, res) => {
-//         res.send('ok');
-//     },
-// };

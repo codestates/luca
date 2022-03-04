@@ -1,50 +1,18 @@
 import styled from "styled-components";
-import { useEffect, useRef, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import { setIsLogin } from "../redux/slicer/loginSlice";
-// import { setUserInfo } from "../redux/slicer/userInfoSlice";
+import { useSelector, useDispatch } from "react-redux";
 import { setIsLogin, setUserInfo, setProjectList } from "../redux/rootSlice";
 import axios from "axios";
 import googleIcon from "../asset/images/login_icon_google.svg";
 import kakaoIcon from "../asset/images/login_icon_kakao.svg";
 import naverIcon from "../asset/images/login_icon_naver.svg";
-import { color, device, radius, boxShadow } from "../styles";
+import { color, device, radius } from "../styles";
 import {
   requestKakaoLogin,
   requestNaverLogin,
   requestGoogleLogin,
 } from "../api";
-// ============모달 props 사용법==========================
-
-// const [modal, setModal] = useState(false);
-
-// const modalHandler = (modalType) => {
-//   setModal(modalType);
-// };
-
-// return (
-//   <div>
-//     <button onClick={() => modalHandler("login")}>로그인 모달 열기</button>
-//     <button onClick={() => modalHandler("createProject")}>
-//       프로젝트 추가 모달 열기
-//     </button>
-//     <button onClick={() => modalHandler("deleteProject")}>
-//       프로젝트 삭제 모달 열기
-//     </button>
-//     {modal === "login" ? <LoginModal modalHandler={modalHandler} /> : null}
-//     {modal === "createProject" ? (
-//       <CreateProjectModal modalHandler={modalHandler} />
-//     ) : null}
-//     {modal === "deleteProject" ? (
-//       <DeleteProjectModal modalHandler={modalHandler} />
-//     ) : null}
-//   </div>
-// );
-
-// ============여기까지가 모달 props 사용법==========================
-
-// const ModalContainer = styled.div``;
 
 const ModalBackdrop = styled.div`
   z-index: 950;
@@ -54,7 +22,6 @@ const ModalBackdrop = styled.div`
   background-color: rgba(0, 0, 0, 0.5);
   justify-content: center;
   display: flex;
-  /////////////////////flowervillagearp////////////////////////////
   position: fixed;
   top: 50%;
   left: 50%;
@@ -65,7 +32,6 @@ const ModalView = styled.div`
   z-index: 950;
   flex: 1 0 auto;
   max-width: 600px;
-  /* min-height: 400px; */
   margin: auto;
   padding: 3em;
   background-color: white;
@@ -100,7 +66,6 @@ const ModalView = styled.div`
       }
 
       > input:focus {
-        /* border-bottom-width: 2.5px; */
         border-color: rgba(0, 0, 0, 0.5);
       }
 
@@ -119,7 +84,6 @@ const ModalView = styled.div`
         }
         
         > input:focus {
-          /* border-bottom-width: 2.5px; */
           border-color: rgba(0, 0, 0, 0.5);
         }
         
@@ -135,7 +99,6 @@ const ModalView = styled.div`
         flex: 1 0 auto;
         font-size: 1.2em;
         margin: 0.5em;
-        // 탭으로 구현할 것
         border-radius: 10px;
         background-color: ${(props) =>
           props.isTeam ? "none" : `${color.primaryLight};`};
@@ -146,7 +109,6 @@ const ModalView = styled.div`
         flex: 1 0 auto;
         font-size: 1.2em;
         margin: 0.5em;
-        // 탭으로 구현할 것
         border-radius: 10px;
         background-color: ${(props) =>
           props.isTeam ? `${color.primaryLight};` : "none"};
@@ -157,15 +119,12 @@ const ModalView = styled.div`
         flex: 1 0 auto;
         font-size: 1.2em;
         margin: 0.5em;
-        // 탭으로 구현할 것
         border-radius: 10px;
         background-color: grey;
         cursor: not-allowed;
       }
       
       button.options:visited {
-        // 버튼을 클릭했을때 시각적으로 구분할수 잇어야 할듯함
-        /* border: solid red; */
         color: blue;
         border-radius: 10px;
       }
@@ -261,7 +220,6 @@ const LoginModalView = styled.div`
         }
 
         > input:focus {
-          /* border-bottom-width: 2.5px; */
           border-color: rgba(0, 0, 0, 0.5);
         }
 
@@ -280,7 +238,6 @@ const LoginModalView = styled.div`
           }
 
           > input:focus {
-            /* border-bottom-width: 2.5px; */
             border-color: rgba(0, 0, 0, 0.5);
           }
 
@@ -296,7 +253,6 @@ const LoginModalView = styled.div`
           flex: 1 0 auto;
           font-size: 1.2em;
           margin: 0.5em;
-          // 탭으로 구현할 것
           border-radius: 10px;
           background-color: ${(props) =>
             props.isTeam ? "none" : `${color.primaryLight};`};
@@ -307,7 +263,6 @@ const LoginModalView = styled.div`
           flex: 1 0 auto;
           font-size: 1.2em;
           margin: 0.5em;
-          // 탭으로 구현할 것
           border-radius: 10px;
           background-color: ${(props) =>
             props.isTeam ? `${color.primaryLight};` : "none"};
@@ -318,15 +273,12 @@ const LoginModalView = styled.div`
           flex: 1 0 auto;
           font-size: 1.2em;
           margin: 0.5em;
-          // 탭으로 구현할 것
           border-radius: 10px;
           background-color: grey;
           cursor: not-allowed;
         }
 
         button.options:visited {
-          // 버튼을 클릭했을때 시각적으로 구분할수 잇어야 할듯함
-          /* border: solid red; */
           color: blue;
           border-radius: 10px;
         }
@@ -389,7 +341,6 @@ const LoginModalView = styled.div`
 export function LoginModal({ modalHandler }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const isLogin = useSelector((state) => state.user.isLogin);
 
   const [loginInfo, setLoginInfo] = useState({
     email: "",
@@ -420,13 +371,11 @@ export function LoginModal({ modalHandler }) {
         }
       })
       .catch((err) => {
-        console.log(err.response);
         if (err.response.status === 400) {
           return setErrorMessage("잘못된 이메일 혹은 비밀번호입니다.");
         }
       });
   };
-  console.log(loginInfo);
 
   return (
     <ModalBackdrop onClick={() => modalHandler(false)}>
@@ -435,7 +384,6 @@ export function LoginModal({ modalHandler }) {
           <div className="modal-title">로그인</div>
           <div className="modal-body">
             <div className="query">
-              {/* <div className="index">이메일</div> */}
               <input
                 onChange={(e) => handleInputValue(e, "email")}
                 placeholder="이메일"
@@ -447,7 +395,6 @@ export function LoginModal({ modalHandler }) {
               />
             </div>
             <div className="query">
-              {/* <div className="index">비밀번호</div> */}
               <input
                 onChange={(e) => handleInputValue(e, "password")}
                 placeholder="비밀번호"
@@ -517,9 +464,8 @@ export function CreateProjectModal({ modalHandler }) {
   const descRef = useRef();
   const inviteRef = useRef();
   const keywordRef = useRef();
-  const dispatch = useDispatch();
   const userInfo = useSelector((state) => state.user.userInfo);
-  // console.log("isGuest: ", userInfo.isGuest);
+  const dispatch = useDispatch();
 
   const [isTeam, setIsTeam] = useState(false);
   const [memberId, setMemberId] = useState([]);
@@ -557,10 +503,8 @@ export function CreateProjectModal({ modalHandler }) {
           }
         )
         .catch((err) => {
-          // ====== 에러 핸들링 ======
-          console.log("err", err);
+          console.log(err);
         });
-      console.log(result);
       if (result.data.message === "Found user") {
         if (memberEmail.includes(result.data.data.email)) {
           alert("이미 추가된 회원입니다");
@@ -610,11 +554,9 @@ export function CreateProjectModal({ modalHandler }) {
             });
         })
         .catch((err) => {
-          // ====== 에러 핸들링 ======
           if (err.response.status === 422) {
             alert("내용을 채워주세요");
           }
-          console.log(err);
         });
       modalHandler(false);
     }
@@ -660,21 +602,17 @@ export function CreateProjectModal({ modalHandler }) {
               )}
             </div>
             <div className="query">
-              {/* <input onChange={(e)=>{newProjectHandler(e, "name")}}/> */}
               <input ref={nameRef} placeholder="이름" />
             </div>
             <div className="query">
-              {/* <input onChange={(e)=>{newProjectHandler(e, "desc")}}/> */}
               <input ref={descRef} placeholder="설명" />
             </div>
             <div className="query">
-              {/* <input onChange={(e)=>{newProjectHandler(e, "desc")}}/> */}
               <input ref={keywordRef} placeholder="키워드" />
             </div>
             {isTeam ? (
               <div className="query">
                 <div className="searchContainer">
-                  {/* <input onChange={(e)=>{newProjectHandler(e, "invite")}}/> */}
                   <input ref={inviteRef} placeholder="초대 이메일" />
                   <button onClick={findMemberHandler}>추가</button>
                 </div>
@@ -694,12 +632,6 @@ export function CreateProjectModal({ modalHandler }) {
               <button
                 className="confirm"
                 onClick={() => {
-                  // newProjectHandler(
-                  //   nameRef.current,
-                  //   descRef.current,
-                  //   inviteRef.current,
-                  //   type
-                  // );
                   createNewProject();
                 }}
               >
@@ -804,51 +736,6 @@ export function Savealert() {
   );
 }
 
-const WithdrawalBox = styled.div`
-  position: absolute;
-  top: -40px;
-  left: 30%;
-  width: 600px;
-  height: 100px;
-  background-color: white;
-  border: solid darkorange;
-  border-radius: 30px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.9);
-  > div.alertMessage {
-    font-size: 1.5rem;
-  }
-  > div.choiceBox {
-    display: flex;
-    justify-content: space-between;
-    flex-direction: row;
-    align-items: center;
-    width: 200px;
-    margin-top: 10px;
-    > div {
-      font-size: 1.2rem;
-      /* border: solid darkorange; */
-      border-radius: 10px;
-      width: 50px;
-      height: 30px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: orange;
-    }
-    > div:hover {
-      background-color: orange;
-      color: white;
-    }
-    > div:active {
-      background-color: darkorange;
-    }
-  }
-`;
-
 export function WithdrawalConfirm({ withdrawalModalHandler }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -857,8 +744,7 @@ export function WithdrawalConfirm({ withdrawalModalHandler }) {
     if (el === "confirm") {
       axios
         .delete(`${process.env.REACT_APP_API_URL}/profile`)
-        .then((res) => {
-          console.log(res);
+        .then(() => {
           dispatch(setIsLogin(false));
           dispatch(setUserInfo({}));
           navigate("/");

@@ -1,21 +1,17 @@
 import { useEffect, useRef, useState } from "react";
-import styled from "styled-components";
-import { Savealert } from "../components/modals";
-import { Navigator, Footer, Backdrop } from "../components/commons";
-import { useSelector, useDispatch } from "react-redux";
-import { setIsLogin, setUserInfo } from "../redux/rootSlice.js";
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { setUserInfo } from "../redux/rootSlice.js";
+import { device } from "../styles";
+import styled from "styled-components";
+import { Navigator, Footer } from "../components/commons";
 import axios from "axios";
-import { WithdrawalConfirm } from "../components/modals";
-import { color, device, contentWidth } from '../styles';
 
 const Container = styled.div`
   grid-column: 1 / span 2;
   @media ${device.laptop} {
     min-width: 90vw;
-  /* width: 90%; */
   min-height: 50vh;
-  /* height: 50%; */
   margin: 20vh 10vh 10vh 10vh;
   display: flex;
   position: relative;
@@ -96,15 +92,6 @@ const Upper = styled.div`
   }
 `;
 
-// export default function Mypage() {
-//   const {isLogin} = useSelector(state => state.user);
-//   const [isClicked, setIsClicked] = useState(false);
-//   const [isAlert, setIsAlert] = useState(false);
-
-//   console.log(isLogin);
-//   const handleClick = function () {
-//     setIsClicked(!isClicked);
-//   };
 const Lower = styled.div`
   font-size: 1.2em;
   font-weight: bold;
@@ -137,8 +124,6 @@ export default function Mypage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userInfo = useSelector((state) => state.user.userInfo);
-  const projects = useSelector((state) => state.user.projects);
-  const cards = useSelector((state) => state.user.cardList);
   const [isEditOn, setIsEditOn] = useState(false);
   const editnameRef = useRef();
 
@@ -166,25 +151,16 @@ export default function Mypage() {
     }
   };
 
-  const UploadImage = () => {
-
-  }
-
   useEffect(() => {
-    console.log(userInfo, projects, cards);
-    axios
-      .get(`${process.env.REACT_APP_API_URL}/profile`, {
-        "Content-Type": "application/json",
-        withCredentials: true,
-      })
+    axios.get(`${process.env.REACT_APP_API_URL}/profile`, {
+      "Content-Type": "application/json",
+      withCredentials: true,
+    })
       .then((res) => {
-        console.log(res);
         dispatch(setUserInfo(res.data.data));
       })
       .catch((err) => {
-        console.log(err.response.data.message);
         navigate("/");
-        //dispatch(setUserInfo(err.response.data.message));
       });
   }, []);
 
@@ -193,7 +169,6 @@ export default function Mypage() {
       <Navigator />
       <Container>
         <Left>
-          {/* {isEditOn ? <i onClick={UploadImage} className="fa-regular fa-pen-to-square"></i>: null} */}
         </Left>
         {isEditOn ? (
           <Right>
@@ -235,21 +210,3 @@ export default function Mypage() {
     </div>
   );
 }
-
-//<img src="https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/damien-hirst-1-1538661596.jpg" />;
-
-//const userInfo = useSelector((state) => state.userInfo.userInfo);
-//const [isClicked, setIsClicked] = useState(false);
-//const [isAlert, setIsAlert] = useState(false);
-
-// const handleClick = function () {
-//   setIsClicked(!isClicked);
-// };
-
-// const handleSave = function () {
-//   setIsAlert(true);
-//   setTimeout(() => {
-//     setIsAlert(false);
-//   }, 1500);
-//   setIsClicked(false);
-// };

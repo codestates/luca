@@ -1,38 +1,36 @@
-require('dotenv').config();
+require("dotenv").config();
 
-const { users } = require('../models');
-const { generateAccessToken, sendAccessToken } = require('./token');
+const { users } = require("../models");
+const { generateAccessToken, sendAccessToken } = require("./token");
 const bcrypt = require("bcrypt");
-const axios = require('axios');
+const axios = require("axios");
 
 axios.defaults.withCredentials = true;
 
 module.exports = {
-    //로그인 및 회원가입
     login: async (req, res, next) => {
         try {
-            // const authorizationCode = req.body.authorizationCode;
             const GOOGLE_REST_API_KEY = process.env.GOOGLE_REST_API_KEY;
             const GOOGLE_REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI;
             const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
             const code = req.body.authorizationCode;
             if (code) {
                 const response = await axios({
-                    method: 'POST',
+                    method: "POST",
                     url: `https://oauth2.googleapis.com/token?code=${code}&client_id=${GOOGLE_REST_API_KEY}&client_secret=${GOOGLE_CLIENT_SECRET}&redirect_uri=${GOOGLE_REDIRECT_URI}&grant_type=authorization_code`,
                     headers: {
-                        'Content-type': 'application/x-www-form-urlencoded',
-                        Accept: 'application/json',
+                        "Content-type": "application/x-www-form-urlencoded",
+                        Accept: "application/json",
                     },
                 });
 
                 const { access_token } = response.data;
                 const googleUserInfo = await axios({
-                    method: 'GET',
+                    method: "GET",
                     url: `https://www.googleapis.com/oauth2/v2/userinfo?access_token=${response.data.access_token}`,
                     headers: {
                         Authorization: `Bearer ${access_token}`,
-                        'Content-type': 'application/x-www-form-urlencoded',
+                        "Content-type": "application/x-www-form-urlencoded",
                     },
                 });
 
@@ -42,10 +40,10 @@ module.exports = {
                         email: email,
                     },
                     defaults: {
-                        name: email.split('@')[0],
-                        password: bcrypt.hashSync('password', 10),
+                        name: email.split("@")[0],
+                        password: bcrypt.hashSync("password", 10),
                         isGuest: false,
-                        isSocial: 'Google'
+                        isSocial: "Google"
                     },
                 });
 
@@ -64,7 +62,7 @@ module.exports = {
             }
         } catch (err) {
             res.status(500).send({
-                message: 'Internal server error',
+                message: "Internal server error",
             });
             next(err);
         }

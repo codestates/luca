@@ -3,16 +3,13 @@ import Projectcard from "../components/projectcard";
 import { Navigator, Footer } from "../components/commons";
 import { CreateProjectModal } from "../components/modals";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
   setProjectList,
-  updateProjectList,
-  setProjectId,
   setIsLogin,
 } from "../redux/rootSlice";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
-//import { compose } from '@reduxjs/toolkit';
 
 const Container = styled.div`
   margin-top: 10vh;
@@ -70,7 +67,6 @@ const Sorter = styled.div`
   min-height: 36px;
   background-color: #faf8f6;
   border-bottom: lightgrey solid 1px;
-  /* box-shadow: 0vh 0vh 1vh 0.1vh rgba(0, 0, 0, 0.1); */
 
   > div.dropdowner {
     position: absolute;
@@ -113,10 +109,6 @@ const Gallery = styled.div`
   min-height: 500px;
 `;
 
-const FooterContainer = styled.div`
-  /* border: solid red; */
-`;
-
 const GuidMessage = styled.div`
   font: bold;
   display: flex;
@@ -127,7 +119,6 @@ const GuidMessage = styled.div`
   top: 60%;
   left: 50%;
   transform: translate(-50%, -50%);
-  /* border: solid 3px #FFB400; */
   width: 70%;
   height: 30%;
   > p {
@@ -136,7 +127,6 @@ const GuidMessage = styled.div`
     margin-top: 0px;
   }
   > div.new-project {
-    /* margin-top: 1em; */
     width: 8em;
     padding: 0.6em 1em;
     border-radius: 2em;
@@ -145,7 +135,6 @@ const GuidMessage = styled.div`
     font-weight: bold;
     text-align: center;
     color: rgb(70, 70, 70);
-    /* background-color: #FFB400; */
     cursor: pointer;
     box-shadow: 0vh 0.5vh 1vh 0.1vh rgba(0, 0, 0, 0.2);
     background: linear-gradient(to right bottom, #FFB400, orange);
@@ -154,7 +143,6 @@ const GuidMessage = styled.div`
 
 export default function Main() {
   let projects = useSelector((state) => state.user.projects);
-  console.log("projects: ", projects);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -260,9 +248,9 @@ export default function Main() {
             }
           </Gallery>
         </Section>
-        <FooterContainer>
+        <footercontainer>
           <Footer />
-        </FooterContainer>
+        </footercontainer>
       </Container>
     </div>
   );

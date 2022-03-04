@@ -5,18 +5,17 @@ const { sign, verify } = require("jsonwebtoken");
 module.exports = {
   generateAccessToken: (data) => {
     return sign(data.dataValues, process.env.ACCESS_SECRET, {
-      expiresIn: "15d",
+      expiresIn: "1d",
     });
   },
   sendAccessToken: (res, accessToken, statusCode, data) => {
     return res
       .cookie("jwt", accessToken, {
-        // domain: process.env.SERVER_DOMAIN,
-        path: '/',
+        path: "/",
         maxAge: 24 * 6 * 60 * 10000,
         httpOnly: true,
-        // sameSite: 'none',
-        // secure: true,
+        sameSite: "none",
+        secure: true,
       })
       .status(statusCode)
       .json(data);

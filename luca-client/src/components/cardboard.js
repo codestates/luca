@@ -1,12 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import styled from "styled-components";
 import { useSelector } from "react-redux";
-import { setCardList } from "../redux/rootSlice";
-// 현재 <CardContainer>, <Opener>, <CardAdder> 에 각각 다른 animation이 적용되어 있습니다.
-// <CardContainer>는 width 를, <Opener>, <CardAdder> 는 right 값을 변화시키는 keyframes 입니다.
-// 1. 절대위치가 아닌, <CardContainer>에 flex 박스를 적용해 컴포넌트를 다시 구성하거나
-// 2. animation 속성과 keyframes 속성을 묶어 함수형으로 작성하는 방식으로 리팩토링 할 수 있을 것입니다.
-// -> 현재 독립된 animation 으로 구현
+import styled from "styled-components";
 
 const CardContainer = styled.div`
   z-index: 800;
@@ -107,7 +101,6 @@ const Opener = styled.div`
   background-color: lightgrey;
   border-radius: 1vh 0 0 1vh;
   box-shadow: 0vh 0vh 1vh rgba(0, 0, 0, 0.5);
-  /* box-shadow: 0vh 1vh 0vh 0vh rgba(0, 0, 0, 0.5); */
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -152,7 +145,6 @@ const Card = styled.div`
   width: 14vh;
   height: 14vh;
   padding-top: 1px;
-  /* padding: 1vh; */
   margin: 0 1.5vh;
   background-color: ${(props) => `rgb${props.color}`};
   filter: ${(props) => (props.blocked ? "brightness(50%)" : "none")};
@@ -224,8 +216,6 @@ const CardAdder = styled.div`
     height: 60%;
     outline: none;
     border: none;
-    /* position: relative;
-    top: -2vh; */
   }
   > button.submit {
     background: white;
@@ -297,7 +287,6 @@ const CardAdder = styled.div`
       height: 15vh;
       > i {
         opacity: 1;
-        // 자식 애니메이션은 cascading 작동 X, 새 컴포넌트로 만드는 방법
       }
     }
     to {
@@ -329,15 +318,13 @@ export default function Cardboard({
   mouseUp,
   mouseDown,
 }) {
-  // let projectIdRef = window.location.href.split("/").reverse()[0];
   const cardList = useSelector((state) => state.user.cardList);
   const userInfo = useSelector((state) => state.user.userInfo);
   const blockData = useSelector((state) => state.user.blockData);
   const [changeColor, setChangeColor] = useState("(253, 251, 209)");
-  const [isCardContOpen, setIsCardContOpen] = useState(null); // default animation state
-  const [isAdderOpen, setIsAdderOpen] = useState(null); // default animation state
+  const [isCardContOpen, setIsCardContOpen] = useState(null);
+  const [isAdderOpen, setIsAdderOpen] = useState(null);
   const [isSidebar, setIsSidebar] = useState(true);
-  const [isCardMove, setIsCardMove] = useState(false);
 
   const newCardRef = useRef();
   const outSection = useRef();
@@ -347,7 +334,6 @@ export default function Cardboard({
   };
 
   const adderOpenHandler = () => {
-    console.log(cardList);
     setIsAdderOpen(!isAdderOpen);
   };
 
@@ -389,7 +375,6 @@ export default function Cardboard({
   });
 
   const changeColorHandler = ({ color }) => {
-    console.log(cardList);
     setChangeColor(color);
   };
 
@@ -402,7 +387,6 @@ export default function Cardboard({
   };
 
   const cardDragStart = (e) => {
-    console.log(e.target);
     e.dataTransfer.setDragImage(
       e.target,
       e.target.offsetHeight / 2,
@@ -410,13 +394,10 @@ export default function Cardboard({
     );
     setDragItemId(e.target.id);
     mouseDown(e.target.id);
-    console.log("drag start! card id: ", e.target.id);
   };
 
   const cardDragEnd = (e) => {
     mouseUp(e.target.id);
-    console.log("drag end! card id: ", e.target.id);
-    // canvas 에 드롭 이벤트가 발생했다면, card data 에서 일치하는 card id 를 찾아 삭제해야합니다.
   };
 
   return (
@@ -482,8 +463,6 @@ export default function Cardboard({
             </div>
           );
         })}
-        {/* <Card>상위 4개 limit로 할 필요 없음 .map</Card> */}
-        {/* websocket 으로 카드 데이터 받을때는 key={card.id} 로 매핑할 것 */}
         {isSidebar ? (
           <Opener
             className="opener"
@@ -524,30 +503,6 @@ export default function Cardboard({
                     changeColorHandler({ color: "(249, 206, 218)" })
                   }
                 />
-                {/* {(changeColor === "(253, 251, 209)" ? null : (
-                  <button
-                    className="yellow"
-                    onClick={() =>
-                      changeColorHandler({ color: "(253, 251, 209)" })
-                    }
-                  />
-                ))}
-                {(changeColor === "(183, 229, 237)" ? null : (
-                  <button
-                    className="blue"
-                    onClick={() =>
-                      changeColorHandler({ color: "(183, 229, 237)" })
-                    }
-                  />
-                ))}
-                {(changeColor === "(249, 206, 218)" ? null : (
-                  <button
-                    className="pink"
-                    onClick={() =>
-                      changeColorHandler({ color: "(249, 206, 218)" })
-                    }
-                  />
-                ))} */}
               </div>
               <input
                 color={changeColor}
@@ -559,11 +514,7 @@ export default function Cardboard({
                   }
                 }}
                 maxLength={60}
-                // 한/영 글자 수 차이남
               />
-              {/* <button className="submit" onClick={createCardHandler}>
-                추가
-              </button> */}
             </>
           ) : (
             <div className="adderbox" onClick={adderOpenHandler}>
