@@ -134,8 +134,6 @@ const Rootbox = styled.div`
   inline-size: 8em;
   border-radius: 8em;
   border: solid grey 2px;
-  box-shadow: ${(props) =>
-    props.highlights.includes(props.id) ? "0 0 6px red" : "none"};
 
   > div.rootcontent {
     font-size: 1em;
@@ -148,13 +146,16 @@ const Rootbox = styled.div`
 `;
 
 const Nodebox = styled.div.attrs(
-  ({ id, coordX, coordY, depth, highlights }) => {
+  ({ id, coordX, coordY, depth, highlights, highlight }) => {
     return {
       style: {
         position: "fixed",
         left: coordX + "px",
         top: coordY + "px",
-        boxShadow: highlights.includes(id) ? "0 0 6px red" : "none",
+        backgroundColor:
+          highlight && !highlights.includes(id)
+            ? "white"
+            : "rgb(255, 166, 117)",
         filter: `hue-rotate(${String(depth * 20)}deg)`,
         //opacity: depth * 10 + "%",
       },
@@ -164,13 +165,13 @@ const Nodebox = styled.div.attrs(
   z-index: 900;
   font-size: 0.8em;
   padding: 0.5em;
+  border: solid grey 1px;
   border-radius: 3em;
-  background-color: Aqua;
+  /* background-color: rgb(255, 166, 117); */
   // theme 시작 컬러
   transform: translate(-50%, -50%);
   text-align: center;
   font-weight: bold;
-  border: solid grey 1px;
 
   > div.small {
     display: block;
@@ -225,14 +226,16 @@ const Lines = styled.svg`
 `;
 
 const Line = styled.line`
-  stroke-width: ${(props) => props.height + 2 + "px"};
-  opacity: ${(props) => (props.depth ? (props.depth + 2) * 20 + "%" : "50%")};
+  stroke-width: 1px;
+  //stroke-width: ${(props) => props.height + 1 + "px"};
+  /* opacity: ${(props) =>
+    props.height ? (props.height + 2) * 20 + "%" : "50%"}; */
 
-  stroke-dasharray: 500;
+  /* stroke-dasharray: 500;
   stroke-dashoffset: 500;
-  animation: dashDraw 1s linear 1;
+  animation: dashDraw 3s linear 1;
   animation-fill-mode: forwards;
-  animation-delay: ${(props) => props.depth * 0.5 + "s"};
+  //animation-delay: ${(props) => props.depth * 1 + "s"};
 
   @keyframes dashDraw {
     0% {
@@ -241,7 +244,7 @@ const Line = styled.line`
     100% {
       stroke-dashoffset: 0;
     }
-  }
+  } */
 `;
 
 const ControllerPilot = styled.div`
@@ -551,7 +554,6 @@ export default function Canvas3({
               id={radialNodes[0].data.id}
               coordY={radialNodes[0].y || window.innerHeight / 2}
               coordX={radialNodes[0].x || window.innerWidth / 2}
-              highlights={highlight.list.map((node) => node.data.id)}
               onClick={() => pathHandler(radialNodes[0].data.id)}
               onDragOver={(e) => {
                 e.preventDefault();
@@ -572,6 +574,7 @@ export default function Canvas3({
                 coordY={node.y}
                 coordX={node.x}
                 depth={node.depth}
+                highlight={highlight.word}
                 highlights={highlight.list.map((node) => node.data.id)}
                 onClick={() => pathHandler(node.data.id)}
                 onDragOver={(e) => {

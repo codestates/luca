@@ -79,7 +79,8 @@ const Transform = styled.div`
   background: ${(props) => (props.isSidebar ? "none" : "lightgrey")};
   width: ${(props) => (props.isSidebar ? " 2.5vh" : "2vh")};
   height: ${(props) => (props.isSidebar ? " 2.5vh" : "18vh")};
-  border-radius: ${(props) => (props.isSidebar ? "1vh 0 0 1vh" : "1vh 0vh 0vh 1vh")};
+  border-radius: ${(props) =>
+    props.isSidebar ? "1vh 0 0 1vh" : "1vh 0vh 0vh 1vh"};
   margin-right: ${(props) => (props.isSidebar ? "none" : "49.5vw")};
   display: flex;
   align-items: center;
@@ -148,16 +149,17 @@ const Opener = styled.div`
 
 const Card = styled.div`
   z-index: 800;
-  width: 12vh;
-  height: 12vh;
-  padding: 1vh;
+  width: 14vh;
+  height: 14vh;
+  padding-top: 1px;
+  /* padding: 1vh; */
   margin: 0 1.5vh;
   background-color: ${(props) => `rgb${props.color}`};
   filter: ${(props) => (props.blocked ? "brightness(50%)" : "none")};
   box-shadow: 0vh 0.5vh 1vh 0vh rgba(0, 0, 0, 0.3);
   > div.content {
-    padding: 1.2vh 0 1vh 1.2vh;
-    width: 80%;
+    padding: 10% 0 10% 7%;
+    width: 82%;
     height: 80%;
     position: relative;
     font-size: 1.6vh;
@@ -398,15 +400,19 @@ export default function Cardboard({
       newCardRef.current.value = "";
     }
   };
-  
+
   const cardDragStart = (e) => {
-    console.log(e.target)
-    e.dataTransfer.setDragImage(e.target, e.target.offsetHeight/2, e.target.offsetWidth/2);
+    console.log(e.target);
+    e.dataTransfer.setDragImage(
+      e.target,
+      e.target.offsetHeight / 2,
+      e.target.offsetWidth / 2
+    );
     setDragItemId(e.target.id);
     mouseDown(e.target.id);
     console.log("drag start! card id: ", e.target.id);
   };
-  
+
   const cardDragEnd = (e) => {
     mouseUp(e.target.id);
     console.log("drag end! card id: ", e.target.id);
@@ -421,11 +427,11 @@ export default function Cardboard({
         isSidebar={isSidebar}
       >
         {isSidebar ? (
-          isCardContOpen? 
-          null:
-          <button onClick={handleSidebarModal}>
-          <i className="fa-solid fa-circle-chevron-down"></i>
-          </button>
+          isCardContOpen ? null : (
+            <button onClick={handleSidebarModal}>
+              <i className="fa-solid fa-circle-chevron-down"></i>
+            </button>
+          )
         ) : (
           <button onClick={handleSidebarModal}>
             <i className="fa-solid fa-circle-chevron-up"></i>
@@ -437,17 +443,14 @@ export default function Cardboard({
           return blockData.isBlock && card.id === blockData.cardId ? (
             <div key={card.id}>
               <div style={{ height: "2.5vh" }}></div>
-              <Card
-                id={card.id}
-                color={card.color}
-                blocked={true}
-              >
-                <div 
-                id={card.id}
-                draggable
-                onDragStart={cardDragStart}
-                onDragEnd={cardDragEnd}
-                className="content">
+              <Card id={card.id} color={card.color} blocked={true}>
+                <div
+                  id={card.id}
+                  draggable
+                  onDragStart={cardDragStart}
+                  onDragEnd={cardDragEnd}
+                  className="content"
+                >
                   {card.content}
                 </div>
               </Card>
@@ -465,17 +468,15 @@ export default function Cardboard({
               ) : (
                 <div style={{ height: "2.5vh" }}></div>
               )}
-              <Card
-                id={card.id}
-                color={card.color}
-              >
-                <div 
+              <Card id={card.id} color={card.color}>
+                <div
                   id={card.id}
                   draggable
                   onDragStart={cardDragStart}
                   onDragEnd={cardDragEnd}
-                  className="content">
-                    {card.content}
+                  className="content"
+                >
+                  {card.content}
                 </div>
               </Card>
             </div>
@@ -501,7 +502,6 @@ export default function Cardboard({
           isCardContOpen={isCardContOpen}
           isAdderOpen={isAdderOpen}
           ref={outSection}
-
         >
           {isAdderOpen ? (
             <>
@@ -559,7 +559,7 @@ export default function Cardboard({
                   }
                 }}
                 maxLength={60}
-              // 한/영 글자 수 차이남
+                // 한/영 글자 수 차이남
               />
               {/* <button className="submit" onClick={createCardHandler}>
                 추가
@@ -567,9 +567,7 @@ export default function Cardboard({
             </>
           ) : (
             <div className="adderbox" onClick={adderOpenHandler}>
-              <i
-                className="fa-solid fa-circle-plus"
-              ></i>
+              <i className="fa-solid fa-circle-plus"></i>
             </div>
           )}
         </CardAdder>
