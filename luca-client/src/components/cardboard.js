@@ -22,7 +22,7 @@ const CardContainer = styled.div`
   flex-flow: column wrap;
   align-content: baseline;
   box-shadow: 0vh 0vh 1vh rgba(0, 0, 0, 0.5);
-  overflow: ${(props) => (props.isSidebar ? "hidden" : "scroll")};
+  overflow: ${(props) => (props.isSidebar ? "scroll" : "scroll")};
   ::-webkit-scrollbar {
     -webkit-appearance: none;
     display: none;
@@ -74,7 +74,7 @@ const Transform = styled.div`
   z-index: 850;
   position: fixed;
   top: ${(props) => (props.isSidebar ? "10vh" : "none")};
-  bottom: ${(props) => (props.isSidebar ? "none" : "20vh")};
+  bottom: ${(props) => (props.isSidebar ? "none" : "19.5vh")};
   right: ${(props) => (props.isSidebar ? "20vh" : "75vw")};
   width: 2.5vh;
   height: 2.5vh;
@@ -82,14 +82,18 @@ const Transform = styled.div`
   display: flex;
   align-items: center;
   cursor: pointer;
-  > i {
+  /* > i {
     margin-left: 0.75vh;
     flex: 1 0 auto;
-  }
+  } */
   > button {
     border: none;
     background: none;
     color: grey;
+    padding-left: 4px;
+    > i {
+      font-size: 1.3rem;
+    }
   }
 `;
 
@@ -215,6 +219,8 @@ const CardAdder = styled.div`
     height: 70%;
     outline: none;
     border: none;
+    /* position: relative;
+    top: -2vh; */
   }
   > button.submit {
     background: white;
@@ -228,6 +234,10 @@ const CardAdder = styled.div`
     font-weight: bold;
   }
   > div {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, 0%);
     > button.yellow {
       background: rgb(253, 251, 209);
       margin: 5px;
@@ -404,8 +414,10 @@ export default function Cardboard({
         isSidebar={isSidebar}
       >
         {isSidebar ? (
+          isCardContOpen? 
+          null:
           <button onClick={handleSidebarModal}>
-            <i className="fa-solid fa-circle-chevron-down"></i>
+          <i className="fa-solid fa-circle-chevron-down"></i>
           </button>
         ) : (
           <button onClick={handleSidebarModal}>
@@ -447,6 +459,8 @@ export default function Cardboard({
                 draggable
                 onDragStart={cardDragStart}
                 onDragEnd={cardDragEnd}
+                // onMouseOver={()=>{vanishButton(true)}}
+                // onMouseOver={()=>{vanishButton(false)}}
               >
                 <div className="content">{card.content}</div>
               </Card>
