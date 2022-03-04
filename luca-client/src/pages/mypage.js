@@ -208,8 +208,8 @@ export default function Mypage() {
               </div>
             </Upper>
             <Lower>
-              <div>{`만든 프로젝트 ${projects.length}개, 참여한 프로젝트 3개`}</div>
-              <div>{`만든 카드 ${cards.length}개, 매핑된 카드 27개`}</div>
+              <div>{`만든 프로젝트 ${userInfo.countAdminProject}개`}</div>
+              <div>{`참여한 프로젝트 ${userInfo.countJoinProject}개`}</div>
             </Lower>
           </Right>
         ) : (
@@ -225,8 +225,8 @@ export default function Mypage() {
               </div>
             </Upper>
             <Lower>
-              <div>{`만든 프로젝트 ${projects.length}개, 참여한 프로젝트 3개`}</div>
-              <div>{`만든 카드 ${cards.length}개, 매핑된 카드 27개`}</div>
+              <div>{`만든 프로젝트 ${userInfo.countAdminProject}개`}</div>
+              <div>{`참여한 프로젝트 ${userInfo.countJoinProject}개`}</div>
             </Lower>
           </Right>
         )}

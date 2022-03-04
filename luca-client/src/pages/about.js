@@ -66,35 +66,6 @@ const IntroContainer = styled.div`
         cursor: pointer;
       }
     }
-    > div.animationbox {
-      position: absolute;
-      top: 30%;
-      left: 49%;
-      transform: translate(-50%, -50%);
-      > ul {
-        list-style: none;
-        > li {
-          display: inline-block;
-          margin-right: 20px;
-          font-size: 5em;
-          color: #fff;
-          opacity: 1;
-          transition: all 3s ease;
-        }
-      }
-      > ul li:nth-child(1) {
-        transform: translate3d(-60, 0, 0);
-      }
-      > ul li:nth-child(2) {
-        transform: translate3d(-30, 0, 0);
-      }
-      > ul li:nth-child(3) {
-        transform: translate3d(30, 0, 0);
-      }
-      > ul li:nth-child(4) {
-        transform: translate3d(60, 0, 0);
-      }
-    }
   }
 `;
 
@@ -151,14 +122,6 @@ export default function About() {
         {dummyIntro.slice(0, 1).map((lorem, i) => (
           <IntroContainer key={i} color={i}>
             <div className="floater">
-              <div className="animationbox">
-                <ul>
-                  <li>L</li>
-                  <li>U</li>
-                  <li>C</li>
-                  <li>A</li>
-                </ul>
-              </div>
               <div className="title">{lorem.title}</div>
               <div className="desc">{lorem.desc}</div>
               <div className="action">

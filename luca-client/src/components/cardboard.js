@@ -148,11 +148,21 @@ const Card = styled.div`
   height: 12vh;
   padding: 1vh;
   margin: 0 1.5vh;
-  //margin-top: 2.5vh;
   background-color: ${(props) => `rgb${props.color}`};
   filter: ${(props) => (props.blocked ? "brightness(50%)" : "none")};
   box-shadow: 0vh 0.5vh 1vh 0vh rgba(0, 0, 0, 0.3);
   > div.content {
+<<<<<<< HEAD
+=======
+    margin: -1.5vh 1.5vh;
+    font-size: 2vh;
+    text-align: left;
+    word-break: break-word;
+    overflow: hidden;
+    padding: 1vh;
+  }
+  > div.delete {
+>>>>>>> c8465852327852c4d841e92901b11f5ac5add0f3
     position: relative;
     font-size: 1.6vh;
     line-height: 2vh;
@@ -227,7 +237,7 @@ const CardAdder = styled.div`
       width: 20px;
       height: 20px;
       border-radius: 50%;
-      border: none;
+      border: solid 1px;
       cursor: pointer;
     }
     > button.blue {
@@ -236,7 +246,8 @@ const CardAdder = styled.div`
       width: 20px;
       height: 20px;
       border-radius: 50%;
-      border: none;
+      border: solid 1px;
+
       cursor: pointer;
     }
     > button.pink {
@@ -245,7 +256,8 @@ const CardAdder = styled.div`
       width: 20px;
       height: 20px;
       border-radius: 50%;
-      border: none;
+      border: solid 1px;
+
       cursor: pointer;
     }
 
