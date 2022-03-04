@@ -41,6 +41,8 @@ const KakaoPage = () => {
             navigate("/")
         })
         .catch((err) => {
+            console.log(err);
+            console.log(err.response);
             return err.response ? err.response : 'network error';
         });
 
