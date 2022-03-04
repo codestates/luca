@@ -14,7 +14,7 @@ const CardContainer = styled.div`
   top: ${(props) => (props.isSidebar ? "13vh" : "none")};
   bottom: ${(props) => (props.isSidebar ? "none" : "1vh")};
   right: ${(props) => (props.isSidebar ? "2vh" : "20vh")};
-  width: ${(props) => (props.isSidebar ? "18vh" : "65%")};
+  width: ${(props) => (props.isSidebar ? "18vh" : "50vw")};
   height: ${(props) => (props.isSidebar ? "68vh" : "18vh")};
   background-color: white;
   border-radius: 0vh 1vh 1vh 0vh;
@@ -74,26 +74,25 @@ const Transform = styled.div`
   z-index: 850;
   position: fixed;
   top: ${(props) => (props.isSidebar ? "10vh" : "none")};
-  bottom: ${(props) => (props.isSidebar ? "none" : "19.5vh")};
-  right: ${(props) => (props.isSidebar ? "20vh" : "75vw")};
-  width: 2.5vh;
-  height: 2.5vh;
-  border-radius: 1vh 0 0 1vh;
+  bottom: ${(props) => (props.isSidebar ? "none" : "1vh")};
+  right: ${(props) => (props.isSidebar ? "3vh" : "20vh")};
+  background: ${(props) => (props.isSidebar ? "none" : "lightgrey")};
+  width: ${(props) => (props.isSidebar ? " 2.5vh" : "2vh")};
+  height: ${(props) => (props.isSidebar ? " 2.5vh" : "18vh")};
+  border-radius: ${(props) => (props.isSidebar ? "1vh 0 0 1vh" : "1vh 0vh 0vh 1vh")};
+  margin-right: ${(props) => (props.isSidebar ? "none" : "49.5vw")};
   display: flex;
   align-items: center;
+  justify-content: center;
   cursor: pointer;
-  /* > i {
+  > i {
     margin-left: 0.75vh;
     flex: 1 0 auto;
-  } */
+  }
   > button {
     border: none;
     background: none;
     color: grey;
-    padding-left: 4px;
-    > i {
-      font-size: 1.3rem;
-    }
   }
 `;
 
@@ -107,6 +106,7 @@ const Opener = styled.div`
   background-color: lightgrey;
   border-radius: 1vh 0 0 1vh;
   box-shadow: 0vh 0vh 1vh rgba(0, 0, 0, 0.5);
+  /* box-shadow: 0vh 1vh 0vh 0vh rgba(0, 0, 0, 0.5); */
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -156,6 +156,9 @@ const Card = styled.div`
   filter: ${(props) => (props.blocked ? "brightness(50%)" : "none")};
   box-shadow: 0vh 0.5vh 1vh 0vh rgba(0, 0, 0, 0.3);
   > div.content {
+    padding: 1.2vh 0 1vh 1.2vh;
+    width: 80%;
+    height: 80%;
     position: relative;
     font-size: 1.6vh;
     line-height: 2vh;
@@ -176,7 +179,6 @@ const CardDeleter = styled.div`
   text-align: center;
   opacity: 80%;
   display: flex;
-  //visibility: ${(props) => (props.isCardDeleterVanished? "hidden": null)};
   flex-direction: column;
   > i {
     font-size: 2vh;
@@ -398,11 +400,9 @@ export default function Cardboard({
   };
   
   const cardDragStart = (e) => {
+    console.log(e.target)
     e.dataTransfer.setDragImage(e.target, e.target.offsetHeight/2, e.target.offsetWidth/2);
-    
     setDragItemId(e.target.id);
-    // setIsAdderOpen(false)
-    // setIsCardContOpen(false)
     mouseDown(e.target.id);
     console.log("drag start! card id: ", e.target.id);
   };
@@ -412,14 +412,6 @@ export default function Cardboard({
     console.log("drag end! card id: ", e.target.id);
     // canvas 에 드롭 이벤트가 발생했다면, card data 에서 일치하는 card id 를 찾아 삭제해야합니다.
   };
-  const cardDeleterRef = useRef();
-  const cardRef = useRef();
-  const [isCardDeleterVanished, setIsCardDeleterVanished] = useState(false);
-  const vanishCardDeleter = (id) => {
-    // if(id === cardDeleterRef.current.id){
-      setIsCardDeleterVanished(!isCardDeleterVanished);
-    // }
-  }
 
   return (
     <div>
@@ -449,11 +441,15 @@ export default function Cardboard({
                 id={card.id}
                 color={card.color}
                 blocked={true}
+              >
+                <div 
+                id={card.id}
                 draggable
                 onDragStart={cardDragStart}
                 onDragEnd={cardDragEnd}
-              >
-                <div className="content">{card.content}</div>
+                className="content">
+                  {card.content}
+                </div>
               </Card>
             </div>
           ) : (
@@ -463,8 +459,6 @@ export default function Cardboard({
                   id={card.id}
                   draggable={false}
                   onClick={() => deleteCard(card.id)}
-                  isCardDeleterVanished={isCardDeleterVanished}
-                  ref={cardDeleterRef}
                 >
                   <i className="fa-solid fa-circle-xmark"></i>
                 </CardDeleter>
@@ -474,15 +468,15 @@ export default function Cardboard({
               <Card
                 id={card.id}
                 color={card.color}
-                draggable
-                onDragStart={cardDragStart}
-                onDragEnd={cardDragEnd}
-                ref={cardRef}
-                // onMouseOver={()=>{if(card.id===cardDeleterRef.current.id){cardDeleterRef.current.style.visibility="hidden"}}}
-                onMouseOver={()=>{vanishCardDeleter(card.id)}}
-                // onMouseOut={vanishCardDeleter}
               >
-                <div className="content">{card.content}</div>
+                <div 
+                  id={card.id}
+                  draggable
+                  onDragStart={cardDragStart}
+                  onDragEnd={cardDragEnd}
+                  className="content">
+                    {card.content}
+                </div>
               </Card>
             </div>
           );
