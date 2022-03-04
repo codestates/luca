@@ -148,7 +148,6 @@ const Card = styled.div`
   height: 12vh;
   padding: 1vh;
   margin: 0 1.5vh;
-  //margin-top: 2.5vh;
   background-color: ${(props) => `rgb${props.color}`};
   filter: ${(props) => (props.blocked ? "brightness(50%)" : "none")};
   box-shadow: 0vh 0.5vh 1vh 0vh rgba(0, 0, 0, 0.3);
@@ -158,6 +157,7 @@ const Card = styled.div`
     text-align: left;
     word-break: break-word;
     overflow: hidden;
+    padding: 1vh;
   }
   > div.delete {
     position: relative;
