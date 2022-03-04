@@ -4,7 +4,7 @@ import styled from "styled-components";
 const Searchfinder = styled.div`
   z-index: 920;
   position: fixed;
-  top: 50px;
+  top: 80px;
   left: 20px;
   width: 48px;
   height: 48px;
@@ -72,7 +72,7 @@ const Searchfinder = styled.div`
 const Pathfinder = styled.div`
   z-index: 930;
   position: fixed;
-  top: 120px;
+  top: 150px;
   left: 88px;
   background-color: white;
   border-radius: 6px;

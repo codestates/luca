@@ -148,7 +148,6 @@ const Card = styled.div`
   height: 12vh;
   padding: 1vh;
   margin: 0 1.5vh;
-  //margin-top: 2.5vh;
   background-color: ${(props) => `rgb${props.color}`};
   filter: ${(props) => (props.blocked ? "brightness(50%)" : "none")};
   box-shadow: 0vh 0.5vh 1vh 0vh rgba(0, 0, 0, 0.3);
@@ -195,17 +194,25 @@ const CardAdder = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  cursor: pointer;
   font-size: 5vh;
-  > i {
-    opacity: 30%;
+
+  > div.adderbox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    cursor: pointer;
+    > i {
+      opacity: 30%;
+    }
   }
+
   > input {
     font-size: 0.7em;
     background: ${(props) => `rgb${props.color}`};
-    margin: auto;
+    padding: 0 10% 20% 10%;
     width: 80%;
-    height: 70%;
+    height: 60%;
     outline: none;
     border: none;
   }
@@ -221,12 +228,18 @@ const CardAdder = styled.div`
     font-weight: bold;
   }
   > div {
+    height: 20%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     > button.yellow {
       background: rgb(253, 251, 209);
       margin: 5px;
       width: 20px;
       height: 20px;
       border-radius: 50%;
+      border: solid 1px;
       cursor: pointer;
     }
     > button.blue {
@@ -235,6 +248,8 @@ const CardAdder = styled.div`
       width: 20px;
       height: 20px;
       border-radius: 50%;
+      border: solid 1px;
+
       cursor: pointer;
     }
     > button.pink {
@@ -243,6 +258,8 @@ const CardAdder = styled.div`
       width: 20px;
       height: 20px;
       border-radius: 50%;
+      border: solid 1px;
+
       cursor: pointer;
     }
 
@@ -374,8 +391,7 @@ export default function Cardboard({
   };
 
   const cardDragStart = (e) => {
-    // const img = new Image();
-    // e.dataTransfer.setDragImage(img, "7vh", "7vh");
+    e.dataTransfer.setDragImage(e.target, e.target.offsetHeight/2, e.target.offsetWidth/2);
 
     setDragItemId(e.target.id);
     // setIsAdderOpen(false)
@@ -466,6 +482,7 @@ export default function Cardboard({
           isCardContOpen={isCardContOpen}
           isAdderOpen={isAdderOpen}
           ref={outSection}
+
         >
           {isAdderOpen ? (
             <>
@@ -488,6 +505,30 @@ export default function Cardboard({
                     changeColorHandler({ color: "(249, 206, 218)" })
                   }
                 />
+                {/* {(changeColor === "(253, 251, 209)" ? null : (
+                  <button
+                    className="yellow"
+                    onClick={() =>
+                      changeColorHandler({ color: "(253, 251, 209)" })
+                    }
+                  />
+                ))}
+                {(changeColor === "(183, 229, 237)" ? null : (
+                  <button
+                    className="blue"
+                    onClick={() =>
+                      changeColorHandler({ color: "(183, 229, 237)" })
+                    }
+                  />
+                ))}
+                {(changeColor === "(249, 206, 218)" ? null : (
+                  <button
+                    className="pink"
+                    onClick={() =>
+                      changeColorHandler({ color: "(249, 206, 218)" })
+                    }
+                  />
+                ))} */}
               </div>
               <input
                 color={changeColor}
@@ -499,17 +540,18 @@ export default function Cardboard({
                   }
                 }}
                 maxLength={60}
-                // 한/영 글자 수 차이남
+              // 한/영 글자 수 차이남
               />
               {/* <button className="submit" onClick={createCardHandler}>
                 추가
               </button> */}
             </>
           ) : (
-            <i
-              className="fa-solid fa-circle-plus"
-              onClick={adderOpenHandler}
-            ></i>
+            <div className="adderbox" onClick={adderOpenHandler}>
+              <i
+                className="fa-solid fa-circle-plus"
+              ></i>
+            </div>
           )}
         </CardAdder>
       </CardContainer>

@@ -117,6 +117,41 @@ const FooterContainer = styled.div`
   /* border: solid red; */
 `;
 
+const GuidMessage = styled.div`
+  font: bold;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* border: solid 3px #FFB400; */
+  width: 70%;
+  height: 30%;
+  > p {
+    font-size: 1.5em;
+    color: #D2691E;
+    margin-top: 0px;
+  }
+  > div.new-project {
+    /* margin-top: 1em; */
+    width: 8em;
+    padding: 0.6em 1em;
+    border-radius: 2em;
+    border: none;
+    font-size: 1.1em;
+    font-weight: bold;
+    text-align: center;
+    color: rgb(70, 70, 70);
+    /* background-color: #FFB400; */
+    cursor: pointer;
+    box-shadow: 0vh 0.5vh 1vh 0.1vh rgba(0, 0, 0, 0.2);
+    background: linear-gradient(to right bottom, #FFB400, orange);
+  }
+`
+
 export default function Main() {
   let projects = useSelector((state) => state.user.projects);
   console.log("projects: ", projects);
@@ -142,8 +177,8 @@ export default function Main() {
           ? -1
           : parseInt(a.updatedAt.split("-").join("")) >
             parseInt(b.updatedAt.split("-").join(""))
-          ? 1
-          : 0;
+            ? 1
+            : 0;
       });
       dispatch(setProjectList(sortedProjects));
       setCurSort("업데이트 순");
@@ -154,8 +189,8 @@ export default function Main() {
           ? -1
           : parseInt(a.createdAt.split("-").join("")) >
             parseInt(b.createdAt.split("-").join(""))
-          ? 1
-          : 0;
+            ? 1
+            : 0;
       });
       dispatch(setProjectList(sortedProjects));
       setCurSort("생성일 순");
@@ -171,7 +206,7 @@ export default function Main() {
       })
       .catch((err) => {
         if (err.response.status === 401) {
-          setIsLogin(false);
+          dispatch(setIsLogin(false));
           navigate("/");
         }
       });
@@ -213,9 +248,16 @@ export default function Main() {
             </div>
           </Sorter>
           <Gallery>
-            {projects.map((project, i) => (
-              <Projectcard projectInfo={project} index={i} key={project.id} />
-            ))}
+            {
+              projects.length > 0 ?
+                projects.map((project, i) => (
+                  <Projectcard projectInfo={project} index={i} key={project.id} />
+                )) :
+                <GuidMessage>
+                  <p>아직 프로젝트가 없습니다. 새로운 프로젝트를 시작해보세요!</p>
+                  <div className="new-project" onClick={() => modalHandler("createProject")}>새프로젝트</div>
+                </GuidMessage>
+            }
           </Gallery>
         </Section>
         <FooterContainer>
