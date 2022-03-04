@@ -176,6 +176,7 @@ const CardDeleter = styled.div`
   text-align: center;
   opacity: 80%;
   display: flex;
+  //visibility: ${(props) => (props.isCardDeleterVanished? "hidden": null)};
   flex-direction: column;
   > i {
     font-size: 2vh;
@@ -395,21 +396,30 @@ export default function Cardboard({
       newCardRef.current.value = "";
     }
   };
-
+  
   const cardDragStart = (e) => {
     e.dataTransfer.setDragImage(e.target, e.target.offsetHeight/2, e.target.offsetWidth/2);
-
+    
     setDragItemId(e.target.id);
     // setIsAdderOpen(false)
     // setIsCardContOpen(false)
     mouseDown(e.target.id);
     console.log("drag start! card id: ", e.target.id);
   };
+  
   const cardDragEnd = (e) => {
     mouseUp(e.target.id);
     console.log("drag end! card id: ", e.target.id);
     // canvas 에 드롭 이벤트가 발생했다면, card data 에서 일치하는 card id 를 찾아 삭제해야합니다.
   };
+  const cardDeleterRef = useRef();
+  const cardRef = useRef();
+  const [isCardDeleterVanished, setIsCardDeleterVanished] = useState(false);
+  const vanishCardDeleter = (id) => {
+    // if(id === cardDeleterRef.current.id){
+      setIsCardDeleterVanished(!isCardDeleterVanished);
+    // }
+  }
 
   return (
     <div>
@@ -450,8 +460,11 @@ export default function Cardboard({
             <div key={card.id}>
               {card.userId === userInfo.id ? (
                 <CardDeleter
+                  id={card.id}
                   draggable={false}
                   onClick={() => deleteCard(card.id)}
+                  isCardDeleterVanished={isCardDeleterVanished}
+                  ref={cardDeleterRef}
                 >
                   <i className="fa-solid fa-circle-xmark"></i>
                 </CardDeleter>
@@ -464,8 +477,10 @@ export default function Cardboard({
                 draggable
                 onDragStart={cardDragStart}
                 onDragEnd={cardDragEnd}
-                // onMouseOver={()=>{vanishButton(true)}}
-                // onMouseOver={()=>{vanishButton(false)}}
+                ref={cardRef}
+                // onMouseOver={()=>{if(card.id===cardDeleterRef.current.id){cardDeleterRef.current.style.visibility="hidden"}}}
+                onMouseOver={()=>{vanishCardDeleter(card.id)}}
+                // onMouseOut={vanishCardDeleter}
               >
                 <div className="content">{card.content}</div>
               </Card>
