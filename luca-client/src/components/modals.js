@@ -665,11 +665,11 @@ export function CreateProjectModal({ modalHandler }) {
             </div>
             <div className="query">
               {/* <input onChange={(e)=>{newProjectHandler(e, "desc")}}/> */}
-              <input ref={descRef} placeholder="설명" />
+              <input ref={descRef} placeholder="설명" maxLength={25} />
             </div>
             <div className="query">
               {/* <input onChange={(e)=>{newProjectHandler(e, "desc")}}/> */}
-              <input ref={keywordRef} placeholder="키워드" />
+              <input ref={keywordRef} placeholder="키워드" maxLength={28} />
             </div>
             {isTeam ? (
               <div className="query">
