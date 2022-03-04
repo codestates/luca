@@ -152,6 +152,8 @@ const Card = styled.div`
   filter: ${(props) => (props.blocked ? "brightness(50%)" : "none")};
   box-shadow: 0vh 0.5vh 1vh 0vh rgba(0, 0, 0, 0.3);
   > div.content {
+<<<<<<< HEAD
+=======
     margin: -1.5vh 1.5vh;
     font-size: 2vh;
     text-align: left;
@@ -160,6 +162,7 @@ const Card = styled.div`
     padding: 1vh;
   }
   > div.delete {
+>>>>>>> c8465852327852c4d841e92901b11f5ac5add0f3
     position: relative;
     font-size: 1.6vh;
     line-height: 2vh;
@@ -234,6 +237,7 @@ const CardAdder = styled.div`
       width: 20px;
       height: 20px;
       border-radius: 50%;
+      border: solid 1px;
       cursor: pointer;
     }
     > button.blue {
@@ -242,6 +246,8 @@ const CardAdder = styled.div`
       width: 20px;
       height: 20px;
       border-radius: 50%;
+      border: solid 1px;
+
       cursor: pointer;
     }
     > button.pink {
@@ -250,6 +256,8 @@ const CardAdder = styled.div`
       width: 20px;
       height: 20px;
       border-radius: 50%;
+      border: solid 1px;
+
       cursor: pointer;
     }
 
@@ -506,7 +514,7 @@ export default function Cardboard({
                   }
                 }}
                 maxLength={60}
-                // 한/영 글자 수 차이남
+              // 한/영 글자 수 차이남
               />
               {/* <button className="submit" onClick={createCardHandler}>
                 추가

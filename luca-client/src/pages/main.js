@@ -177,8 +177,8 @@ export default function Main() {
           ? -1
           : parseInt(a.updatedAt.split("-").join("")) >
             parseInt(b.updatedAt.split("-").join(""))
-          ? 1
-          : 0;
+            ? 1
+            : 0;
       });
       dispatch(setProjectList(sortedProjects));
       setCurSort("업데이트 순");
@@ -189,8 +189,8 @@ export default function Main() {
           ? -1
           : parseInt(a.createdAt.split("-").join("")) >
             parseInt(b.createdAt.split("-").join(""))
-          ? 1
-          : 0;
+            ? 1
+            : 0;
       });
       dispatch(setProjectList(sortedProjects));
       setCurSort("생성일 순");
@@ -249,14 +249,14 @@ export default function Main() {
           </Sorter>
           <Gallery>
             {
-            projects.length > 0?
-            projects.map((project, i) => (
-              <Projectcard projectInfo={project} index={i} key={project.id} />
-            )):
-            <GuidMessage>
-              <p>아직 프로젝트가 없습니다. 새로운 프로젝트를 시작해보세요!</p>
-              <div className="new-project" onClick={() => modalHandler("createProject")}>새프로젝트</div>
-            </GuidMessage>
+              projects.length > 0 ?
+                projects.map((project, i) => (
+                  <Projectcard projectInfo={project} index={i} key={project.id} />
+                )) :
+                <GuidMessage>
+                  <p>아직 프로젝트가 없습니다. 새로운 프로젝트를 시작해보세요!</p>
+                  <div className="new-project" onClick={() => modalHandler("createProject")}>새프로젝트</div>
+                </GuidMessage>
             }
           </Gallery>
         </Section>
