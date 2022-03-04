@@ -98,7 +98,7 @@ const ProjectCover = styled.div`
     padding: 10px 30px;
     font-size: 1.2em;
     font-weight: 500;
-    color: darkgray;
+    color: grey;
   }
 
   > input.desc-edit {
@@ -121,7 +121,7 @@ const ProjectCover = styled.div`
     padding: 10px 30px;
     > p {
       margin: 16px 0;
-      color: rgb(120, 120, 120);
+      color: rgb(150, 150, 150);
       > span.keyword {
         border-radius: 4px;
         background: none;
