@@ -1,15 +1,12 @@
 import { useEffect } from "react";
-import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { setTimerTimeOn } from "../redux/rootSlice";
+import styled from "styled-components";
 
 const TimerImage = styled.div`
   display: flex;
   justify-content: left;
   text-align: center;
-  /* border-radius: 4px;
-    background-color: white;
-    border: solid lightgrey 1px; */
   color: rgb(160, 160, 160);
   > div {
     > h3 {
@@ -44,9 +41,6 @@ const TimerDisplay = styled.div`
   display: flex;
   justify-content: center;
   text-align: center;
-  /* border-radius: 4px;
-    background-color: white;
-    border: solid lightgrey 1px; */
   color: rgb(160, 160, 160);
 
   button.playPause {

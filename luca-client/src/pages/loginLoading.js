@@ -1,7 +1,7 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import styled from "styled-components";
 
 const LoadingPage = styled.div`
 	display: flex;
@@ -20,7 +20,7 @@ const LoginLoading = () => {
 		}, 1500);
 		return (
 			<LoadingPage>
-				<img src="loginLoading.gif" />
+				<img src="loginLoading.gif" alt="loading"/>
 			</LoadingPage>
 		);
 	} else {

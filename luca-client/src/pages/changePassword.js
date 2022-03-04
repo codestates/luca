@@ -171,9 +171,9 @@ export default function ChangePassword() {
   const changePasswordHandler = () => {
     if (
       // 입력칸이 하나라도 비어있는 경우
-      password === '' ||
-      newPassword === '' ||
-      passwordConfirm === ''
+      password === "" ||
+      newPassword === "" ||
+      passwordConfirm === ""
     ) {
       return;
     }
@@ -279,8 +279,8 @@ export default function ChangePassword() {
             </div>
 
             <div>
-              <button className='cancel' onClick={cancleHandler}>취소</button>
-              <button className='confirm' onClick={changePasswordHandler}>저장</button>
+              <button className="cancel" onClick={cancleHandler}>취소</button>
+              <button className="confirm" onClick={changePasswordHandler}>저장</button>
             </div>
           </Registrybox>
         </Container>
