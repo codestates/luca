@@ -31,7 +31,7 @@ const Left = styled(Section)`
     min-width: 35vh;
     height: 35vh;
     margin: 20vh 15vh 0;
-    background: url("https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/damien-hirst-1-1538661596.jpg");
+    background: url("https://picsum.photos/300/300?random=1");
     background-size: cover;
     background-repeat: no-repeat;
     border-radius: 30vh;
@@ -161,13 +161,13 @@ export default function Mypage() {
         .catch((err) => {
           alert("error");
         });
-    }else{
+    } else {
       setIsEditOn(false)
     }
   };
 
   const UploadImage = () => {
-    
+
   }
 
   useEffect(() => {

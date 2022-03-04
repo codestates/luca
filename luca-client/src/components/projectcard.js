@@ -145,7 +145,21 @@ const ProjectCover = styled.div`
       height: 30px;
       font-weight: bold;
       border-radius: 4px;
-      background-color: gray;
+      background-color: #ff7f50;
+      color: white;
+      border: none;
+      box-shadow: 0 0 0.3em rgba(0, 0, 0, 0.5);
+      cursor: pointer;
+    }
+
+    > button.confirm-cancel {
+      margin: 16px 10px 0 0;
+      width: 40px;
+      height: 30px;
+      font-weight: bold;
+      border-radius: 4px;
+      background-color: white;
+      color: black;
       border: none;
       box-shadow: 0 0 0.3em rgba(0, 0, 0, 0.5);
       cursor: pointer;
@@ -370,7 +384,7 @@ function Projectcard({ projectInfo, index }) {
             저장
           </button>
           <button
-            className="confirm-edit"
+            className="confirm-cancel"
             onClick={() => setIsEditOn(false)}
             cancel={1}
           >

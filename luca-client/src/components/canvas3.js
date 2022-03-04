@@ -17,6 +17,7 @@ import Timer from "./timer";
 // `;
 
 const Exit = styled.div`
+  z-index: 999;
   position: fixed;
   > button {
     flex: 1 0 auto;
