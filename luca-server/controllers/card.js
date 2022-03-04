@@ -18,9 +18,9 @@ module.exports = {
         const cardInfo = await cards.findAll({
             where: {
                 projectId,
-                storage: 'card'
+                storage: "card"
             },
-            order: [['id', 'DESC']],
+            order: [["id", "DESC"]],
             raw: true
         });
         return cardInfo;
@@ -29,5 +29,4 @@ module.exports = {
     delete: async (cardId) => {
         await cards.destroy({ where: { id: cardId } });
     },
-
 };

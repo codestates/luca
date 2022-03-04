@@ -73,16 +73,15 @@ module.exports = {
           });
 
           res
-            .clearCookie("jwt", {
-              // domain: process.env.SERVER_DOMAIN,
-              path: "/",
-              maxAge: 24 * 6 * 60 * 10000,
-              httpOnly: true,
-              sameSite: 'none',
-              secure: true,
-            })
-            .status(200)
-            .json({ mssage: "Delete profile success" });
+          .clearCookie("jwt", {
+            path: "/",
+            maxAge: 24 * 6 * 60 * 10000,
+            httpOnly: true,
+            sameSite: "none",
+            secure: true,
+          })
+          .status(200)
+          .json({ mssage: "Delete profile success" });
         }
       }
     } catch (err) {
