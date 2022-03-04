@@ -1,9 +1,9 @@
-import axios from 'axios';
-import styled from 'styled-components';
+import axios from "axios";
+import styled from "styled-components";
 import { setIsLogin, setUserInfo } from "../../redux/rootSlice";
 import { useDispatch } from "react-redux";
-import { useNavigate } from 'react-router-dom';
-import naverIcon from '../../asset/images/login_icon_naver.svg';
+import { useNavigate } from "react-router-dom";
+import naverIcon from "../../asset/images/login_icon_naver.svg";
 
 const NaverLoginInfo = styled.div`
   display: flex;
@@ -18,13 +18,12 @@ const NaverLoginInfo = styled.div`
     border-radius: 50%;
   }
 `;
-var check = false;
 const NaverPage = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     // 인가코드
     const authorizationCode = new URL(window.location.href).searchParams.get(
-        'code'
+        "code"
     );
 
     axios
@@ -33,7 +32,7 @@ const NaverPage = () => {
             {
                 authorizationCode,
             },
-            { 'Content-Type': 'application/json', withCredentials: true }
+            { "Content-Type": "application/json", withCredentials: true }
         )
         .then((res) => {
             dispatch(setIsLogin(true));
@@ -42,13 +41,12 @@ const NaverPage = () => {
         })
         .catch((err) => {
             console.log(err);
-            console.log(err.response);
-            return err.response ? err.response : 'network error';
+            return err.response ? err.response : "network error";
         });
 
     return (
         <NaverLoginInfo>
-            <img src={naverIcon} alt='네이버 아이콘'></img>네이버로 로그인 중...
+            <img src={naverIcon} alt="네이버 아이콘"></img>네이버로 로그인 중...
         </NaverLoginInfo>
     );
 };

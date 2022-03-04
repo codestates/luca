@@ -1,12 +1,11 @@
-import Canvas3 from "../components/canvas3";
-import Cardboard from "../components/cardboard";
-import { useEffect, useCallback, useState } from "react";
 import io from "socket.io-client";
+import { useEffect, useCallback, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import Canvas from "../components/canvas";
+import Cardboard from "../components/cardboard";
 import {
   setCardList,
   setMindmapTree,
-  setMindmapHistory,
   setBlockData,
   setTimerTimeOn,
   setTimerSettings,
@@ -22,22 +21,16 @@ export default function Project() {
   const [time, setTime] = useState(0);
   const [dragItemId, setDragItemId] = useState(null);
   const userId = useSelector((state) => state.user.userInfo.id);
-  const timerSettings = useSelector((state) => state.user.timerSettings);
 
   const disconnectSocket = useCallback(() => {
     socket.disconnect();
   }, [socket]);
 
-  // 처음 입장할 때만 소켓 연결해준다.
   useEffect(() => {
     socket.emit("enterRoom", roomName);
     socket.emit("initData", roomName);
-  }, []);
-
-  useEffect(() => {
     return () => {
       disconnectSocket();
-      // window.location.reload();
     };
   }, []);
 
@@ -100,10 +93,8 @@ export default function Project() {
     }
   };
 
-  // 배열이 업데이트될 때마다 계속해서 추가로 리스너가 등록되는 것을 방지하기 위해 useEffect 사용)
   useEffect(() => {
     socket.on("enterRoom", (data, count) => {
-      // console.log(`Number of participants: ${count}`);
       console.log("SOCKETIO connect EVENT: ", data, " client connect");
     });
 
@@ -166,8 +157,7 @@ export default function Project() {
 
   return (
     <div>
-      {/* <Navigator /> */}
-      <Canvas3
+      <Canvas
         addMindmapHandler={addMindmapHandler}
         deleteMindmapHandler={deleteMindmapHandler}
         timerHandler={timerHandler}

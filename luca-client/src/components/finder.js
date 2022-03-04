@@ -130,17 +130,12 @@ export default function Finder({
 }) {
   const [isSearchOn, setIsSearchOn] = useState(null);
   const [touring, setTouring] = useState(0);
-  const [height, setHeight] = useState("53.9vh");
-
-  //console.log(mapData);
 
   const getFocused = (id) => {
     let target = mapData.filter((node) => node.data.id === id)[0];
     let focusX = Math.round(window.innerWidth / 2 - 2 * target.x);
     let focusY = Math.round(window.innerHeight / 2 - 2 * target.y);
     setTransform(focusX, focusY, 2, 300, "easeOut");
-    console.log("focusX: ", focusX);
-    console.log("focusY: ", focusY);
   };
 
   const searchHandler = (e) => {
@@ -149,7 +144,6 @@ export default function Finder({
       let resultArray = mapData.filter((node) => {
         return node.data.content.includes(word);
       });
-      console.log("resultArray: ", resultArray);
       setHighlight({ list: resultArray, word: word });
     } else {
       setHighlight({ list: [], word: "" });

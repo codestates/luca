@@ -1,9 +1,9 @@
-import axios from 'axios';
-import styled from 'styled-components';
+import axios from "axios";
+import styled from "styled-components";
 import { setIsLogin, setUserInfo } from "../../redux/rootSlice";
 import { useDispatch } from "react-redux";
-import { useNavigate } from 'react-router-dom';
-import googleIcon from '../../asset/images/login_icon_google.svg';
+import { useNavigate } from "react-router-dom";
+import googleIcon from "../../asset/images/login_icon_google.svg";
 
 const GoogleLoginInfo = styled.div`
   display: flex;
@@ -26,8 +26,8 @@ const GooglePage = () => {
 
     // 인가코드
     const authorizationCode = new URL(window.location.href).search
-        .split('=')[1]
-        .split('&')[0];
+        .split("=")[1]
+        .split("&")[0];
 
     axios
         .post(
@@ -43,13 +43,12 @@ const GooglePage = () => {
         })
         .catch((err) => {
             console.log(err);
-            console.log(err.response);
-            return err.response ? err.response : 'network error';
+            return err.response ? err.response : "network error";
         });
 
     return (
         <GoogleLoginInfo>
-            <img src={googleIcon} alt='구글 아이콘'></img> 구글로 로그인 중...
+            <img src={googleIcon} alt="구글 아이콘"></img> 구글로 로그인 중...
         </GoogleLoginInfo>
     );
 };

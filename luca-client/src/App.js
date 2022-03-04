@@ -10,7 +10,7 @@ import KakaoPage from "./pages/oauth/KakaoPage";
 import NaverPage from "./pages/oauth/NaverPage";
 import GooglePage from "./pages/oauth/GooglePage";
 import LoginLoading from "./pages/loginLoading"
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setIsLogin, setUserInfo } from "../src/redux/rootSlice";
 import axios from "axios";

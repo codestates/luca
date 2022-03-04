@@ -1,9 +1,9 @@
-import axios from 'axios';
-import styled from 'styled-components';
+import axios from "axios";
+import styled from "styled-components";
 import { setIsLogin, setUserInfo } from "../../redux/rootSlice";
 import { useDispatch } from "react-redux";
-import { useNavigate } from 'react-router-dom';
-import kakaoIcon from '../../asset/images/login_icon_kakao.svg';
+import { useNavigate } from "react-router-dom";
+import kakaoIcon from "../../asset/images/login_icon_kakao.svg";
 
 const KakaoLoginInfo = styled.div`
   display: flex;
@@ -24,7 +24,7 @@ const KakaoPage = () => {
     const navigate = useNavigate();
     // 인가코드
     const authorizationCode = new URL(window.location.href).searchParams.get(
-        'code'
+        "code"
     );
 
     axios
@@ -33,7 +33,7 @@ const KakaoPage = () => {
             {
                 authorizationCode,
             },
-            { 'Content-Type': 'application/json', withCredentials: true }
+            { "Content-Type": "application/json", withCredentials: true }
         )
         .then((res) => {
             dispatch(setIsLogin(true));
@@ -42,13 +42,12 @@ const KakaoPage = () => {
         })
         .catch((err) => {
             console.log(err);
-            console.log(err.response);
-            return err.response ? err.response : 'network error';
+            return err.response ? err.response : "network error";
         });
 
     return (
         <KakaoLoginInfo>
-            <img src={kakaoIcon} alt='카카오 아이콘'></img> 카카오로 로그인 중...
+            <img src={kakaoIcon} alt="카카오 아이콘"></img> 카카오로 로그인 중...
         </KakaoLoginInfo>
     );
 };

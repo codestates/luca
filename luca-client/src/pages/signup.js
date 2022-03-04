@@ -3,11 +3,11 @@ import { Navigator, Backdrop } from "../components/commons";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
 import { setIsLogin, setUserInfo } from "../redux/rootSlice";
-import { useNavigate } from 'react-router-dom';
-import googleIcon from '../asset/images/login_icon_google.svg';
-import kakaoIcon from '../asset/images/login_icon_kakao.svg';
-import naverIcon from '../asset/images/login_icon_naver.svg';
-import { color, device, radius, boxShadow } from '../styles';
+import { useNavigate } from "react-router-dom";
+import googleIcon from "../asset/images/login_icon_google.svg";
+import kakaoIcon from "../asset/images/login_icon_kakao.svg";
+import naverIcon from "../asset/images/login_icon_naver.svg";
+import { color, radius, boxShadow } from "../styles";
 import axios from "axios";
 import {
   requestKakaoLogin,
@@ -32,12 +32,9 @@ const SignupPage = styled.div`
 `;
 const Registrybox = styled.div`
   width: 80%;
-  /* height: 90%; */
-  /* border: solid gray; */
   border-radius: 30px;
   display: flex;
   flex-direction: column;
-  /* justify-content: space-around; */
   > div {
     width: auto;
     display: flex;
@@ -98,7 +95,6 @@ const Registrybox = styled.div`
         font-weight: bold;
         background-color: ${color.primaryLight};
         color: ${color.white};
-        /* margin-right: 240px; */
         width: 200px;
         height: 40px;
         display: flex;
@@ -119,8 +115,8 @@ const Input = styled.input`
 `;
 
 const InputForm = ({
-  value = '',
-  type = 'text',
+  value = "",
+  type = "text",
   placeholder,
   handleValue,
 }) => {
@@ -146,14 +142,14 @@ export default function Signup() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState('');
-  const [emailDuplicate, setDuplicateEmail] = useState('');
-  const [emailConfirm, setEmailConfirm] = useState('');
-  const [emailCode, setEmailCode] = useState('');
+  const [email, setEmail] = useState("");
+  const [emailDuplicate, setDuplicateEmail] = useState("");
+  const [emailConfirm, setEmailConfirm] = useState("");
+  const [emailCode, setEmailCode] = useState("");
 
-  const [name, setName] = useState('');
-  const [password, setPassword] = useState('');
-  const [passwordConfirm, setPasswordConfirm] = useState('');
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
 
   const [isValidEmail, setIsValidEmail] = useState(true);
   const [isValidUsername, setIsValidUsername] = useState(true);
@@ -214,11 +210,11 @@ export default function Signup() {
   const SignupHandler = () => {
     if (
       // 입력칸이 하나라도 비어있는 경우
-      email === '' ||
-      emailConfirm === '' ||
-      name === '' ||
-      password === '' ||
-      passwordConfirm === ''
+      email === "" ||
+      emailConfirm === "" ||
+      name === "" ||
+      password === "" ||
+      passwordConfirm === ""
     ) {
       return;
     }
@@ -259,7 +255,6 @@ export default function Signup() {
   const sendMail = (email) => {
     axios
       .post(`${process.env.REACT_APP_API_URL}/user/checkAndMail`, { email: email }, {
-        // .post(`https://localhost:4000/user/checkAndMail`, { email: email }, {
         "Content-Type": "application/json",
         withCredentials: true,
       }).then((res => {
@@ -268,9 +263,6 @@ export default function Signup() {
         } else {
           setDuplicateEmail("사용가능한 이메일입니다.")
           setEmailCode(res.data.data.code)
-
-          console.log(emailConfirm)
-          console.log(res.data.data.code)
         }
       }))
   }
@@ -306,13 +298,11 @@ export default function Signup() {
 
             <div>
               <div>
-                {/* {emailCode === '' ? null : ( */}
                 <InputForm
                   value={emailConfirm}
                   placeholder='코드'
                   handleValue={onChangeEmailConfirm}
                 />
-                {/* // )} */}
               </div>
             </div>
 

@@ -1,21 +1,14 @@
 import styled from "styled-components";
-import { color, device, radius, boxShadow } from "../styles";
-import { useState, useEffect, useRef } from "react";
+import { color } from "../styles";
+import { useState, useRef } from "react";
+import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { updateProjectList } from "../redux/rootSlice";
 import { DeleteProjectModal } from "./modals";
 import axios from "axios";
-import {
-  setProjectList,
-  updateProjectList,
-  setProjectId,
-} from "../redux/rootSlice";
-import { Link } from "react-router-dom";
 
 const ProjectCover = styled.div`
   min-width: 200px;
-  /* background: linear-gradient(to right bottom, #ff7f50, orange); */
-  /* background: linear-gradient(to right bottom, seashell, darkorange); */
-  /* background: NavajoWhite; */
   background: white;
   border-radius: 6px;
   overflow: hidden;
@@ -24,7 +17,6 @@ const ProjectCover = styled.div`
   white-space: nowrap;
   cursor: default;
   border: solid 1px lightgray;
-  /* box-shadow: 0vh 0.5vh 1vh 0.1vh rgba(0, 0, 0, 0.3); */
   max-height: 250px;
 
   > div.top {
@@ -168,8 +160,6 @@ const ProjectCover = styled.div`
     font-size: 0.9em;
     font-weight: bold;
     padding: 10px 30px;
-    /* background-color: white; */
-    /* background-color: rgb(240, 240, 240); */
     background-color: ${color.primary};
     flex: 1 0 auto;
     color: white;
@@ -177,8 +167,6 @@ const ProjectCover = styled.div`
 `;
 
 const UnitLabel = styled.div`
-  //padding: 0.5em 1em;
-  //margin: auto 0 auto auto;
   padding: 0.5em;
   margin: 0 0 auto auto;
   font-size: 0.8em;
@@ -189,15 +177,12 @@ const UnitLabel = styled.div`
   filter: saturate(35%);
 `;
 function Projectcard({ projectInfo, index }) {
-  console.log("projectInfo: ", projectInfo);
   const dispatch = useDispatch();
-  const projects = useSelector((state) => state.user.projects);
   const userInfo = useSelector((state) => state.user.userInfo);
   const titleRef = useRef();
   const descRef = useRef();
   const [isEditOn, setIsEditOn] = useState(false);
   const [modal, setModal] = useState(false);
-  // const [cardData, setCardData] = useState({...projects[index]});
 
   const modalHandler = (modalType) => {
     setModal(modalType);
@@ -239,9 +224,8 @@ function Projectcard({ projectInfo, index }) {
   const deleteProjectHandler = () => {
     axios
       .delete(`${process.env.REACT_APP_API_URL}/project/${projectInfo.id}`)
-      .then((res) => {
-        // console.log(res);
-        window.location.reload(); // 임시로 새로고침 합니다.
+      .then(() => {
+        window.location.reload(); 
       })
       .catch((err) => {
         console.log(err);
@@ -249,7 +233,6 @@ function Projectcard({ projectInfo, index }) {
   };
 
   const handlePartyRequest = (el) => {
-    // console.log(userInfo.id, userInfo)
     if (el === "accept") {
       axios
         .patch(`${process.env.REACT_APP_API_URL}/project/accept`, {
@@ -257,8 +240,8 @@ function Projectcard({ projectInfo, index }) {
           projectId: projectInfo.id,
           isAccept: true,
         })
-        .then((res) => {
-          window.location.reload(); // 임시로 새로고침 합니다.
+        .then(() => {
+          window.location.reload(); 
         })
         .catch((err) => {
           console.log(err);
@@ -270,8 +253,8 @@ function Projectcard({ projectInfo, index }) {
           projectId: projectInfo.id,
           isAccept: false,
         })
-        .then((res) => {
-          window.location.reload(); // 임시로 새로고침 합니다.
+        .then(() => {
+          window.location.reload(); 
         })
         .catch((err) => {
           console.log(err);

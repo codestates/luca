@@ -1,13 +1,11 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import styled from "styled-components";
-import { LoginModal } from "./modals";
-import axios from "axios";
 import { setIsLogin, setUserInfo } from "../redux/rootSlice.js";
-import { useNavigate } from "react-router-dom";
+import { LoginModal, ExitGuestModal } from "./modals";
 import { color, device, contentWidth } from "../styles";
-import { ExitGuestModal } from "./modals";
+import styled from "styled-components";
+import axios from "axios";
 
 const NavigatorContainer = styled.div`
   z-index: 900;
@@ -144,7 +142,6 @@ function Navigator() {
       <Link to="/" className="logo">
         <img src="Luca_logo.png" />
       </Link>
-      <div className="about">{/* <Link to="/">about</Link> */}</div>
       {isLogin ? (
         !userInfo.isGuest ? (
           <div className="profile">
@@ -204,7 +201,6 @@ const Backdrop = styled.div`
   height: auto;
   display: flex;
   justify-content: center;
-  /* background-color: #efffde; */
 `;
 
 const Container = styled.div`
@@ -214,8 +210,6 @@ const Container = styled.div`
   max-width: 1320px;
   margin: auto;
 `;
-
-// =======================================================
 
 const FooterContainer = styled.footer`
   z-index: 999;
@@ -313,16 +307,16 @@ function Footer() {
           <p>Contact</p>
           <ul>
             <li>
-              <a href="https://github.com/codestates/luca">김코딩</a>
+              <a href="https://github.com/portis082">임명섭</a>
             </li>
             <li>
-              <a href="https://github.com/codestates/luca">김코딩</a>
+              <a href="https://github.com/QuatoHub">문현준</a>
             </li>
             <li>
-              <a href="https://github.com/codestates/luca">김코딩</a>
+              <a href="https://github.com/WonjaeJi0801">지원재</a>
             </li>
             <li>
-              <a href="https://github.com/codestates/luca">김코딩</a>
+              <a href="https://github.com/flowervillagearp">이윤성</a>
             </li>
           </ul>
         </LinksContainer>
