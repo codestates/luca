@@ -14,7 +14,7 @@ const CardContainer = styled.div`
   top: ${(props) => (props.isSidebar ? "13vh" : "none")};
   bottom: ${(props) => (props.isSidebar ? "none" : "1vh")};
   right: ${(props) => (props.isSidebar ? "2vh" : "20vh")};
-  width: ${(props) => (props.isSidebar ? "18vh" : "65%")};
+  width: ${(props) => (props.isSidebar ? "18vh" : "50vw")};
   height: ${(props) => (props.isSidebar ? "68vh" : "18vh")};
   background-color: white;
   border-radius: 0vh 1vh 1vh 0vh;
@@ -22,7 +22,7 @@ const CardContainer = styled.div`
   flex-flow: column wrap;
   align-content: baseline;
   box-shadow: 0vh 0vh 1vh rgba(0, 0, 0, 0.5);
-  overflow: ${(props) => (props.isSidebar ? "hidden" : "scroll")};
+  overflow: ${(props) => (props.isSidebar ? "scroll" : "scroll")};
   ::-webkit-scrollbar {
     -webkit-appearance: none;
     display: none;
@@ -74,13 +74,17 @@ const Transform = styled.div`
   z-index: 850;
   position: fixed;
   top: ${(props) => (props.isSidebar ? "10vh" : "none")};
-  bottom: ${(props) => (props.isSidebar ? "none" : "20vh")};
-  right: ${(props) => (props.isSidebar ? "20vh" : "75vw")};
-  width: 2.5vh;
-  height: 2.5vh;
-  border-radius: 1vh 0 0 1vh;
+  bottom: ${(props) => (props.isSidebar ? "none" : "1vh")};
+  right: ${(props) => (props.isSidebar ? "3vh" : "20vh")};
+  background: ${(props) => (props.isSidebar ? "none" : "lightgrey")};
+  width: ${(props) => (props.isSidebar ? " 2.5vh" : "2vh")};
+  height: ${(props) => (props.isSidebar ? " 2.5vh" : "18vh")};
+  border-radius: ${(props) =>
+    props.isSidebar ? "1vh 0 0 1vh" : "1vh 0vh 0vh 1vh"};
+  margin-right: ${(props) => (props.isSidebar ? "none" : "49.5vw")};
   display: flex;
   align-items: center;
+  justify-content: center;
   cursor: pointer;
   > i {
     margin-left: 0.75vh;
@@ -103,6 +107,7 @@ const Opener = styled.div`
   background-color: lightgrey;
   border-radius: 1vh 0 0 1vh;
   box-shadow: 0vh 0vh 1vh rgba(0, 0, 0, 0.5);
+  /* box-shadow: 0vh 1vh 0vh 0vh rgba(0, 0, 0, 0.5); */
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -144,14 +149,18 @@ const Opener = styled.div`
 
 const Card = styled.div`
   z-index: 800;
-  width: 12vh;
-  height: 12vh;
-  padding: 1vh;
+  width: 14vh;
+  height: 14vh;
+  padding-top: 1px;
+  /* padding: 1vh; */
   margin: 0 1.5vh;
   background-color: ${(props) => `rgb${props.color}`};
   filter: ${(props) => (props.blocked ? "brightness(50%)" : "none")};
   box-shadow: 0vh 0.5vh 1vh 0vh rgba(0, 0, 0, 0.3);
   > div.content {
+    padding: 10% 0 10% 7%;
+    width: 82%;
+    height: 80%;
     position: relative;
     font-size: 1.6vh;
     line-height: 2vh;
@@ -215,6 +224,8 @@ const CardAdder = styled.div`
     height: 60%;
     outline: none;
     border: none;
+    /* position: relative;
+    top: -2vh; */
   }
   > button.submit {
     background: white;
@@ -391,14 +402,17 @@ export default function Cardboard({
   };
 
   const cardDragStart = (e) => {
-    e.dataTransfer.setDragImage(e.target, e.target.offsetHeight/2, e.target.offsetWidth/2);
-
+    console.log(e.target);
+    e.dataTransfer.setDragImage(
+      e.target,
+      e.target.offsetHeight / 2,
+      e.target.offsetWidth / 2
+    );
     setDragItemId(e.target.id);
-    // setIsAdderOpen(false)
-    // setIsCardContOpen(false)
     mouseDown(e.target.id);
     console.log("drag start! card id: ", e.target.id);
   };
+
   const cardDragEnd = (e) => {
     mouseUp(e.target.id);
     console.log("drag end! card id: ", e.target.id);
@@ -413,9 +427,11 @@ export default function Cardboard({
         isSidebar={isSidebar}
       >
         {isSidebar ? (
-          <button onClick={handleSidebarModal}>
-            <i className="fa-solid fa-circle-chevron-down"></i>
-          </button>
+          isCardContOpen ? null : (
+            <button onClick={handleSidebarModal}>
+              <i className="fa-solid fa-circle-chevron-down"></i>
+            </button>
+          )
         ) : (
           <button onClick={handleSidebarModal}>
             <i className="fa-solid fa-circle-chevron-up"></i>
@@ -427,21 +443,23 @@ export default function Cardboard({
           return blockData.isBlock && card.id === blockData.cardId ? (
             <div key={card.id}>
               <div style={{ height: "2.5vh" }}></div>
-              <Card
-                id={card.id}
-                color={card.color}
-                blocked={true}
-                draggable
-                onDragStart={cardDragStart}
-                onDragEnd={cardDragEnd}
-              >
-                <div className="content">{card.content}</div>
+              <Card id={card.id} color={card.color} blocked={true}>
+                <div
+                  id={card.id}
+                  draggable
+                  onDragStart={cardDragStart}
+                  onDragEnd={cardDragEnd}
+                  className="content"
+                >
+                  {card.content}
+                </div>
               </Card>
             </div>
           ) : (
             <div key={card.id}>
               {card.userId === userInfo.id ? (
                 <CardDeleter
+                  id={card.id}
                   draggable={false}
                   onClick={() => deleteCard(card.id)}
                 >
@@ -450,14 +468,16 @@ export default function Cardboard({
               ) : (
                 <div style={{ height: "2.5vh" }}></div>
               )}
-              <Card
-                id={card.id}
-                color={card.color}
-                draggable
-                onDragStart={cardDragStart}
-                onDragEnd={cardDragEnd}
-              >
-                <div className="content">{card.content}</div>
+              <Card id={card.id} color={card.color}>
+                <div
+                  id={card.id}
+                  draggable
+                  onDragStart={cardDragStart}
+                  onDragEnd={cardDragEnd}
+                  className="content"
+                >
+                  {card.content}
+                </div>
               </Card>
             </div>
           );
@@ -482,7 +502,6 @@ export default function Cardboard({
           isCardContOpen={isCardContOpen}
           isAdderOpen={isAdderOpen}
           ref={outSection}
-
         >
           {isAdderOpen ? (
             <>
@@ -540,7 +559,7 @@ export default function Cardboard({
                   }
                 }}
                 maxLength={60}
-              // 한/영 글자 수 차이남
+                // 한/영 글자 수 차이남
               />
               {/* <button className="submit" onClick={createCardHandler}>
                 추가
@@ -548,9 +567,7 @@ export default function Cardboard({
             </>
           ) : (
             <div className="adderbox" onClick={adderOpenHandler}>
-              <i
-                className="fa-solid fa-circle-plus"
-              ></i>
+              <i className="fa-solid fa-circle-plus"></i>
             </div>
           )}
         </CardAdder>
