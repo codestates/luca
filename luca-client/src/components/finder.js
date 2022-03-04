@@ -2,7 +2,7 @@ import { useState } from "react";
 import styled from "styled-components";
 
 const Searchfinder = styled.div`
-  z-index: 999;
+  z-index: 920;
   position: fixed;
   top: 50px;
   left: 20px;
@@ -35,6 +35,9 @@ const Searchfinder = styled.div`
   > div.closer {
     flex: 1 0 auto;
     margin: 0 1em;
+    > i {
+      color: gray;
+    }
   }
 
   animation-name: ${(props) => {
@@ -67,7 +70,7 @@ const Searchfinder = styled.div`
 `;
 
 const Pathfinder = styled.div`
-  z-index: 700;
+  z-index: 930;
   position: fixed;
   top: 120px;
   left: 88px;
@@ -93,7 +96,6 @@ const PathContainer = styled.div`
 `;
 
 const PathNode = styled.div`
-  z-index: 750;
   width: 78px;
   height: auto;
   padding: 8px 8px 0 8px;
@@ -185,7 +187,7 @@ export default function Finder({
       <Searchfinder isSearchOn={isSearchOn}>
         {!isSearchOn ? (
           <i
-            className="fa-solid fa-magnifying-glass-plus"
+            className="fa-solid fa-magnifying-glass"
             onClick={() => setIsSearchOn(true)}
           ></i>
         ) : (
@@ -204,7 +206,7 @@ export default function Finder({
                 setTouring(0);
               }}
             >
-              x
+              <i className="fa-solid fa-circle-xmark"></i>
             </div>
           </>
         )}

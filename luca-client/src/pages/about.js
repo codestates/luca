@@ -1,7 +1,7 @@
 import axios from "axios";
 import styled from "styled-components";
 import { Navigator } from "../components/commons";
-import { Footer } from '../components/commons';
+import { Footer } from "../components/commons";
 
 const dummyIntro = [
   {
@@ -69,12 +69,40 @@ const IntroContainer = styled.div`
   }
 `;
 
+const FeatureContainer = styled.div`
+  width: 100vmax;
+  background-color: white;
+  display: flex;
+  align-items: center;
 
+  > div.left {
+    //flex: 3 0 auto;
+    width: 65%;
+    //height: 20vmax;
+    margin: 5vw 0 0 5vw;
+    //border: solid black 1px;
+    //background-color: green;
+    > img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  > div.right {
+    //flex: 2 0 auto;
+    width: 35%;
+    height: 20vmax;
+    margin: 5vw 5vw 0 5vw;
+    border: solid black 1px;
+    //background-color: blue;
+  }
+`;
 
 const guestLoginHandler = () => {
-  axios.get(`${process.env.REACT_APP_API_URL}/user/guest`)
+  axios
+    .get(`${process.env.REACT_APP_API_URL}/user/guest`)
     .then((res) => {
-      console.log(res)
+      console.log(res);
       window.location.reload();
       // axios.get(`${process.env.REACT_APP_API_URL}/profile`)
       // .then((res) => {
@@ -82,25 +110,38 @@ const guestLoginHandler = () => {
       // })
     })
     .catch((err) => {
-      console.log(err)
-    })
-}
+      console.log(err);
+    });
+};
 
 export default function About() {
   return (
     <div>
       <Navigator />
-      {dummyIntro.map((lorem, i) => (
-        <IntroContainer key={i} color={i}>
-          <div className="floater">
-            <div className="title">{lorem.title}</div>
-            <div className="desc">{lorem.desc}</div>
-            <div className="action">
-              <button onClick={guestLoginHandler}>{lorem.button}</button>
+      <>
+        {dummyIntro.slice(0, 1).map((lorem, i) => (
+          <IntroContainer key={i} color={i}>
+            <div className="floater">
+              <div className="title">{lorem.title}</div>
+              <div className="desc">{lorem.desc}</div>
+              <div className="action">
+                <button onClick={guestLoginHandler}>{lorem.button}</button>
+              </div>
             </div>
+          </IntroContainer>
+        ))}
+        <FeatureContainer>
+          <div className="left">
+            <img src="example01.png" />
           </div>
-        </IntroContainer>
-      ))}
+          <div className="right">world</div>
+        </FeatureContainer>
+        <FeatureContainer>
+          <div className="left">hello</div>
+          <div className="right">world</div>
+        </FeatureContainer>
+      </>
+
       <Footer />
     </div>
   );
