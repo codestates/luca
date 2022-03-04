@@ -129,12 +129,12 @@ const Opener = styled.div`
       right: 21vh;
     }
     to {
-      right: 53vw;
+      right: 52.9vw;
     }
   }
   @keyframes openerOut {
     from {
-      right: 53vw;
+      right: 52.9vw;
     }
     to {
       right: 20vh;
@@ -153,13 +153,6 @@ const Card = styled.div`
   filter: ${(props) => (props.blocked ? "brightness(50%)" : "none")};
   box-shadow: 0vh 0.5vh 1vh 0vh rgba(0, 0, 0, 0.3);
   > div.content {
-    margin: -1.5vh 1.5vh;
-    font-size: 2vh;
-    text-align: left;
-    word-break: break-word;
-    overflow: hidden;
-  }
-  > div.delete {
     position: relative;
     font-size: 1.6vh;
     line-height: 2vh;
@@ -234,6 +227,7 @@ const CardAdder = styled.div`
       width: 20px;
       height: 20px;
       border-radius: 50%;
+      border: none;
       cursor: pointer;
     }
     > button.blue {
@@ -242,6 +236,7 @@ const CardAdder = styled.div`
       width: 20px;
       height: 20px;
       border-radius: 50%;
+      border: none;
       cursor: pointer;
     }
     > button.pink {
@@ -250,6 +245,7 @@ const CardAdder = styled.div`
       width: 20px;
       height: 20px;
       border-radius: 50%;
+      border: none;
       cursor: pointer;
     }
 
@@ -382,7 +378,7 @@ export default function Cardboard({
 
   const cardDragStart = (e) => {
     // const img = new Image();
-    // e.dataTransfer.setDragImage(img, 0, 0);
+    // e.dataTransfer.setDragImage(img, "7vh", "7vh");
 
     setDragItemId(e.target.id);
     // setIsAdderOpen(false)
@@ -416,10 +412,9 @@ export default function Cardboard({
       <CardContainer isCardContOpen={isCardContOpen} isSidebar={isSidebar}>
         {cardList.map((card, i) => {
           return blockData.isBlock && card.id === blockData.cardId ? (
-            <div>
+            <div key={card.id}>
               <div style={{ height: "2.5vh" }}></div>
               <Card
-                key={card.id}
                 id={card.id}
                 color={card.color}
                 blocked={true}
@@ -431,7 +426,7 @@ export default function Cardboard({
               </Card>
             </div>
           ) : (
-            <div>
+            <div key={card.id}>
               {card.userId === userInfo.id ? (
                 <CardDeleter
                   draggable={false}
@@ -443,7 +438,6 @@ export default function Cardboard({
                 <div style={{ height: "2.5vh" }}></div>
               )}
               <Card
-                key={card.id}
                 id={card.id}
                 color={card.color}
                 draggable
@@ -508,11 +502,11 @@ export default function Cardboard({
                   }
                 }}
                 maxLength={60}
-                // 한/영 글자 수 차이남
+              // 한/영 글자 수 차이남
               />
-              <button className="submit" onClick={createCardHandler}>
+              {/* <button className="submit" onClick={createCardHandler}>
                 추가
-              </button>
+              </button> */}
             </>
           ) : (
             <i

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { color, device, radius, boxShadow } from '../styles';
+import { color, device, radius, boxShadow } from "../styles";
 import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { DeleteProjectModal } from "./modals";

@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import { useNavigate } from 'react-router-dom';
 import { useState } from "react";
 import styled from "styled-components";
 //import { radialNodes, radialLinkes } from "./d3coodinator/getDescendants";
@@ -15,10 +16,30 @@ import Timer from "./timer";
 //   overflow: visible;
 // `;
 
+const Exit = styled.div`
+  > button {
+    flex: 1 0 auto;
+    margin: 4px 4px 0 4px;
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    background-color: white;
+    border: none;
+    color: rgb(160, 160, 160);
+    cursor: pointer;
+
+    > i {
+      font-size: 1.5em;
+    }
+  }
+  > button:active {
+    transform: translateY(2px);
+  }
+`
 const Controller = styled.div`
-  z-index: 999;
+  z-index: 930;
   position: fixed;
-  top: 120px;
+  top: 150px;
   left: 20px;
   background-color: white;
   border-radius: 6px;
@@ -27,6 +48,7 @@ const Controller = styled.div`
   padding-bottom: 4px;
   flex-direction: column;
   justify-content: space-between;
+
   > button {
     flex: 1 0 auto;
     margin: 4px 4px 0 4px;
@@ -51,7 +73,7 @@ const Controller = styled.div`
 `;
 
 const Scaler = styled.div`
-  z-index: 900;
+  z-index: 930;
   position: fixed;
   bottom: 20px;
   left: 20px;
@@ -60,22 +82,7 @@ const Scaler = styled.div`
   display: flex;
   flex-direction: column;
   /* background-color: cyan; */
-  > div {
-    flex: 1 0 auto;
-    display: flex;
-
-    > div.index {
-      width: 50px;
-      background-color: green;
-    }
-    div.mod {
-      width: 100px;
-      background-color: blue;
-      display: flex;
-      justify-content: space-around;
-    }
-
-    input[type=range] {
+    input[type="range"] {
       -webkit-appearance: none;
       width: 60%;
       border-radius: 14px;
@@ -84,20 +91,34 @@ const Scaler = styled.div`
       background: rgb(160, 160, 160);
     }
 
-    input[type='range']::-webkit-slider-thumb {
+    input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
       background-color: #ecf0f1;
       border: 1px solid #bdc3c7;
-      width: 20px;
-      height: 20px;
+      width: 15px;
+      height: 15px;
       border-radius: 10px;
+      cursor: pointer;
+    }
+    ul.range-labels {
+      margin: 18px -41px 0;
+      padding: 0;
+      list-style: none;
+  
+    li {
+      position: relative;
+      float: left;
+      width: 90.25px;
+      text-align: center;
+      color: #b2b2b2;
+      font-size: 14px;
       cursor: pointer;
     }
   }
 `;
 
 const Rootbox = styled.div`
-  z-index: 990;
+  z-index: 910;
   position: fixed;
   top: ${(props) => {
     return String(props.coordY) + "px";
@@ -118,33 +139,32 @@ const Rootbox = styled.div`
       : "0 0 6px rgba(0, 0, 0, 0.7)"};
 `;
 
-const Nodebox = styled.div`
-  z-index: 990;
-  position: fixed;
-  top: ${(props) => {
-    return String(props.coordY) + "px";
-  }};
-  left: ${(props) => {
-    return String(props.coordX) + "px";
-  }};
+const Nodebox = styled.div.attrs(({ id, coordX, coordY, highlights }) => {
+  return {
+    style: {
+      position: "fixed",
+      left: coordX + "px",
+      top: coordY + "px",
+      boxShadow: highlights.includes(id)
+        ? "0 0 6px red"
+        : "0 0 6px rgba(0, 0, 0, 0.7)",
+    },
+  };
+})`
+  z-index: 900;
+  background-color: ${(props) => props.color};
   padding: 0.8em;
-  background-color: ${(props) =>
-    props.parent === 0 ? "lightyellow" : "white"};
+  background-color: white;
   transform: translate(-50%, -50%);
   text-align: center;
   border-radius: 4px;
   font-size: 12px;
-  font-weight: ${(props) => (props.parent === 0 ? "700" : "normal")};
-  box-shadow: ${(props) =>
-    props.highlights.includes(props.id)
-      ? "0 0 6px red"
-      : "0 0 6px rgba(0, 0, 0, 0.7)"};
 
   > div.delete {
     display: none;
   }
   &:hover {
-    z-index: 999;
+    z-index: 920;
     transform: translate(-50%, -50%) scale(1.5);
     > div.delete {
       display: ${(props) => (props.parent === 0 ? "none" : "block")};
@@ -186,7 +206,18 @@ const Lines = styled.svg`
   }
 `;
 
-
+const ControllerPilot = styled.div`
+  z-index: 999;
+  position: fixed;
+  left: ${(props) => props.x + 10 + "px"};
+  top: ${(props) => props.y + "px"};
+  font-size: 0.8em;
+  padding: 0.3em;
+  border-radius: 0.1em;
+  background-color: lightgrey;
+  color: black;
+  box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.5);
+`;
 
 export default function Canvas3({
   addMindmapHandler,
@@ -195,6 +226,8 @@ export default function Canvas3({
   setTime,
   time,
 }) {
+  const navigate = useNavigate();
+
   // let projectIdRef = window.location.href.split("/").reverse()[0]; // projectIdRef === '12'(string)
   const rawData = useSelector((state) => state.user.mindmapTree);
 
@@ -202,27 +235,38 @@ export default function Canvas3({
     { id: rawData.id, content: rawData.content },
   ]);
 
-  const [mapScale, setMapScale] = useState(2);
-
-  const [highlight, setHighlight] = useState({ list: [], word: "" });
-
-  const [disabled, setDisabled] = useState(false);
-  // 화면이 pan 되지 않으면서 마인드맵의 노드를 drag하기 위해 필요합니다.
-  // 마인드맵의 노드를 onDragStart 이벤트시에는 TransformWrapper 의 disabled={true},
-  // onDragEnd 이벤트시에는 TransformWrapper 의 disabled = {false} 로 바꿔줘야 합니다.
+  const [mapForm, setMapForm] = useState("cluster");
+  const [mapScale, setMapScale] = useState(2); // 마인드맵의 지름 비율
+  const [highlight, setHighlight] = useState({ list: [], word: "" }); // 검색 시 하이라이트
+  const [disabled, setDisabled] = useState(false); // 캔버스에서의 마우스 액션 허용/금지
+  const [adjustScale, setAdjustScale] = useState(false); // 스케일 조절
+  const [pilot, setPilot] = useState({
+    // 일정시간 마우스 오버시 안내 파일럿
+    on: false,
+    coord: { x: 0, y: 0 },
+    message: "",
+  });
 
   const root = hierarchy(rawData);
 
-  //console.log("1. root: ", root);
+  function switchMapFormation(form) {
+    if (form === "cluster") {
+      const treeLayout = cluster()
+        .size([360, (window.innerHeight * root.height * mapScale) / 20]) // * 0.4
+        .separation((a, b) => (a.parent === b.parent ? 1 : 2) / a.depth);
 
-  const treeLayout = cluster()
-    .size([360, (window.innerHeight * root.height * mapScale) / 20]) // * 0.4
-    .separation((a, b) => (a.parent === b.parent ? 1 : 2) / a.depth);
-  treeLayout(root);
+      return treeLayout(root);
+    }
+    if (form === "tree") {
+      const treeLayout = tree()
+        .size([360, (window.innerHeight * root.height * mapScale) / 10]) // * 0.4
+        .separation((a, b) => (a.parent === b.parent ? 1 : 2) / a.depth);
 
-  const scaleHandler = (value) => {
-    setMapScale(value)
+      return treeLayout(root);
+    }
   }
+
+  switchMapFormation(mapForm);
 
   let nodes = root.descendants();
   //console.log("2. nodes: ", nodes);
@@ -258,7 +302,7 @@ export default function Canvas3({
   });
 
   //const nodeScale = Math.pow(0.95, nodes[0].height) * 18;
-  // 기본적인 scale 모델입니다. 비율은 추후 ui에 따라 변경가능
+  // 기본적인 scale 모델입니다. 비율은 추후 ui에 따라 변경가능 -> 이제 mapScale 로 자동조정됩니다.
 
   //console.log("radialNodes: ", radialNodes);
   //console.log("radialLinkes: ", radialLinkes);
@@ -276,6 +320,38 @@ export default function Canvas3({
     console.log("dropped on node! node id: ", e.target);
     // 노드에 드롭 시 노드 id를 가져왔습니다. 이제 mindmap 데이터에서 노드 id를 찾아 자식노드로 추가해줘야합니다.
   };
+
+  let pilotTimerId = undefined;
+
+  const pilotHandler = (e, dir, index) => {
+    if (dir === "in") {
+      pilotTimerId = setTimeout(() => {
+        setPilot({
+          on: true,
+          coord: { x: e.clientX, y: e.clientY },
+          message: index,
+        });
+      }, 700);
+    }
+
+    if (dir === "out") {
+      clearTimeout(pilotTimerId);
+      setPilot({
+        on: false,
+        coord: { x: 0, y: 0 },
+        message: "",
+      });
+    }
+    return;
+  };
+
+  const scaleHandler = (value) => {
+    setMapScale(value)
+  }
+
+  const adjustScaleHandler = () => {
+    setAdjustScale(!adjustScale)
+  }
 
   const simplified = (str) => {
     let viewLength = 10;
@@ -309,50 +385,121 @@ export default function Canvas3({
     setPathData(findParent(id, rawData));
   };
 
-  // $(".img").on(
-  //   "hover",
-  //   function () {
-  //     let setTimeoutConst = setTimeout(function () {
-  //       // do something
-  //     }, delay);
-  //   },
-  //   function () {
-  //     clearTimeout(setTimeoutConst);
-  //   }
-  // );
-
   return (
     <TransformWrapper
       initialScale={2}
       initialPositionX={-window.innerWidth / 2}
       initialPositionY={-window.innerHeight / 2}
       limitToBounds={false}
-      minScale={0.3}
+      minScale={0.2}
       disabled={disabled}
       panning={{ excluded: ["nodebox"] }}
     >
       {({ zoomIn, zoomOut, setTransform, centerView }) => (
         <>
+          {pilot.on ? (
+            <ControllerPilot x={pilot.coord.x} y={pilot.coord.y}>
+              {pilot.message}
+            </ControllerPilot>
+          ) : null}
+
+          <Exit>
+            <button
+              onClick={() => navigate("/main")}
+            >
+              <i className="fa-solid fa-arrow-left"></i>
+            </button>
+          </Exit>
+
           <Controller>
-            <button onClick={() => zoomIn()}>
+            <button
+              onClick={() => zoomIn()}
+              onMouseEnter={(e) => pilotHandler(e, "in", "확대")}
+              onMouseLeave={(e) => pilotHandler(e, "out")}
+            >
               <i className="fa-solid fa-magnifying-glass-plus"></i>
             </button>
-            <button onClick={() => zoomOut()}>
+            <button
+              onClick={() => zoomOut()}
+              onMouseEnter={(e) => pilotHandler(e, "in", "축소")}
+              onMouseLeave={(e) => pilotHandler(e, "out")}
+            >
               <i className="fa-solid fa-magnifying-glass-minus"></i>
             </button>
-            <button onClick={() => centerView(2 / mapScale, 300, "easeOut")}>
-              <i className="fa-solid fa-minimize"></i>
+            <button
+              onClick={() => centerView(1 / mapScale, 300, "easeOut")}
+              onMouseEnter={(e) => pilotHandler(e, "in", "중앙 정렬")}
+              onMouseLeave={(e) => pilotHandler(e, "out")}
+            >
+              <i className="fa-solid fa-expand"></i>
             </button>
-            <button>
-              <i className="fa-solid fa-clock-rotate-left"></i>
+
+            {mapForm === "cluster" ? (
+              <button
+                onClick={() => setMapForm("tree")}
+                onMouseEnter={(e) => pilotHandler(e, "in", "동일한 간격")}
+                onMouseLeave={(e) => pilotHandler(e, "out")}
+              >
+                <i className="fa-solid fa-equals"></i>
+              </button>
+            ) : (
+              <button
+                onClick={() => setMapForm("cluster")}
+                onMouseEnter={(e) => pilotHandler(e, "in", "모양 유지")}
+                onMouseLeave={(e) => pilotHandler(e, "out")}
+              >
+                <i className="fa-solid fa-maximize"></i>
+              </button>
+            )}
+
+            <button
+              onClick={blockHandler}
+              onMouseEnter={(e) => pilotHandler(e, "in", "캔버스 고정")}
+              onMouseLeave={(e) => pilotHandler(e, "out")}
+            >
+              {disabled ? (
+                <i className="fa-solid fa-lock"></i>
+              ) : (
+                <i className="fa-solid fa-lock-open"></i>
+              )}
             </button>
-            <button>
-              <i className="fa-solid fa-border-all"></i>
+            <button
+              onClick={adjustScaleHandler}
+              onMouseEnter={(e) => pilotHandler(e, "in", "스케일")}
+              onMouseLeave={(e) => pilotHandler(e, "out")}
+            >
+              <i className="fa-solid fa-ruler-horizontal"></i>
             </button>
-            <button onClick={blockHandler}>
-              <i className="fa-solid fa-border-none"></i>
-            </button>
-            <Timer timerHandler={timerHandler} setTime={setTime} time={time} />
+            {adjustScale ? (
+              <div>
+                <Scaler>
+                  <ul class="range-labels">
+                    <li>-</li>
+                    <li>+</li>
+                  </ul>
+                  <input
+                    type="range"
+                    defaultValue={2}
+                    min="2"
+                    max="5"
+                    step="1"
+                    onChange={e => scaleHandler(e.target.value)}
+                  />
+                </Scaler>
+              </div>
+            ) : (
+              null
+            )}
+            <div
+              onMouseEnter={(e) => pilotHandler(e, "in", "타이머")}
+              onMouseLeave={(e) => pilotHandler(e, "out")}
+            >
+              <Timer
+                timerHandler={timerHandler}
+                setTime={setTime}
+                time={time}
+              />
+            </div>
           </Controller>
           <Finder
             mapData={radialNodes}
@@ -361,22 +508,11 @@ export default function Canvas3({
             setHighlight={setHighlight}
             setTransform={setTransform}
           />
-          <Scaler>
-            <div>
-              <input
-                type="range"
-                defaultValue={2}
-                min="2"
-                max="5"
-                step="1"
-                onChange={e => scaleHandler(e.target.value)}
-              />
-            </div>
-          </Scaler>
           <TransformComponent>
             {/* <Container> */}
+
             <Rootbox
-              className="nodebox"
+              className="rootbox"
               id={radialNodes[0].data.id}
               coordY={radialNodes[0].y || window.innerHeight / 2}
               coordX={radialNodes[0].x || window.innerWidth / 2}
@@ -385,13 +521,12 @@ export default function Canvas3({
               onDragOver={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log(`- dragover in node (id: ${e.target.id}) -`);
               }}
-              // onDragOver -> onDrop
               onDrop={dropHandler}
             >
               {radialNodes[0].data.content}
             </Rootbox>
+
             {radialNodes.slice(1).map((node, i) => (
               <Nodebox
                 className="nodebox"
@@ -401,7 +536,6 @@ export default function Canvas3({
                 coordY={node.y}
                 coordX={node.x}
                 highlights={highlight.list.map((node) => node.data.id)}
-                //onClick={blockHandler}
                 onClick={() => pathHandler(node.data.id)}
                 onDragOver={(e) => {
                   e.preventDefault();
@@ -423,6 +557,7 @@ export default function Canvas3({
                 </div>
               </Nodebox>
             ))}
+
             <Lines>
               {radialLinkes.map((link, i) => {
                 return (
@@ -436,6 +571,7 @@ export default function Canvas3({
                 );
               })}
             </Lines>
+
             {/* </Container> */}
           </TransformComponent>
         </>
