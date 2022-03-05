@@ -143,10 +143,8 @@ const Nodebox = styled.div.attrs(
         left: coordX + "px",
         top: coordY + "px",
         backgroundColor:
-          highlight && !highlights.includes(id)
-            ? "white"
-            : `rgb${(changeColor)}`,
-        filter: `hue-rotate(${String(depth * 20)}deg)`,
+          highlight && !highlights.includes(id) ? "white" : `rgb${changeColor}`,
+        filter: `hue-rotate(${String(depth * 35)}deg)`,
       },
     };
   }
@@ -249,7 +247,7 @@ export default function Canvas3({
   const [highlight, setHighlight] = useState({ list: [], word: "" }); // 검색 시 하이라이트
   const [disabled, setDisabled] = useState(false); // 캔버스에서의 마우스 액션 허용/금지
   const [adjustScale, setAdjustScale] = useState(false); // 스케일 조절
-  const [changeColor, setChangeColor] = useState("(255, 166, 117)")
+  const [changeColor, setChangeColor] = useState("(255, 166, 117)");
   const [pilot, setPilot] = useState({
     // 일정시간 마우스 오버시 안내 파일럿
     on: false,
@@ -351,8 +349,8 @@ export default function Canvas3({
       Math.floor(Math.random() * 55 + 200),
     ];
     const colorCode = `(${color[0]}, ${color[1]}, ${color[2]})`;
-    setChangeColor(colorCode)
-  }
+    setChangeColor(colorCode);
+  };
 
   const scaleHandler = (value) => {
     setMapScale(value);
