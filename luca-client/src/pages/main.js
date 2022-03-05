@@ -186,8 +186,8 @@ export default function Main() {
     setSorterOn(!sorterOn);
   };
 
-  useEffect(() => {
-    const result = axios
+  useEffect(async () => {
+    const result = await axios
       .get(`${process.env.REACT_APP_API_URL}/project`, {
         "Content-Type": "application/json",
         withCredentials: true,
