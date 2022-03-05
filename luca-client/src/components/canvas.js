@@ -8,6 +8,7 @@ import Timer from "./timer";
 import styled from "styled-components";
 
 const Exit = styled.div`
+  z-index: 999;
   position: fixed;
   > button {
     flex: 1 0 auto;
@@ -135,7 +136,7 @@ const Rootbox = styled.div`
 `;
 
 const Nodebox = styled.div.attrs(
-  ({ id, coordX, coordY, depth, highlights, highlight }) => {
+  ({ id, coordX, coordY, depth, highlights, highlight, changeColor }) => {
     return {
       style: {
         position: "fixed",
@@ -144,7 +145,7 @@ const Nodebox = styled.div.attrs(
         backgroundColor:
           highlight && !highlights.includes(id)
             ? "white"
-            : "rgb(255, 166, 117)",
+            : `rgb${(changeColor)}`,
         filter: `hue-rotate(${String(depth * 20)}deg)`,
       },
     };
@@ -236,7 +237,7 @@ export default function Canvas3({
   time,
 }) {
   const navigate = useNavigate();
-  
+
   const rawData = useSelector((state) => state.user.mindmapTree);
 
   const [pathData, setPathData] = useState([
@@ -248,6 +249,7 @@ export default function Canvas3({
   const [highlight, setHighlight] = useState({ list: [], word: "" }); // 검색 시 하이라이트
   const [disabled, setDisabled] = useState(false); // 캔버스에서의 마우스 액션 허용/금지
   const [adjustScale, setAdjustScale] = useState(false); // 스케일 조절
+  const [changeColor, setChangeColor] = useState("(255, 166, 117)")
   const [pilot, setPilot] = useState({
     // 일정시간 마우스 오버시 안내 파일럿
     on: false,
@@ -341,6 +343,16 @@ export default function Canvas3({
     }
     return;
   };
+
+  const changeColorHandler = () => {
+    const color = [
+      Math.floor(Math.random() * 55 + 200),
+      Math.floor(Math.random() * 55 + 200),
+      Math.floor(Math.random() * 55 + 200),
+    ];
+    const colorCode = `(${color[0]}, ${color[1]}, ${color[2]})`;
+    setChangeColor(colorCode)
+  }
 
   const scaleHandler = (value) => {
     setMapScale(value);
@@ -446,7 +458,13 @@ export default function Canvas3({
                 <i className="fa-solid fa-maximize"></i>
               </button>
             )}
-
+            <button
+              onClick={changeColorHandler}
+              onMouseEnter={(e) => pilotHandler(e, "in", "색상 변경")}
+              onMouseLeave={(e) => pilotHandler(e, "out")}
+            >
+              <i className="fa-solid fa-palette"></i>
+            </button>
             <button
               onClick={blockHandler}
               onMouseEnter={(e) => pilotHandler(e, "in", "캔버스 고정")}
@@ -529,6 +547,7 @@ export default function Canvas3({
                 depth={node.depth}
                 highlight={highlight.word}
                 highlights={highlight.list.map((node) => node.data.id)}
+                changeColor={changeColor}
                 onClick={() => pathHandler(node.data.id)}
                 onDragOver={(e) => {
                   e.preventDefault();
