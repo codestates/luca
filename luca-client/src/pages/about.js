@@ -70,31 +70,58 @@ const IntroContainer = styled.div`
 `;
 
 const FeatureContainer = styled.div`
-  width: 100vmax;
-  background-color: white;
+  width: 100vw;
+  padding: 10rem 0;
   display: flex;
   align-items: center;
+  justify-content: center;
+  z-index: 1;
 
-  > div.left {
-    //flex: 3 0 auto;
-    width: 65%;
-    //height: 20vmax;
-    margin: 5vw 0 0 5vw;
-    //border: solid black 1px;
-    //background-color: green;
-    > img {
-      width: 100%;
-      height: 100%;
-    }
+  > img {
   }
 
-  > div.right {
-    //flex: 2 0 auto;
-    width: 35%;
-    height: 20vmax;
-    margin: 5vw 5vw 0 5vw;
-    border: solid black 1px;
-    //background-color: blue;
+  /* > video {
+    margin-left: 5rem;
+    border: solid lightgrey 6px;
+    border-style: outset;
+    border-radius: 10px;
+    //object-fit: contain;
+    width: 40%;
+    height: 40%;
+  } */
+
+  > div.section {
+    margin: 0 5rem;
+    word-break: keep-all;
+    div.heading {
+      font-size: 2.5em;
+      font-weight: 700;
+      inline-size: 16em;
+      line-height: 1.5em;
+      margin: 0.5em 0;
+    }
+    div.sub {
+      font-size: 1.5em;
+      inline-size: 20em;
+      margin: 0.5em 0;
+    }
+  }
+`;
+
+const Touchpoint = styled.div`
+  height: 50vh;
+  text-align: center;
+  background-color: green;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 2em;
+  > div.catcher {
+  }
+  > button {
+    margin: 1em;
+    font-size: 0.7em;
   }
 `;
 
@@ -131,15 +158,58 @@ export default function About() {
           </IntroContainer>
         ))}
         <FeatureContainer>
-          <div className="left">
-            <img src="example01.png" />
+          <img
+            src="search_n_find.gif"
+            alt="search_n_find"
+            width={"50%"}
+            height={"50%"}
+          ></img>
+          <div className="section">
+            <div className="heading">찾고 싶은 아이디어가 있으신가요?</div>
+            <div className="sub">
+              파편화된 생각들을 검색을 통해 빠르게 찾으세요.
+            </div>
+            <div className="sub">
+              아이디어가 펼쳐진 트랙을 추적할 수 있습니다.
+            </div>
           </div>
-          <div className="right">world</div>
         </FeatureContainer>
+
         <FeatureContainer>
-          <div className="left">hello</div>
-          <div className="right">world</div>
+          <div className="section">
+            <div className="heading">한눈에 확인하고 싶어요.</div>
+            <div className="sub">원하는 스타일로 자유롭게 전환해보세요</div>
+            <div className="sub">
+              간편한 조작으로 다양한 기능을 활용할 수 있습니다
+            </div>
+          </div>
+
+          <img
+            src="view_switch.png"
+            alt="view_switch"
+            width={"50%"}
+            height={"50%"}
+          />
         </FeatureContainer>
+
+        <FeatureContainer>
+          <img src="add_card.jpg" alt="add_card" width={"50%"} height={"50%"} />
+
+          <div className="section">
+            <div className="heading">
+              좋은 아이디어를 위해서 많은 의견이 필요해요.
+            </div>
+            <div className="sub">
+              팀원과 생각을 공유하고, 아이디어를 발전시키세요
+            </div>
+            <div className="sub">모든 것을 실시간으로 함께할 수 있습니다</div>
+          </div>
+        </FeatureContainer>
+
+        <Touchpoint>
+          <div className="catcher">Luca와 함께 아이디어를 마음껏 펼치세요</div>
+          <button>시작하기</button>
+        </Touchpoint>
       </>
 
       <Footer />
