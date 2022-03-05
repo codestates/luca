@@ -139,10 +139,10 @@ export default function Finder({
   };
 
   const searchHandler = (e) => {
-    let word = e.target.value;
+    let word = (e.target.value).toLowerCase();
     if (word.length > 0) {
       let resultArray = mapData.filter((node) => {
-        return node.data.content.includes(word);
+        return node.data.content.toLowerCase().includes(word);
       });
       setHighlight({ list: resultArray, word: word });
     } else {
