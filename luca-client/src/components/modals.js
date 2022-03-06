@@ -40,19 +40,19 @@ const ModalView = styled.div`
   border-radius: 1em;
   text-align: center;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    > div.modal-title {
-      flex: 1 0 auto;
-      margin-bottom: 1em;
-      font-size: 2em;
-      font-weight: bold;
-    }
-    > div.modal-body {
-      flex: 4 0 auto;
-      > div.query {
-        display: flex;
-        margin: 1.5em 0;
-        > div.index {
-          flex: 1 0 auto;
+  > div.modal-title {
+    flex: 1 0 auto;
+    margin-bottom: 1em;
+    font-size: 2em;
+    font-weight: bold;
+  }
+  > div.modal-body {
+    flex: 4 0 auto;
+    > div.query {
+      display: flex;
+      margin: 1.5em 0;
+      > div.index {
+        flex: 1 0 auto;
         text-align: right;
         font-size: 1.2em;
       }
@@ -73,7 +73,7 @@ const ModalView = styled.div`
         flex: 1 0 auto;
         display: flex;
         flex-direction: row;
-        
+
         > input {
           width: 100%;
           height: 40px;
@@ -82,11 +82,11 @@ const ModalView = styled.div`
           border: 1px solid ${color.primaryBorder};
           border-radius: ${radius};
         }
-        
+
         > input:focus {
           border-color: rgba(0, 0, 0, 0.5);
         }
-        
+
         > button {
           min-width: 58px;
           margin-left: 1rem;
@@ -94,7 +94,7 @@ const ModalView = styled.div`
           border-radius: ${radius};
         }
       }
-      
+
       button.private {
         flex: 1 0 auto;
         font-size: 1.2em;
@@ -104,7 +104,7 @@ const ModalView = styled.div`
           props.isTeam ? "none" : `${color.primaryLight};`};
         cursor: pointer;
       }
-      
+
       button.team {
         flex: 1 0 auto;
         font-size: 1.2em;
@@ -123,42 +123,44 @@ const ModalView = styled.div`
         background-color: grey;
         cursor: not-allowed;
       }
-      
+
       button.options:visited {
         color: blue;
         border-radius: 10px;
       }
-      }
     }
-    div.memberContainer {
-      border: 1px solid ${color.primaryBorder};
-      border-radius: ${radius};
-      padding: 1rem 0 1rem 0;
+  }
+  div.memberContainer {
+    border: 1px solid ${color.primaryBorder};
+    border-radius: ${radius};
+    padding: 1rem 0 1rem 0;
 
-      > div {
+    > div {
+      font-size: 1.2em;
+    }
+  }
+  > span {
+    margin-right: 1em;
+    color: rgba(0, 0, 0, 0.5);
+  }
+  > div.modal-footer {
+    flex: 1 0 auto;
+    margin-top: 1em;
+
+    > div.buttons {
+      display: flex;
+      margin: 0 2em;
+      > button {
+        flex: 1 0 auto;
+        padding: 1em;
+        margin: 1em;
+        border-radius: 1em;
+        border: solid grey 1px;
         font-size: 1.2em;
-      }
-    }
-    > span {
-      margin-right: 1em;
-      color: rgba(0, 0, 0, 0.5);
-    }
-    > div.modal-footer {
-      flex: 1 0 auto;
-      margin-top: 1em;
-      
-      > div.buttons {
-        display: flex;
-        margin: 0 2em;
-        > button {
-          flex: 1 0 auto;
-          padding: 1em;
-          margin: 1em;
-          border-radius: 1em;
-          font-size: 1.2em;
       }
       > button.confirm {
         font-weight: bold;
+        border: solid grey 1px;
         background-color: ${color.primaryLight};
         cursor: pointer;
       }
@@ -315,6 +317,8 @@ const LoginModalView = styled.div`
         }
         > button.confirm {
           font-weight: bold;
+          border: none;
+          border-radius: 3em;
           background-color: ${color.primaryLight};
           cursor: pointer;
         }
@@ -358,12 +362,12 @@ export function LoginModal({ modalHandler }) {
       return setErrorMessage("이메일과 비밀번호를 입력해주세요");
     }
     axios
-    .post(`${process.env.REACT_APP_API_URL}/user/login`, loginInfo, {
-      "Content-Type": "application/json",
-      withCredentials: true,
-    })
-    .then((res) => {
-      if (res.status === 200) {
+      .post(`${process.env.REACT_APP_API_URL}/user/login`, loginInfo, {
+        "Content-Type": "application/json",
+        withCredentials: true,
+      })
+      .then((res) => {
+        if (res.status === 200) {
           dispatch(setIsLogin(true));
           dispatch(setUserInfo(res.data.data));
           modalHandler(false);
@@ -409,7 +413,7 @@ export function LoginModal({ modalHandler }) {
             <div style={{ color: "red" }}>{errorMessage}</div>
             <span>계정이 없으신가요?</span>
             <a href="/signup">
-              <span impact>회원가입</span>
+              <span>회원가입</span>
             </a>
           </div>
           <div className="modal-footer">

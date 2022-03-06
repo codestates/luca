@@ -7,8 +7,23 @@ const IntroContainer = styled.div`
   font-family: "Poppins", sans-serif;
   width: 100vw;
   height: 110vh;
-  background-color: orange;
-  background: linear-gradient(to right bottom, tomato, orange);
+
+  background: linear-gradient(-45deg, #83bde3, #87e9c7, #e99a62, #e9ae8c);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+
+  @keyframes gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
   display: flex;
   align-items: center;
   align-content: center;
@@ -18,6 +33,7 @@ const IntroContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    color: #3d261a;
     > div.title {
       flex: 1 0 auto;
       font-size: 3em;
@@ -35,7 +51,7 @@ const IntroContainer = styled.div`
       flex: 1 0 auto;
       > button {
         font-size: 1.4em;
-        padding: 0.5em 1em;
+        padding: 0.8em 1em;
         border-radius: 2em;
         border-style: hidden;
         background-color: rgba(255, 255, 255, 0.4);
@@ -170,7 +186,7 @@ export default function About() {
           <div className="floater">
             <div className="title">모든 것은 아이디어에서 시작됩니다</div>
             <div className="desc">
-              Luca와 함께 아이디어를 기록하고, 구조화하세요. 팀원을 초대해
+              Luca 와 함께 아이디어를 기록하고, 구조화하세요. 팀원을 초대해
               브레인스토밍을 함께 하세요.
             </div>
             <div className="action">
@@ -240,7 +256,7 @@ export default function About() {
 
         <OutroContainer>
           <div className="floater">
-            <div className="title">Luca와 함께 아이디어를 마음껏 펼치세요</div>
+            <div className="title">Luca 와 함께 아이디어를 마음껏 펼치세요</div>
 
             <div className="action">
               <button onClick={guestLoginHandler}>비회원으로 시작하기</button>

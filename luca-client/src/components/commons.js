@@ -12,6 +12,7 @@ const NavigatorContainer = styled.div`
   position: fixed;
   top: 0;
   width: 100vw;
+  min-width: 600px;
   min-height: 10vh;
   background-color: white;
   text-align: center;

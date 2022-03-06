@@ -5,20 +5,18 @@ import { CreateProjectModal } from "../components/modals";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  setProjectList,
-  setIsLogin,
-} from "../redux/rootSlice";
+import { setProjectList, setIsLogin } from "../redux/rootSlice";
 import axios from "axios";
 
 const Container = styled.div`
   margin-top: 10vh;
-  width: 100vw;
+  min-width: 100vw;
   height: auto;
 `;
 
 const Banner = styled.div`
   min-height: 16vh;
+  width: 100vw;
   padding: 4vh 0;
   background: linear-gradient(to right bottom, #ff7f50, orange);
   filter: saturate(100%);
@@ -109,37 +107,42 @@ const Gallery = styled.div`
   min-height: 500px;
 `;
 
-const GuidMessage = styled.div`
-  font: bold;
+const EmptyGallery = styled.div`
+  margin: 0 24px;
+  background-color: rgb(250, 250, 250);
+  padding-top: 24px;
+  padding-bottom: 60px;
+  min-height: 500px;
+`;
+
+const GuideMessage = styled.div`
+  background: #faf8f6;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  position: absolute;
-  top: 60%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 70%;
-  height: 30%;
+  padding: 50px 0;
+  border: solid lightgrey 1px;
+  border-radius: 8px;
+  min-width: 700px;
+
   > p {
     font-size: 1.5em;
-    color: #D2691E;
+    word-spacing: 4px;
+    color: grey;
     margin-top: 0px;
   }
   > div.new-project {
-    width: 8em;
-    padding: 0.6em 1em;
-    border-radius: 2em;
-    border: none;
-    font-size: 1.1em;
+    font-size: 1.5em;
     font-weight: bold;
     text-align: center;
-    color: rgb(70, 70, 70);
+    color: grey;
     cursor: pointer;
-    box-shadow: 0vh 0.5vh 1vh 0.1vh rgba(0, 0, 0, 0.2);
-    background: linear-gradient(to right bottom, #FFB400, orange);
   }
-`
+  > div.new-project:hover {
+    color: darkorange;
+    cursor: pointer;
+  }
+`;
 
 export default function Main() {
   let projects = useSelector((state) => state.user.projects);
@@ -165,8 +168,8 @@ export default function Main() {
           ? -1
           : parseInt(a.updatedAt.split("-").join("")) >
             parseInt(b.updatedAt.split("-").join(""))
-            ? 1
-            : 0;
+          ? 1
+          : 0;
       });
       dispatch(setProjectList(sortedProjects));
       setCurSort("업데이트 순");
@@ -177,8 +180,8 @@ export default function Main() {
           ? -1
           : parseInt(a.createdAt.split("-").join("")) >
             parseInt(b.createdAt.split("-").join(""))
-            ? 1
-            : 0;
+          ? 1
+          : 0;
       });
       dispatch(setProjectList(sortedProjects));
       setCurSort("생성일 순");
@@ -235,18 +238,27 @@ export default function Main() {
               ) : null}
             </div>
           </Sorter>
-          <Gallery>
-            {
-              projects.length > 0 ?
-                projects.map((project, i) => (
-                  <Projectcard projectInfo={project} index={i} key={project.id} />
-                )) :
-                <GuidMessage>
-                  <p>아직 프로젝트가 없습니다. 새로운 프로젝트를 시작해보세요!</p>
-                  <div className="new-project" onClick={() => modalHandler("createProject")}>새프로젝트</div>
-                </GuidMessage>
-            }
-          </Gallery>
+
+          {projects.length > 0 ? (
+            <Gallery>
+              {projects.map((project, i) => (
+                <Projectcard projectInfo={project} index={i} key={project.id} />
+              ))}
+            </Gallery>
+          ) : (
+            <EmptyGallery>
+              <GuideMessage>
+                <p>아직 프로젝트가 없습니다. 새로운 프로젝트를 시작해보세요!</p>
+
+                <div
+                  className="new-project"
+                  onClick={() => modalHandler("createProject")}
+                >
+                  프로젝트 만들기
+                </div>
+              </GuideMessage>
+            </EmptyGallery>
+          )}
         </Section>
         <footercontainer>
           <Footer />

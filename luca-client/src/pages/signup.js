@@ -22,7 +22,8 @@ const SignupPage = styled.div`
   align-items: center;
   height: 70vh;
   width: 100%;
-  > div,title {
+  > div,
+  title {
     flex: 1 0 auto;
     margin-bottom: 1em;
     font-size: 2em;
@@ -47,6 +48,9 @@ const Registrybox = styled.div`
       height: 90px;
       display: flex;
       align-items: center;
+      > img {
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+      }
     }
     > div {
       display: flex;
@@ -75,6 +79,7 @@ const Registrybox = styled.div`
         height: 52px;
         font-weight: bold;
         background-color: ${color.primaryLight};
+        border: none;
         border-radius: ${radius};
         cursor: pointer;
         margin-left: 10px;
@@ -92,15 +97,15 @@ const Registrybox = styled.div`
       }
     }
     > button.submit {
-        font-weight: bold;
-        background-color: ${color.primaryLight};
-        color: ${color.white};
-        width: 200px;
-        height: 40px;
-        display: flex;
-        justify-content: center;
-        border-radius: ${radius};
-        cursor: pointer;
+      font-weight: bold;
+      background-color: ${color.primaryLight};
+      color: ${color.white};
+      width: 200px;
+      height: 40px;
+      display: flex;
+      justify-content: center;
+      border-radius: ${radius};
+      cursor: pointer;
     }
   }
 `;
@@ -114,12 +119,7 @@ const Input = styled.input`
   border-radius: ${radius};
 `;
 
-const InputForm = ({
-  value = "",
-  type = "text",
-  placeholder,
-  handleValue,
-}) => {
+const InputForm = ({ value = "", type = "text", placeholder, handleValue }) => {
   const handleOnChange = (event) => {
     handleValue(event.target.value);
   };
@@ -131,7 +131,7 @@ const InputForm = ({
       onChange={handleOnChange}
     />
   );
-}
+};
 const InvalidMessage = styled.p`
   margin: 0;
   font-size: 0.875rem;
@@ -175,7 +175,7 @@ export default function Signup() {
     } else {
       setIsValidEmailCheck(true);
     }
-  }
+  };
 
   const onChangeUsername = (val) => {
     setName(val);
@@ -205,7 +205,7 @@ export default function Signup() {
     } else {
       setIsValidPasswordConfirm(true);
     }
-  }
+  };
 
   const SignupHandler = () => {
     if (
@@ -228,25 +228,28 @@ export default function Signup() {
       isValidPasswordConfirm
     ) {
       axios
-        .post(`${process.env.REACT_APP_API_URL}/user/signup`,
+        .post(
+          `${process.env.REACT_APP_API_URL}/user/signup`,
           {
             email,
             name,
-            password
-          }, {
-          "Content-Type": "application/json",
-          withCredentials: true,
-        })
+            password,
+          },
+          {
+            "Content-Type": "application/json",
+            withCredentials: true,
+          }
+        )
         .then((res) => {
           if (res.status === 201) {
             dispatch(setIsLogin(true));
             dispatch(setUserInfo(res.data.data));
-            navigate("/")
+            navigate("/");
           }
         })
         .catch((err) => {
           if (err.response.status === 400) {
-            console.log(err)
+            console.log(err);
           }
         });
     }
@@ -254,42 +257,53 @@ export default function Signup() {
 
   const sendMail = (email) => {
     axios
-      .post(`${process.env.REACT_APP_API_URL}/user/checkAndMail`, { email: email }, {
-        "Content-Type": "application/json",
-        withCredentials: true,
-      }).then((res => {
-        if (res.data.data === null) {
-          setDuplicateEmail("이미 존재하는 이메일입니다.")
-        } else {
-          setDuplicateEmail("사용가능한 이메일입니다.")
-          setEmailCode(res.data.data.code)
+      .post(
+        `${process.env.REACT_APP_API_URL}/user/checkAndMail`,
+        { email: email },
+        {
+          "Content-Type": "application/json",
+          withCredentials: true,
         }
-      }))
-  }
+      )
+      .then((res) => {
+        if (res.data.data === null) {
+          setDuplicateEmail("이미 존재하는 이메일입니다.");
+        } else {
+          setDuplicateEmail("사용가능한 이메일입니다.");
+          setEmailCode(res.data.data.code);
+        }
+      });
+  };
 
   return (
     <div>
       <Navigator />
       <Backdrop>
         <SignupPage>
-          <div className='title'>회원가입</div>
+          <div className="title">회원가입</div>
           <Registrybox>
             <div>
               <div className="emailbox">
                 <InputForm
                   value={email}
-                  placeholder='이메일'
+                  placeholder="이메일"
                   handleValue={onChangeEmail}
                 />
-                <button onClick={() => {
-                  sendMail(email)
-                }}>인증</button>
+                <button
+                  onClick={() => {
+                    sendMail(email);
+                  }}
+                >
+                  인증
+                </button>
               </div>
             </div>
 
             <div>
               {isValidEmail ? null : (
-                <InvalidMessage>이메일 형식이 유효하지 않습니다.</InvalidMessage>
+                <InvalidMessage>
+                  이메일 형식이 유효하지 않습니다.
+                </InvalidMessage>
               )}
               {emailDuplicate !== "이미 존재하는 이메일입니다." ? null : (
                 <InvalidMessage>{emailDuplicate}</InvalidMessage>
@@ -300,7 +314,7 @@ export default function Signup() {
               <div>
                 <InputForm
                   value={emailConfirm}
-                  placeholder='코드'
+                  placeholder="인증 코드"
                   handleValue={onChangeEmailConfirm}
                 />
               </div>
@@ -316,7 +330,7 @@ export default function Signup() {
               <div>
                 <InputForm
                   value={name}
-                  placeholder='닉네임'
+                  placeholder="닉네임"
                   handleValue={onChangeUsername}
                 />
               </div>
@@ -334,9 +348,9 @@ export default function Signup() {
               <div>
                 <InputForm
                   value={password}
-                  placeholder='비밀번호'
+                  placeholder="비밀번호"
                   handleValue={onChangePassword}
-                  type='password'
+                  type="password"
                 />
               </div>
             </div>
@@ -344,8 +358,8 @@ export default function Signup() {
             <div>
               {isValidPassword ? null : (
                 <InvalidMessage>
-                  비밀번호는 최소 8자리 이상이어야 하며 영문자, 숫자,
-                  특수문자가 1개 이상 사용되어야 합니다.
+                  비밀번호는 최소 8자리 이상이어야 하며 영문자, 숫자, 특수문자가
+                  1개 이상 사용되어야 합니다.
                 </InvalidMessage>
               )}
             </div>
@@ -354,9 +368,9 @@ export default function Signup() {
               <div>
                 <InputForm
                   value={passwordConfirm}
-                  placeholder='비밀번호 확인'
+                  placeholder="비밀번호 확인"
                   handleValue={onChangePasswordConfirm}
-                  type='password'
+                  type="password"
                 />
               </div>
             </div>
@@ -369,20 +383,34 @@ export default function Signup() {
 
             <div>
               <div>
-                <button className='submit' onClick={SignupHandler}>회원가입</button>
+                <button className="submit" onClick={SignupHandler}>
+                  회원가입
+                </button>
               </div>
             </div>
 
             <div>
               <div className="oauthbox">
-                <img src={kakaoIcon} alt='카카오 아이콘' onClick={requestKakaoLogin}></img>
-                <img src={googleIcon} alt='카카오 아이콘' onClick={requestGoogleLogin}></img>
-                <img src={naverIcon} alt='카카오 아이콘' onClick={requestNaverLogin}></img>
+                <img
+                  src={kakaoIcon}
+                  alt="카카오 아이콘"
+                  onClick={requestKakaoLogin}
+                ></img>
+                <img
+                  src={googleIcon}
+                  alt="카카오 아이콘"
+                  onClick={requestGoogleLogin}
+                ></img>
+                <img
+                  src={naverIcon}
+                  alt="카카오 아이콘"
+                  onClick={requestNaverLogin}
+                ></img>
               </div>
             </div>
           </Registrybox>
         </SignupPage>
       </Backdrop>
-    </div >
+    </div>
   );
 }
