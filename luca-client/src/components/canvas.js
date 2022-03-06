@@ -183,12 +183,11 @@ const Nodebox = styled.div.attrs(
 
       > div.delete-node {
         position: absolute;
-        top: -2px;
-        right: -2px;
-        width: 1.45em;
-        height: 1.45em;
+        top: -3px;
+        right: -3px;
+        width: 1.2em;
+        height: 1.2em;
         border-radius: 1em;
-        background-color: white;
 
         > i {
           height: 100%;
@@ -561,7 +560,7 @@ export default function Canvas3({
                     className="delete-node"
                     onClick={(e) => deleteMindmapHandler(e, node.data.id)}
                   >
-                    <i className="fa-solid fa-circle-xmark"></i>
+                    <i class="fa-solid fa-xmark"></i>
                   </div>
                   {node.data.content}
                 </div>
