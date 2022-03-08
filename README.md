@@ -1,6 +1,6 @@
-# <span style="color:rgba(92, 201, 165)">Luca</span>
-
 ![](https://images.velog.io/images/portis082/post/7a37c12f-7979-43a4-b68b-99e6dd30a30f/Luca_logo.jpg)
+
+# <span>Luca</span>
 
 브레인 스토밍에서 나온 아이디어를 마인드맵으로 구성할 수 있는 실시간 아이디에이션 기획 툴입니다.
 
@@ -34,31 +34,61 @@
 
 <br />
 
-## 📚 &nbsp; Wiki
+## 📚 &nbsp; Document
 
-<a href="https://github.com/codestates/luca/wiki">Github wiki 바로가기</a>
+- <a href="https://www.notion.so/4-CodeJunkies-Luca-ba9bc432b86f449dbec4a71bff86f40f">Notion 바로가기</a>
+
+- <a href="https://github.com/codestates/luca/wiki">Wiki 바로가기</a>
 
 <br />
 
 ## 🔗 &nbsp; Link
 
-`Main` > <a href="https://github.com/codestates/luca">https://github.com/codestates/luca</a>
+- `Main` > <a href="https://github.com/codestates/luca">https://github.com/codestates/luca</a>
 
-`Client` > <a href="https://github.com/codestates/luca/tree/main/luca-client">https://github.com/codestates/luca/tree/main/luca-client</a>
+- `Client` > <a href="https://github.com/codestates/luca/tree/main/luca-client">https://github.com/codestates/luca/tree/main/luca-client</a>
 
-`Server`> <a href="https://github.com/codestates/luca/tree/main/luca-server">https://github.com/codestates/luca/tree/main/luca-server</a>
-
-<br />
-
-# 🙋🏻 &nbsp; <span style="color:rgba(92, 201, 165)">Luca</span> 서비스 소개
+- `Server`> <a href="https://github.com/codestates/luca/tree/main/luca-server">https://github.com/codestates/luca/tree/main/luca-server</a>
 
 <br />
 
-## ❓ 어떤 기술이 사용되었나요
+# 🙋🏻 &nbsp; <span>Luca</span> 서비스 소개
+
+<br />
+
+### • About and Main
+
+<img src="./luca-client/public/pre5.gif"/>
 
 &nbsp;
 
-![](https://images.velog.io/images/quato/post/35534804-1669-401a-8f3c-558800322996/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA%202022-03-02%20%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB%2011.42.23.png)
+### • 비회원 로그인 (체험하기)
+
+<img src="./luca-client/public/pre1.gif"/>
+
+&nbsp;
+
+### • 팀 프로젝트 생성 (팀원 초대)
+
+<img src="./luca-client/public/pre2.gif"/>
+
+&nbsp;
+
+### • 실시간 카드, 마인드맵 동작
+
+<img src="./luca-client/public/pre3.gif"/>
+
+&nbsp;
+
+### • 검색 및 컨트롤 패널
+
+<img src="./luca-client/public/pre4.gif"/>
+
+&nbsp;
+
+## ❓ 어떤 기술이 사용되었나요
+
+<img src="./luca-client/public/stack.png"/>
 
 <br />
 
