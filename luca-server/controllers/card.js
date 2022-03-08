@@ -1,46 +1,32 @@
-const { users, cards, projects } = require("../models");
-const { isAuthorized } = require('./token');
+const { cards } = require("../models");
 
 module.exports = {
-    post: async (req, res) => {
-        const { userId, projectId, content } = req.body;
-        if (!userId || !projectId || !content) {
-            return res
-                .status(422)
-                .json({ message: "Insufficient parameters supplied" });
-        } else {
-            try {
-                await cards.create(
-                    {
-                        userId: userId,
-                        projectId: projectId,
-                        content: content,
-                        storage: "card",
-                    });
-                res.status(201).json({ message: 'Create card success' });
-            } catch (err) {
-                res.status(500).json({ message: "Internal server error" });
-            }
-        }
+    create: async (userId, content, color, projectId) => {
+        const result = await cards.create(
+            {
+                userId: userId,
+                projectId: projectId,
+                content: content,
+                parent: null,
+                storage: "card",
+                color: color
+            });
+        return result;
     },
 
-    get: async (req, res) => {
-        try {
-            const projectId = req.params.projectId;
-            const cardInfo = await cards.findAll({ where: { projectId } });
-            res.status(200).json({ data: cardInfo, message: 'Get card list success' });
-        } catch (err) {
-            res.status(500).json({ message: "Internal server error" });
-        }
+    get: async (projectId) => {
+        const cardInfo = await cards.findAll({
+            where: {
+                projectId,
+                storage: "card"
+            },
+            order: [["id", "DESC"]],
+            raw: true
+        });
+        return cardInfo;
     },
 
-    delete: async (req, res) => {
-        try {
-            const cardId = req.params.id;
-            await cards.destroy({ where: { id: cardId } });
-            res.status(200).json({ message: 'Delete card success' });
-        } catch (err) {
-            res.status(500).json({ message: "Internal server error" });
-        }
-    }
+    delete: async (cardId) => {
+        await cards.destroy({ where: { id: cardId } });
+    },
 };

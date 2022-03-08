@@ -1,29 +1,26 @@
-const app = require('./index')
-const server = require('http').createServer(app);
-const io = require('socket.io')(server, { cors: {origin: "*"}});
-const project = io.of('/project1')
+const app = require("./index");
+const server = require("http").createServer(app);
+const io = require("socket.io")(server, { cors: { origin: "*" } });
+const socketCanvas = require("./controllers/canvas");
 
-project.on("connection", (socket) => {
-  console.log(socket.id);
-  socket.emit("conSuccess", 'success');
+try {
+  io.on("connection", (socket) => {
+    socket.on("enterRoom", (roomName) => {
+      socket.join(roomName);
+      socket.emit("enterRoom", socket.id);
+      socket.to(roomName).emit("enterRoom", socket.id);
+      console.log("SOCKETIO connect EVENT: ", socket.id, " client connect");
+    });
 
-  console.log(socket.nsp)
+    socket.on("disconnect", () => {
+      socket.rooms.forEach((room) => socket.to(room).emit("bye"));
+      console.log("SOCKETIO disconnect EVENT: ", socket.id, " client disconnect");
+    });
 
-  socket.on("add", (data) =>{
-    console.log(socket.nsp)
-    console.log('==add==', socket.id);
-    console.log(data);
-    socket.emit("addReply", {'Tree': 'tree1'});
-    socket.broadcast.emit("addReply", {'Tree': 'tree1'});
+    socketCanvas(socket);
   });
-
-  socket.on("delete", (data) =>{
-    console.log(socket.nsp)
-    console.log('==delete==');
-    console.log(data);
-    socket.emit("deleteReply", { 'Tree': 'tree2'});
-    socket.broadcast.emit("deleteReply", {'Tree': 'tree2'});
-  });
-});
+} catch (err) {
+  console.log(err);
+}
 
 module.exports = server;

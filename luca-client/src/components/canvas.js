@@ -1,362 +1,590 @@
-import * as d3 from "d3";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import { hierarchy, tree, cluster } from "d3";
+import Finder from "./finder";
+import Timer from "./timer";
 import styled from "styled-components";
-import { useState, useRef, useEffect } from "react";
-import { root, nodes, links } from "./d3coodinator/getDescendants";
 
-export default function Canvas() {
-  const Frame = styled.div`
-    width: 100%;
-    height: 100%;
-    background-color: lightsalmon;
-    /* border: solid red 3px; */
-    text-align: center;
-    overflow: hidden;
-  `;
-  const MapContainer = styled.div`
-    position: relative;
-    background-color: lightgrey;
-    top: 0;
-    left: 0;
-    width: ${(props) => 200 / props.viewRatio}%;
-    height: ${(props) => 200 / props.viewRatio}%;
-    transform: scale(${(props) => props.viewRatio});
-    transform-origin: left top; // todo: 커서위치 props로 줄 것
-    text-align: left;
-    > svg {
+const Exit = styled.div`
+  z-index: 999;
+  position: fixed;
+  > button {
+    flex: 1 0 auto;
+    margin: 4px 4px 0 4px;
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    background-color: white;
+    border: none;
+    color: rgb(160, 160, 160);
+    cursor: pointer;
+
+    > i {
+      font-size: 1.5em;
     }
-  `;
+  }
+  > button:active {
+    transform: translateY(2px);
+  }
+`;
+const Controller = styled.div`
+  z-index: 930;
+  position: fixed;
+  top: 150px;
+  left: 20px;
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 0vh 0vh 1vh rgba(0, 0, 0, 0.3);
+  display: flex;
+  padding-bottom: 4px;
+  flex-direction: column;
+  justify-content: space-between;
 
-  const drag = (simulation) => {
-    function dragstarted(event, d) {
-      if (!event.active) simulation.alphaTarget(0.3).restart();
-      d.fx = d.x;
-      d.fy = d.y;
+  > button {
+    flex: 1 0 auto;
+    margin: 4px 4px 0 4px;
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    background-color: white;
+    border: solid lightgrey 1px;
+    color: rgb(160, 160, 160);
+
+    > i {
+      font-size: 1.5em;
+    }
+  }
+  > button:hover {
+    background-color: rgb(160, 160, 160);
+    color: white;
+  }
+  > button:active {
+    transform: translateY(2px);
+  }
+`;
+
+const Scaler = styled.div`
+  z-index: 930;
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 150px;
+  height: 50px;
+  display: flex;
+  flex-direction: column;
+  input[type="range"] {
+    -webkit-appearance: none;
+    width: 60%;
+    border-radius: 14px;
+    height: 4px;
+    border: 1px solid #bdc3c7;
+    background: rgb(160, 160, 160);
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    background-color: #ecf0f1;
+    border: 1px solid #bdc3c7;
+    width: 15px;
+    height: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  ul.range-labels {
+    margin: 18px -41px 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      position: relative;
+      float: left;
+      width: 90.25px;
+      text-align: center;
+      color: #b2b2b2;
+      font-size: 14px;
+      cursor: pointer;
+    }
+  }
+`;
+
+const Rootbox = styled.div`
+  z-index: 910;
+  position: fixed;
+  top: ${(props) => {
+    return String(props.coordY) + "px";
+  }};
+  left: ${(props) => {
+    return String(props.coordX) + "px";
+  }};
+  transform: translate(-50%, -50%);
+  background-color: rgb(70, 70, 70);
+  text-align: center;
+  line-height: 1.2em;
+  inline-size: 8em;
+  border-radius: 8em;
+  border: solid grey 2px;
+
+  > div.rootcontent {
+    font-size: 1em;
+    font-weight: 700;
+    padding: 1em;
+    color: white;
+    word-break: keep-all;
+  }
+`;
+
+const Nodebox = styled.div.attrs(
+  ({ id, coordX, coordY, depth, highlights, highlight, changeColor }) => {
+    return {
+      style: {
+        position: "fixed",
+        left: coordX + "px",
+        top: coordY + "px",
+        backgroundColor:
+          highlight && !highlights.includes(id) ? "white" : `rgb${changeColor}`,
+        filter: `hue-rotate(${String(depth * 35)}deg)`,
+      },
+    };
+  }
+)`
+  z-index: 900;
+  font-size: 0.8em;
+  padding: 0.5em;
+  border: solid grey 1px;
+  border-radius: 3em;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  font-weight: bold;
+
+  > div.small {
+    display: block;
+    padding: 1em;
+  }
+
+  > div.large {
+    display: none;
+  }
+
+  &:hover {
+    z-index: 920;
+    transform: translate(-50%, -50%) scale(1.5);
+    > div.small {
+      display: none;
     }
 
-    function dragged(event, d) {
-      d.fx = event.x;
-      d.fy = event.y;
+    > div.large {
+      padding: 0.8em;
+      display: block;
+      inline-size: 8em;
+      line-height: 1.5em;
+      word-break: break-word;
+
+      > div.delete-node {
+        position: absolute;
+        top: -3px;
+        right: -3px;
+        width: 1.2em;
+        height: 1.2em;
+        border-radius: 1em;
+
+        > i {
+          height: 100%;
+          color: grey;
+          cursor: pointer;
+        }
+        > i:hover {
+          color: coral;
+        }
+      }
     }
+  }
+`;
 
-    function dragended(event, d) {
-      if (!event.active) simulation.alphaTarget(0);
-      d.fx = null;
-      d.fy = null;
-    }
+const Lines = styled.svg`
+  width: 100vw;
+  height: 100vh;
+  stroke: rgb(100, 100, 100);
+  overflow: visible;
+`;
 
-    return d3
-      .drag()
-      .on("start", dragstarted)
-      .on("drag", dragged)
-      .on("end", dragended);
-  };
+const Line = styled.line`
+  stroke-width: 1px;
+`;
 
-  const canvasRef = useRef();
-  const svgRef = useRef();
+const ControllerPilot = styled.div`
+  z-index: 999;
+  position: fixed;
+  left: ${(props) => props.x + 10 + "px"};
+  top: ${(props) => props.y + "px"};
+  font-size: 0.8em;
+  padding: 0.3em;
+  border-radius: 0.1em;
+  background-color: lightgrey;
+  color: black;
+  box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.5);
+`;
 
-  const [viewRatio, setViewRatio] = useState(1);
-  const [screen, setScreen] = useState({
-    top: 0,
-    left: 0,
+export default function Canvas3({
+  addMindmapHandler,
+  deleteMindmapHandler,
+  timerHandler,
+  setTime,
+  time,
+}) {
+  const navigate = useNavigate();
+
+  const rawData = useSelector((state) => state.user.mindmapTree);
+
+  const [pathData, setPathData] = useState([
+    { id: rawData.id, content: rawData.content },
+  ]);
+
+  const [mapForm, setMapForm] = useState("cluster");
+  const [mapScale, setMapScale] = useState(3); // 마인드맵의 지름 비율
+  const [highlight, setHighlight] = useState({ list: [], word: "" }); // 검색 시 하이라이트
+  const [disabled, setDisabled] = useState(false); // 캔버스에서의 마우스 액션 허용/금지
+  const [adjustScale, setAdjustScale] = useState(false); // 스케일 조절
+  const [changeColor, setChangeColor] = useState("(255, 166, 117)");
+  const [pilot, setPilot] = useState({
+    // 일정시간 마우스 오버시 안내 파일럿
+    on: false,
+    coord: { x: 0, y: 0 },
+    message: "",
   });
-  const mapConRef = useRef();
 
-  useEffect(() => {
-    //console.log(mapConRef.current.offsetWidth);
-  }, []);
+  const root = hierarchy(rawData);
 
-  const wheelHandler = (e) => {
-    if (viewRatio >= 0.2) {
-      setViewRatio(viewRatio + 0.001 * e.deltaY);
-    } else {
-      setViewRatio(0.2);
+  function switchMapFormation(form) {
+    if (form === "cluster") {
+      const treeLayout = cluster()
+        .size([360, (window.innerHeight * root.height * mapScale) / 20])
+        .separation((a, b) => (a.parent === b.parent ? 1 : 2) / a.depth);
+
+      return treeLayout(root);
     }
-    //console.log("viewRatio: ", viewRatio);
-    //console.log("mapConRef: ", mapConRef.current.offsetWidth);
+    if (form === "tree") {
+      const treeLayout = tree()
+        .size([360, (window.innerHeight * root.height * mapScale) / 10])
+        .separation((a, b) => (a.parent === b.parent ? 1 : 2) / a.depth);
+
+      return treeLayout(root);
+    }
+  }
+
+  switchMapFormation(mapForm);
+
+  let nodes = root.descendants();
+
+  let radialNodes = nodes.map((node) => {
+    let angle = ((node.x - 90) / 180) * Math.PI;
+    let radius = node.y;
+    return {
+      ...node,
+      x: radius * Math.cos(angle) + window.innerWidth / 2,
+      y: radius * Math.sin(angle) + window.innerHeight / 2,
+    };
+  });
+
+  let links = root.links();
+
+  function transformer(x, y) {
+    let angle = ((x - 90) / 180) * Math.PI;
+    let radius = y;
+    return {
+      x: radius * Math.cos(angle) + window.innerWidth / 2,
+      y: radius * Math.sin(angle) + window.innerHeight / 2,
+    };
+  }
+
+  let radialLinkes = links.map((path) => {
+    return {
+      source: transformer(path.source.x, path.source.y),
+      target: transformer(path.target.x, path.target.y),
+      depth: path.source.depth,
+      height: path.source.height,
+    };
+  });
+
+  const blockHandler = () => {
+    setDisabled(!disabled);
   };
 
-  let posX,
-    posY = 100;
-
-  const panScreenStart = (e) => {
-    const img = new Image();
-    e.dataTransfer.setDragImage(img, 0, 0);
-    posX = e.clientX;
-    posY = e.clientY;
+  const dropHandler = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addMindmapHandler(e.target.id);
   };
 
-  const panScreen = (e) => {
-    const limitX = e.target.offsetLeft + (e.clientX - posX) <= 0;
-    const limitY = e.target.offsetTop + (e.clientY - posY) <= 0;
+  let pilotTimerId = undefined;
 
-    e.target.style.left = limitX
-      ? `${e.target.offsetLeft + (e.clientX - posX)}px`
-      : "0px";
-    e.target.style.top = limitY
-      ? `${e.target.offsetTop + (e.clientY - posY)}px`
-      : "0px";
+  const pilotHandler = (e, dir, index) => {
+    if (dir === "in") {
+      pilotTimerId = setTimeout(() => {
+        setPilot({
+          on: true,
+          coord: { x: e.clientX, y: e.clientY },
+          message: index,
+        });
+      }, 0);
+    }
 
-    posX = limitX ? e.clientX : 0;
-    posY = limitY ? e.clientY : 0;
+    if (dir === "out") {
+      clearTimeout(pilotTimerId);
+      setPilot({
+        on: false,
+        coord: { x: 0, y: 0 },
+        message: "",
+      });
+    }
+    return;
   };
 
-  const panScreenEnd = (e) => {
-    const limitX = e.target.offsetLeft + (e.clientX - posX) <= 0;
-    const limitY = e.target.offsetTop + (e.clientY - posY) <= 0;
-
-    e.target.style.left = limitX
-      ? `${e.target.offsetLeft + (e.clientX - posX)}px`
-      : "0px";
-    e.target.style.top = limitY
-      ? `${e.target.offsetTop + (e.clientY - posY)}px`
-      : "0px";
-
-    setScreen({ top: e.target.style.top, left: e.target.style.left });
+  const changeColorHandler = () => {
+    const color = [
+      Math.floor(Math.random() * 55 + 200),
+      Math.floor(Math.random() * 55 + 200),
+      Math.floor(Math.random() * 55 + 200),
+    ];
+    const colorCode = `(${color[0]}, ${color[1]}, ${color[2]})`;
+    setChangeColor(colorCode);
   };
 
-  // const root = d3.hierarchy(data);
+  const scaleHandler = (value) => {
+    setMapScale(value);
+  };
 
-  useEffect(() => {
-    // const svg = d3.select(svgRef.current);
-    // const fild = d3.select(canvasRef.current);
-    // const svg = fild.create('svg')
-    //   .attr("viewBox", [-100 / 2, -100 / 2, 100, 100]);
+  const adjustScaleHandler = () => {
+    setAdjustScale(!adjustScale);
+  };
 
-    const simulation = d3
-      .forceSimulation(nodes)
-      .force(
-        "link",
-        d3
-          .forceLink(links)
-          .id((d) => d.id)
-          .distance(0)
-          .strength(1)
-      )
-      .force("charge", d3.forceManyBody().strength(-50))
-      .force("x", d3.forceX())
-      .force("y", d3.forceY());
+  const simplified = (str) => {
+    let viewLength = 10;
+    if (str.length > viewLength) {
+      return str.slice(0, viewLength) + "...";
+    } else {
+      return str;
+    }
+  };
 
-    const svg = d3
-      .selectAll("page")
-      .append("svg")
-      .attr("viewBox", [-100, -50, 200, 100]);
+  const findParent = (id, treeData) => {
+    const rootContent = treeData.content;
+    const array = [{ id: id }];
+    const findId = (tree) => {
+      if (tree.children !== undefined) {
+        for (let i = 0; i < tree.children.length; i++) {
+          findId(tree.children[i]);
+        }
+      }
+      if (tree.id === array[0].id && tree.parent !== 0) {
+        array.unshift({ id: tree.parent });
+        array[1].content = tree.content;
+      }
+    };
+    findId(treeData);
+    array[0].content = rootContent;
+    return array;
+  };
 
-    const link = svg
-      .append("g")
-      .attr("stroke", "#999")
-      .attr("stroke-opacity", 0.6)
-      .selectAll("line")
-      .data(links)
-      .join("line");
-
-    const node = svg
-      .append("g")
-      .attr("fill", "#fff")
-      .attr("stroke", "#000")
-      .attr("stroke-width", 1)
-      .selectAll("circle")
-      .data(nodes)
-      .join("circle")
-      .attr("fill", (d) => (d.children ? null : "#000"))
-      .attr("stroke", (d) => (d.children ? null : "#fff"))
-      .attr("r", 2)
-      .call(drag(simulation));
-
-    // node.append("title")
-    //   // .text(d => d.data.content);
-    //   .text('testData');
-
-    const content = svg
-      .append("g")
-      .selectAll("title")
-      .data(nodes)
-      .join("title")
-      .text((d) => d.data.name)
-      .attr("dy", ".31em")
-      .style("text-anchor", "middle")
-      .attr("r", 2)
-      .call(drag(simulation));
-
-    // node.append("text")
-    //   .attr("text", d => d.data.name);
-    // const content = svg.append("g")
-    // .selectAll("title")
-    // .data(nodes)
-    // .join("title")
-    // link.append("text")
-    // .attr("font-family", "Arial, Helvetica, sans-serif")
-    // .attr("fill", "Black")
-    // .style("font", "normal 12px Arial")
-    // .attr("transform", function(d) {
-    //     return "translate(" +
-    //         ((d.source.y + d.target.y)/2) + "," +
-    //         ((d.source.x + d.target.x)/2) + ")";
-    // })
-    // .attr("dy", ".35em")
-    // .attr("text-anchor", "middle")
-    // .text(function(d) {
-    //     console.log(d.target.rule);
-    //     return d.target.rule;
-    // });
-
-    console.log(nodes);
-
-    simulation.on("tick", () => {
-      link
-        .attr("x1", (d) => d.source.x)
-        .attr("y1", (d) => d.source.y)
-        .attr("x2", (d) => d.target.x)
-        .attr("y2", (d) => d.target.y);
-
-      node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
-
-      content.attr("cx", (d) => d.x + 10).attr("cy", (d) => d.y);
-    });
-  }, [root]);
+  const pathHandler = (id) => {
+    setPathData(findParent(id, rawData));
+  };
 
   return (
-    <Frame>
-      <MapContainer
-        // viewRatio={viewRatio}
-        // onDoubleClick={(e) => alert([e.clientX, e.clientY])}
-        // onWheel={wheelHandler}
-        // onDragStart={panScreenStart}
-        // onDrag={panScreen}
-        // onDragEnd={panScreenEnd}
-        // draggable
-        ref={canvasRef}
-      >
-        {/* <svg ref={svgRef} >
-      </svg> */}
-        <page></page>
-      </MapContainer>
-    </Frame>
+    <TransformWrapper
+      initialScale={2}
+      initialPositionX={-window.innerWidth / 2}
+      initialPositionY={-window.innerHeight / 2}
+      limitToBounds={false}
+      minScale={0.2}
+      disabled={disabled}
+      panning={{ excluded: [] }}
+    >
+      {({ zoomIn, zoomOut, setTransform, centerView }) => (
+        <>
+          {pilot.on ? (
+            <ControllerPilot x={pilot.coord.x} y={pilot.coord.y}>
+              {pilot.message}
+            </ControllerPilot>
+          ) : null}
+
+          <Exit>
+            <button onClick={() => navigate("/main")}>
+              <i className="fa-solid fa-arrow-left"></i>
+            </button>
+          </Exit>
+
+          <Controller>
+            <button
+              onClick={() => zoomIn()}
+              onMouseEnter={(e) => pilotHandler(e, "in", "확대")}
+              onMouseLeave={(e) => pilotHandler(e, "out")}
+            >
+              <i className="fa-solid fa-magnifying-glass-plus"></i>
+            </button>
+            <button
+              onClick={() => zoomOut()}
+              onMouseEnter={(e) => pilotHandler(e, "in", "축소")}
+              onMouseLeave={(e) => pilotHandler(e, "out")}
+            >
+              <i className="fa-solid fa-magnifying-glass-minus"></i>
+            </button>
+            <button
+              onClick={() => centerView(2 / mapScale, 300, "easeOut")}
+              onMouseEnter={(e) => pilotHandler(e, "in", "중앙 정렬")}
+              onMouseLeave={(e) => pilotHandler(e, "out")}
+            >
+              <i className="fa-solid fa-expand"></i>
+            </button>
+
+            {mapForm === "cluster" ? (
+              <button
+                onClick={() => setMapForm("tree")}
+                onMouseEnter={(e) => pilotHandler(e, "in", "동일한 간격")}
+                onMouseLeave={(e) => pilotHandler(e, "out")}
+              >
+                <i className="fa-solid fa-equals"></i>
+              </button>
+            ) : (
+              <button
+                onClick={() => setMapForm("cluster")}
+                onMouseEnter={(e) => pilotHandler(e, "in", "모양 유지")}
+                onMouseLeave={(e) => pilotHandler(e, "out")}
+              >
+                <i className="fa-solid fa-maximize"></i>
+              </button>
+            )}
+            <button
+              onClick={changeColorHandler}
+              onMouseEnter={(e) => pilotHandler(e, "in", "색상 변경")}
+              onMouseLeave={(e) => pilotHandler(e, "out")}
+            >
+              <i className="fa-solid fa-palette"></i>
+            </button>
+            <button
+              onClick={blockHandler}
+              onMouseEnter={(e) => pilotHandler(e, "in", "캔버스 고정")}
+              onMouseLeave={(e) => pilotHandler(e, "out")}
+            >
+              {disabled ? (
+                <i className="fa-solid fa-lock"></i>
+              ) : (
+                <i className="fa-solid fa-lock-open"></i>
+              )}
+            </button>
+            <button
+              onClick={adjustScaleHandler}
+              onMouseEnter={(e) => pilotHandler(e, "in", "스케일")}
+              onMouseLeave={(e) => pilotHandler(e, "out")}
+            >
+              <i className="fa-solid fa-ruler-horizontal"></i>
+            </button>
+            {adjustScale ? (
+              <div>
+                <Scaler>
+                  <ul className="range-labels">
+                    <li>-</li>
+                    <li>+</li>
+                  </ul>
+                  <input
+                    type="range"
+                    defaultValue={2}
+                    min="2"
+                    max="5"
+                    step="1"
+                    onChange={(e) => scaleHandler(e.target.value)}
+                  />
+                </Scaler>
+              </div>
+            ) : null}
+            <div
+              onMouseEnter={(e) => pilotHandler(e, "in", "타이머")}
+              onMouseLeave={(e) => pilotHandler(e, "out")}
+            >
+              <Timer
+                timerHandler={timerHandler}
+                setTime={setTime}
+                time={time}
+              />
+            </div>
+          </Controller>
+          <Finder
+            mapData={radialNodes}
+            pathData={pathData}
+            highlight={highlight}
+            setHighlight={setHighlight}
+            setTransform={setTransform}
+          />
+          <TransformComponent>
+            <Rootbox
+              className="rootbox"
+              id={radialNodes[0].data.id}
+              coordY={radialNodes[0].y || window.innerHeight / 2}
+              coordX={radialNodes[0].x || window.innerWidth / 2}
+              onClick={() => pathHandler(radialNodes[0].data.id)}
+              onDragOver={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+              onDrop={dropHandler}
+            >
+              <div className="rootcontent" id={radialNodes[0].data.id}>
+                {radialNodes[0].data.content}
+              </div>
+            </Rootbox>
+
+            {radialNodes.slice(1).map((node, i) => (
+              <Nodebox
+                className="nodebox"
+                key={i}
+                id={node.data.id}
+                coordY={node.y}
+                coordX={node.x}
+                depth={node.depth}
+                highlight={highlight.word}
+                highlights={highlight.list.map((node) => node.data.id)}
+                changeColor={changeColor}
+                onClick={() => pathHandler(node.data.id)}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+                onDrop={dropHandler}
+              >
+                <div className="small" id={node.data.id}>
+                  {simplified(node.data.content)}
+                </div>
+                <div className="large">
+                  <div
+                    className="delete-node"
+                    onClick={(e) => deleteMindmapHandler(e, node.data.id)}
+                  >
+                    <i class="fa-solid fa-xmark"></i>
+                  </div>
+                  {node.data.content}
+                </div>
+              </Nodebox>
+            ))}
+
+            <Lines>
+              {radialLinkes.map((link, i) => {
+                return (
+                  <Line
+                    key={i}
+                    x1={link.source.x}
+                    y1={link.source.y}
+                    x2={link.target.x}
+                    y2={link.target.y}
+                    depth={link.depth}
+                    height={link.height}
+                  />
+                );
+              })}
+            </Lines>
+          </TransformComponent>
+        </>
+      )}
+    </TransformWrapper>
   );
 }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// import { useRef, useEffect, useState, } from "react";
-// import { root, descendants, links } from "./d3coodinator/getDescendants";
-// import styled from "styled-components";
-// import { link } from "d3";
-
-// const Frame = styled.div`
-//   width: 100%;
-//   height: 100%;
-//   background-color: lightsalmon;
-//   border: solid red 3px;
-//   text-align: center;
-//   overflow: hidden;
-// `;
-
-// const MapContainer = styled.div`
-//   position: relative;
-//   background-color: yellow;
-//   top: 0;
-//   left: 0;
-//   width: ${(props) => 200 / props.viewRatio}%;
-//   height: ${(props) => 200 / props.viewRatio}%;
-//   transform: scale(${(props) => props.viewRatio});
-//   transform-origin: left top; // todo: 커서위치 props로 줄 것
-//   text-align: left;
-// `;
-
-// const ExBox = styled.div`
-//   position: absolute;
-//   width: 50px;
-//   height: 30px;
-//   left: ${(props) => `${props.coord[0]}px`};
-//   top: ${(props) => `${props.coord[1]}px`};
-//   border: solid black 1px;
-//   background-color: cyan;
-// `;
-
-// console.log("root :", root);
-// console.log("descendants :", descendants[0]);
-// console.log("links :", links);
-
-// function Canvas() {
-//   const [viewRatio, setViewRatio] = useState(1);
-//   const [screen, setScreen] = useState({
-//     top: 0,
-//     left: 0,
-//   });
-//   const mapConRef = useRef();
-
-//   useEffect(() => {
-//     //console.log(mapConRef.current.offsetWidth);
-//   }, []);
-
-//   const wheelHandler = (e) => {
-//     if (viewRatio >= 0.2) {
-//       setViewRatio(viewRatio + 0.001 * e.deltaY);
-//     } else {
-//       setViewRatio(0.2);
-//     }
-//     //console.log("viewRatio: ", viewRatio);
-//     //console.log("mapConRef: ", mapConRef.current.offsetWidth);
-//   };
-
-//   let posX,
-//     posY = 100;
-
-//   const panScreenStart = (e) => {
-//     const img = new Image();
-//     e.dataTransfer.setDragImage(img, 0, 0);
-//     posX = e.clientX;
-//     posY = e.clientY;
-//   };
-
-//   const panScreen = (e) => {
-//     const limitX = e.target.offsetLeft + (e.clientX - posX) <= 0;
-//     const limitY = e.target.offsetTop + (e.clientY - posY) <= 0;
-
-//     e.target.style.left = limitX
-//       ? `${e.target.offsetLeft + (e.clientX - posX)}px`
-//       : "0px";
-//     e.target.style.top = limitY
-//       ? `${e.target.offsetTop + (e.clientY - posY)}px`
-//       : "0px";
-
-//     posX = limitX ? e.clientX : 0;
-//     posY = limitY ? e.clientY : 0;
-//   };
-
-//   const panScreenEnd = (e) => {
-//     const limitX = e.target.offsetLeft + (e.clientX - posX) <= 0;
-//     const limitY = e.target.offsetTop + (e.clientY - posY) <= 0;
-
-//     e.target.style.left = limitX
-//       ? `${e.target.offsetLeft + (e.clientX - posX)}px`
-//       : "0px";
-//     e.target.style.top = limitY
-//       ? `${e.target.offsetTop + (e.clientY - posY)}px`
-//       : "0px";
-
-//     setScreen({ top: e.target.style.top, left: e.target.style.left });
-//   };
-
-//   return (
-//     <Frame>
-//       <MapContainer
-//         ref={mapConRef}
-//         viewRatio={viewRatio}
-//         onDoubleClick={(e) => alert([e.clientX, e.clientY])}
-//         onWheel={wheelHandler}
-//         onDragStart={panScreenStart}
-//         onDrag={panScreen}
-//         onDragEnd={panScreenEnd}
-//         draggable
-//       >
-//         {descendants.map((node) => (
-//           <ExBox key={node.data.name} coord={[node.x, node.y]}>
-//             {node.data.name}
-//           </ExBox>
-//         ))}
-//       </MapContainer>
-//     </Frame>
-//   );
-// }
-
-// export default Canvas;

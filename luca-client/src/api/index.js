@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 axios.defaults.withCredentials = true;
 
@@ -20,6 +20,6 @@ export const requestGoogleLogin = () => {
 // 네이버 로그인
 export const requestNaverLogin = () => {
     window.location.assign(
-        `https://nid.naver.com/oauth2.0/authorize?client_id=${process.env.REACT_APP_NAVER_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_NAVER_REDIRECT_URI}&state='luca'&response_type=code`
+        `https://nid.naver.com/oauth2.0/authorize?client_id=${process.env.REACT_APP_NAVER_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_NAVER_REDIRECT_URI}&state="luca"&response_type=code`
     );
 };

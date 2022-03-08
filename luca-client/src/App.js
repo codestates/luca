@@ -9,49 +9,59 @@ import Project from "./pages/project";
 import KakaoPage from "./pages/oauth/KakaoPage";
 import NaverPage from "./pages/oauth/NaverPage";
 import GooglePage from "./pages/oauth/GooglePage";
-import { useEffect, useState } from "react";
+import LoginLoading from "./pages/loginLoading"
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setIsLogin, setUserInfo } from "../src/redux/rootSlice";
 import axios from "axios";
-const serverUrl = "http://localhost:4000";
 
 function App() {
-  const [isLogin, setIsLogin] = useState(false);
-  const [userinfo, setUserinfo] = useState(null);
-  const isAuthenticated = () => {
-    if (userinfo !== null) {
-      setIsLogin(true);
-    }
-  };
-  const handleResponseSuccess = () => {
-    isAuthenticated();
-  };
-  const handleLogout = () => {
-    axios.post(`${serverUrl}/user/logout`).then((res) => {
-      setUserinfo(null);
-      setIsLogin(false);
-      console.log(res.data.message);
-    });
-  };
+  const dispatch = useDispatch();
 
-  const testServerConnection = () => {
-    // http 서버 연결 테스트용입니다.
-    axios.get(serverUrl).then((res) => {
-      console.log(res);
-    });
+  const isAuthenticated = () => {
+    axios
+      .get(`${process.env.REACT_APP_API_URL}/profile`, {
+        "Content-Type": "application/json",
+        withCredentials: true,
+      })
+      .then((data) => {
+        dispatch(setUserInfo(data.data.data));
+        dispatch(setIsLogin(true));
+      })
+      .catch((err) => {
+        if (err.response.status === 401) {
+          dispatch(setIsLogin(false));
+          dispatch(
+            setUserInfo({
+              id: "",
+              email: "",
+              name: "",
+              isGuest: "",
+              isSocial: "",
+              createdAt: "",
+              updatedAt: "",
+            })
+          );
+        }
+      });
   };
 
   useEffect(() => {
-    testServerConnection();
-    handleLogout();
+    isAuthenticated();
   }, []);
+
+  const isLogin = useSelector((state) => state.user.isLogin);
 
   return (
     <div>
       <Routes>
-        <Route path="/" element={isLogin ? <Main /> : <About />} />
+        <Route path="/" element={isLogin ? <LoginLoading /> : <About />} />
+        <Route path="/main" element={ <Main />} />
+        <Route path="/loginloading" component={<LoginLoading />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/mypage" element={<Mypage />} />
         <Route path="/changepassword" element={<ChangePassword />} />
-        <Route path="/project" element={<Project />} />
+        <Route path="/project/*" element={<Project />} />
         <Route path="/auth/callback/kakao" element={<KakaoPage />} />
         <Route path="/auth/callback/naver" element={<NaverPage />} />
         <Route path="/auth/callback/google" element={<GooglePage />} />

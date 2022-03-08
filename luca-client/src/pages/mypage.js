@@ -1,205 +1,212 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { setUserInfo } from "../redux/rootSlice.js";
+import { device } from "../styles";
 import styled from "styled-components";
-import { Savealert } from "../components/modals";
-import { Navigator, Backdrop, Container } from "../components/commons";
+import { Navigator, Footer } from "../components/commons";
+import axios from "axios";
 
-const Page = styled.div`
+const Container = styled.div`
+  grid-column: 1 / span 2;
+  @media ${device.laptop} {
+    min-width: 90vw;
+  min-height: 50vh;
+  margin: 20vh 10vh 10vh 10vh;
+  display: flex;
+  position: relative;
+}
+`;
+
+const Section = styled.div`
+  border-radius: 1vh;
+  background-color: white;
+`;
+
+const Left = styled(Section)`
+    min-width: 35vh;
+    height: 35vh;
+    margin: 20vh 15vh 0;
+    background: url("https://picsum.photos/300/300?random=1");
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-radius: 30vh;
+  @media ${device.laptop} {
+    min-width: 55vh;
+    height: 55vh;
+    margin: 0 15vh;
+  > i {
+    position: relative;
+    top: 50vh;
+    left: 50vh;
+    font-size: 3vh;
+    color: silver;
+    }
+  > i:hover {
+    color: gray;
+    }
+  > i:active {
+    color: orange;
+    }
+  }
+`;
+
+const Right = styled(Section)`
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-left: 3rem;
+  @media ${device.laptop} {
+    flex: 2 0 auto;
+    margin: 0;
+  }
+`;
+
+const Upper = styled.div`
   margin-top: 10vh;
   display: flex;
-  justify-content: center;
-  background-color: seashell;
-`;
-const MypageBody = styled.div`
-  position: relative;
-  background-color: seashell;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 1300px;
-  height: 70vh;
-  > userinfo {
-    > userprofile {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      > div {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 80px;
-        > h1 {
-          /* height: 25px; */
-        }
-        > input {
-          width: 100%;
-          height: 30px;
-          /* margin-bottom: 10px;
-          margin-top: 10px; */
-        }
-      }
-      > useremail {
-        font-size: 1.2rem;
-      }
-    }
+  flex-direction: column;
+  box-align: center;
+
+  > div.name {
+    font-size: 3em;
+    font-weight: bold;
     > div {
-      margin-top: 20px;
-      width: 420px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      font-size: 0.75em;
+    }
+    > input {
+      font-size: 0.75em;
+      border-color: rgba(0, 0, 0, 0.5);
+    }
+    > input:focus {
+      border-style: solid;
+      border-color: rgba(0, 0, 0, 0.1);
     }
   }
-  > profileimg {
-    width: 300px;
-    height: 300px;
-    border-radius: 100%;
-    overflow: hidden;
-    > img {
-      max-width: 100%;
-      height: 100%;
-      width: 100%;
-    }
+  > div.email {
+    font-size: 1.5em;
+    color: grey;
+  }
+  > div.edit {
+    margin: 5vh 0;
   }
 `;
-const Userbutton = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  height: 100px;
-  > * {
-    width: 200px;
-    font-size: 20px;
-    text-align: center;
-    border-radius: 20px;
-    border: solid gray;
-  }
-  > *:hover {
-    /* box-shadow: 0px 0px 10px black; */
-    background-color: gray;
-  }
-  > *:active {
-    color: silver;
-  }
-`;
-const Decisionbutton = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  height: 100px;
+
+const Lower = styled.div`
+  font-size: 1.2em;
+  font-weight: bold;
+
   > div {
-    width: 200px;
-    display: flex;
-    justify-content: space-between;
-    > * {
-      width: 90px;
-      display: flex;
-      justify-content: center;
-      border: solid;
-      font-size: 20px;
-    }
-    > * {
-      border-radius: 20px;
-      border: solid gray;
-    }
-    > *:hover {
-      background-color: gray;
-    }
-    > *:active {
-      color: silver;
-    }
+    padding: 0.5em;
   }
-  > withdrawal {
-    width: 196px;
-    font-size: 20px;
-    /* display: flex; */
-    text-align: center;
-    justify-content: center;
-    border: solid;
-    border-radius: 20px;
-    border: solid gray;
-  }
-  > withdrawal:hover {
-    background-color: gray;
-  }
-  > withdrawal:active {
-    color: silver;
+`;
+
+const Button = styled.button`
+  font-size: 1.2em;
+  font-weight: bold;
+  min-height: 2em;
+  min-width: 10em;
+  border-radius: 1em;
+  margin-right: 1em;
+  border-style: none;
+  background-color: white;
+  color: ${(props) => (props.warn ? "red" : "rgb(80, 80, 80)")};
+  box-shadow: 0vh 0.5vh 1vh 0.1vh rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  &:hover {
+    color: ${(props) => (props.warn ? "red" : "white")};
+    background-color: ${(props) => (props.warn ? "white" : "#ff7f50")};
+    border: ${(props) => (props.warn ? "solid red 2px" : "none")};
   }
 `;
 
 export default function Mypage() {
-  const [isClicked, setIsClicked] = useState(false);
-  const [isAlert, setIsAlert] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const userInfo = useSelector((state) => state.user.userInfo);
+  const [isEditOn, setIsEditOn] = useState(false);
+  const editnameRef = useRef();
 
-  const handleClick = function () {
-    setIsClicked(!isClicked);
+  const handlerEditname = () => {
+    let newName = editnameRef.current.value;
+    if (newName !== "") {
+      axios
+        .patch(
+          `${process.env.REACT_APP_API_URL}/profile/name`,
+          { name: newName },
+          {
+            "Content-Type": "application/json",
+            withCredentials: true,
+          }
+        )
+        .then((res) => {
+          dispatch(setUserInfo({ ...userInfo, name: newName }));
+          setIsEditOn(false);
+        })
+        .catch((err) => {
+          alert("error");
+        });
+    } else {
+      setIsEditOn(false)
+    }
   };
 
-  const handleSave = function () {
-    setIsAlert(true);
-    setTimeout(() => {
-      setIsAlert(false);
-    }, 1500);
-    setIsClicked(false);
-  };
+  useEffect(() => {
+    axios.get(`${process.env.REACT_APP_API_URL}/profile`, {
+      "Content-Type": "application/json",
+      withCredentials: true,
+    })
+      .then((res) => {
+        dispatch(setUserInfo(res.data.data));
+      })
+      .catch((err) => {
+        navigate("/");
+      });
+  }, []);
 
   return (
     <div>
       <Navigator />
-      <Backdrop>
-        <Container>
-          <Page>
-            <div>{/* navbar */}</div>
-            <MypageBody>
-              {isAlert ? <Savealert /> : null}
-              <profileimg>
-                <img src="https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/damien-hirst-1-1538661596.jpg" />
-              </profileimg>
-              <userinfo>
-                <userprofile>
-                  {isClicked ? (
-                    <div>
-                      <input></input>
-                    </div>
-                  ) : (
-                    <div>
-                      <h1>Ian</h1>
-                    </div>
-                  )}
-                  <useremail>ian58@gmail.com</useremail>
-                </userprofile>
-                <div>
-                  {isClicked ? (
-                    <Decisionbutton>
-                      <div>
-                        <cancelbuttton onClick={handleClick}>
-                          취소
-                        </cancelbuttton>
-                        <savebutton onClick={handleSave}>저장</savebutton>
-                      </div>
-                      <withdrawal>회원탈퇴</withdrawal>
-                    </Decisionbutton>
-                  ) : (
-                    <Userbutton>
-                      <modifybutton
-                        className="modifybutton"
-                        onClick={handleClick}
-                      >
-                        회원정보 수정
-                      </modifybutton>
-                      <changepwbutton className="pwbutton">
-                        비밀번호 변경
-                      </changepwbutton>
-                    </Userbutton>
-                  )}
-                </div>
-              </userinfo>
-            </MypageBody>
-            <div>{/* footer */}</div>
-          </Page>
-        </Container>
-      </Backdrop>
+      <Container>
+        <Left>
+        </Left>
+        {isEditOn ? (
+          <Right>
+            <Upper>
+              <div className="name">
+                <div>Display name</div>
+                <input placeholder={userInfo.name} ref={editnameRef} />
+              </div>
+              <div className="edit">
+                <Button onClick={handlerEditname}>저장</Button>
+                <Button warn={true}>회원탈퇴</Button>
+              </div>
+            </Upper>
+            <Lower>
+              <div>{`만든 프로젝트 ${userInfo.countAdminProject}개`}</div>
+              <div>{`참여한 프로젝트 ${userInfo.countJoinProject}개`}</div>
+            </Lower>
+          </Right>
+        ) : (
+          <Right>
+            <Upper>
+              <div className="name">{userInfo.name} 님, 안녕하세요!</div>
+              <div className="email">{userInfo.email}</div>
+              <div className="edit">
+                <Button onClick={() => setIsEditOn(true)}>프로필 수정</Button>
+                <a href="/changepassword">
+                  <Button>비밀번호 변경</Button>
+                </a>
+              </div>
+            </Upper>
+            <Lower>
+              <div>{`만든 프로젝트 ${userInfo.countAdminProject}개`}</div>
+              <div>{`참여한 프로젝트 ${userInfo.countJoinProject}개`}</div>
+            </Lower>
+          </Right>
+        )}
+      </Container>
+      <Footer />
     </div>
   );
 }

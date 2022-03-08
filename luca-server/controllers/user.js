@@ -44,10 +44,9 @@ module.exports = {
       if (!accessToken) {
         return res.status(401).send({ message: "Not authorized" });
       } else {
-        // 쿠키 삭제를 통해 로그아웃을 구현한다.
         res.clearCookie("jwt", {
           httpOnly: true,
-          //secure: true,
+          secure: true,
           sameSite: "None",
         });
         return res.status(200).send({ message: "Signout succeed" });
@@ -76,7 +75,6 @@ module.exports = {
       })
       .then(([userInfo, created]) => {
         if (created) {
-          // 회원가입에 성공하면 토큰이 발행되므로 별로의 로그인 과정이 생략된다.
           const accessToken = generateAccessToken(userInfo);
           sendAccessToken(res, accessToken, 201, {
             data: userInfo,
@@ -105,7 +103,6 @@ module.exports = {
           email,
         },
       });
-      // 사용할 수 있는 email
       if (!userInfo) {
         let authNum = Math.random().toString().substr(2, 6);
         let emailTemplete;
@@ -131,13 +128,12 @@ module.exports = {
           },
         });
 
-        const mailOptions = await transporter.sendMail({
+        const mailOptions = ({
           from: `Luca`,
           to: req.body.email,
           subject: "[Luca]인증 확인 이메일입니다",
           html: emailTemplete,
         });
-        // return res.send(mailOptions)
         transporter.sendMail(mailOptions, function (error, info) {
           if (error) {
             console.log(error);
@@ -149,7 +145,6 @@ module.exports = {
           .status(201)
           .json({ data: { code: authNum }, message: "Check success" });
       }
-      // 사용할 수 없는 email
       res.status(200).json({ data: null, message: "Check fail" });
     } catch {
       res.status(500).json({ message: "Internal server error" });
@@ -170,21 +165,14 @@ module.exports = {
             email: email,
           },
         });
-        console.log(userInfo);
-
-        // 로그인 실패
         if (!userInfo) {
           return res.status(400).json({ message: "Wrong email" });
         } else {
           let passwordCheck = await bcrypt.compare(password, userInfo.password);
-          // 로그인이 성공하면 토큰이 생성되고 쿠기로 전송된다.
           delete userInfo.dataValues.password;
           if (passwordCheck) {
             const accessToken = generateAccessToken(userInfo);
-            sendAccessToken(res, accessToken, 200, {
-              data: userInfo,
-              message: "login success",
-            });
+            sendAccessToken(res, accessToken, 200, { data: userInfo, message: "Login success" });
           } else {
             return res.status(400).json({ message: "Wrong password" });
           }
